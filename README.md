@@ -1,4 +1,6 @@
-# Postmate
+<a href="http://dollarshaveclub.github.io/postmate/pages/">
+  <img src="http://i.imgur.com/qOIF7XH.png">
+</a>
 > A simple, promise-based `postMessage` library
 
 * [Installing](#installing)
