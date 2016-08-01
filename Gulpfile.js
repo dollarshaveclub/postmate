@@ -1,10 +1,11 @@
 
-var babel   = require('rollup-plugin-babel');
-var gulp    = require('gulp');
-var minify  = require('uglify-js').minify;
-var rollup  = require('rollup-stream');
-var source  = require('vinyl-source-stream');
-var uglify  = require('rollup-plugin-uglify');
+const babel   = require('rollup-plugin-babel');
+const eslint  = require('gulp-eslint');
+const gulp    = require('gulp');
+const minify  = require('uglify-js').minify;
+const rollup  = require('rollup-stream');
+const source  = require('vinyl-source-stream');
+const uglify  = require('rollup-plugin-uglify');
 
 gulp.task('build', () => rollup({
     entry: './lib/postmate.js',
@@ -18,5 +19,12 @@ gulp.task('build', () => rollup({
     ]
   })
   .pipe(source('postmate.min.js'))
-  .pipe(gulp.dest('./dist'))
+  .pipe(gulp.dest('./build'))
 );
+
+gulp.task('lint', () => {
+    return gulp.src(['**/*.js','!node_modules/**', '!build/**'])
+      .pipe(eslint())
+      .pipe(eslint.format())
+      .pipe(eslint.failAfterError());
+});

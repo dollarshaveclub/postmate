@@ -6,13 +6,17 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "serve": "python -m SimpleHTTPServer 4000",
-    "build": "gulp build"
+    "build": "gulp build",
+    "lint": "gulp lint"
   },
   "author": "",
   "license": "ISC",
   "devDependencies": {
     "babel-preset-es2015-rollup": "^1.1.1",
+    "eslint-config-airbnb": "^9.0.1",
+    "eslint-plugin-import": "^1.12.0",
     "gulp": "^3.9.1",
+    "gulp-eslint": "^3.0.1",
     "rollup-plugin-babel": "^2.6.1",
     "rollup-plugin-uglify": "^1.0.1",
     "rollup-stream": "^1.11.0",
