@@ -16,13 +16,14 @@
     <script type="text/javascript">
       var container = document.getElementById('target');
       var url = 'http://localhost:4000/host.html';
-      var context = {
-        token: 'foobar'
-      };
 
-      new Postmate.Handshake(container, url, context)
+      new Postmate.Handshake({
+        container,
+        url
+      })
         .then(host => {
-          host.get('height')
+          console.log("Client Page Ready");
+          host.get('height', {foo:'bar'})
             .then(height => host.frame.style.height = `${height}px`);
         });
 
