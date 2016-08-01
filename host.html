@@ -14,11 +14,7 @@
     <script type="text/javascript" src="./build/postmate.min.js"></script>
     <script type="text/javascript">
       let height = function () { return document.height || document.body.offsetHeight; };
-      new Postmate({height}).then(client => {
-        console.log('Host Page Ready', {client});
-      });
-        // .then(client.get('window.innerHeight'))
-        // .then(response => function () {});
+      new Postmate({ height }).then(() => console.log('Host Page Ready'));
     </script>
   </body>
 </html>
