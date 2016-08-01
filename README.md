@@ -1,13 +1,15 @@
 <a href="https://github.com/dollarshaveclub/postmate">
   <img src="https://dollarshaveclub.github.io/postmate/assets/postmate.svg">
 </a>
+
 > A powerful, simple, promise-based `postMessage` library.
 
 * [Installing](#installing)
 * [Glossary](#glossary)
 * [Usage](#usage)
 * [API](#api)
-* [Licensing](#licensing)
+
+***
 
 ## Installing
 ```sh
@@ -69,6 +71,3 @@ Client Page Ready
 ```
 
 ## API
-
-
-## Licensing
