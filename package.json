@@ -17,8 +17,9 @@
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "serve": "python -m SimpleHTTPServer 4000",
-    "build": "gulp build",
+    "serve-client": "python -m SimpleHTTPServer 4000",
+    "serve-host": "python -m SimpleHTTPServer 4001",
+    "build-watch": "gulp build-watch",
     "lint": "gulp lint"
   },
   "repository": {

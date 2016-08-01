@@ -10,10 +10,10 @@
     </style>
   </head>
   <body>
-    <script type="text/javascript" src="./build/postmate.min.js"></script>
+    <script type="text/javascript" src="../build/postmate.min.js"></script>
     <script type="text/javascript">
       let height = function () { return document.height || document.body.offsetHeight; };
-      new Postmate({ ccToken }).then(() => console.log('Host Page Ready'));
+      new Postmate({ height }).then(() => console.log('Host Page Ready'));
     </script>
   </body>
 </html>

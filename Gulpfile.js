@@ -29,3 +29,6 @@ gulp.task('lint', () =>
     .pipe(eslint.format())
     .pipe(eslint.failAfterError())
 );
+
+gulp.task('watch', () => gulp.watch('./lib/postmate.js', ['build']));
+gulp.task('build-watch', ['build', 'watch']);
