@@ -1,7 +1,7 @@
 <a href="http://dollarshaveclub.github.io/postmate/pages/">
   <img src="http://i.imgur.com/qOIF7XH.png">
 </a>
-> A simple, promise-based `postMessage` library
+> A powerful, simple, promise-based `postMessage` library.
 
 * [Installing](#installing)
 * [Glossary](#glossary)
@@ -21,8 +21,8 @@ $ bower i postmate # Install via Bower
 * **`Consumer`**: The API that the `Client` or `Host` exposes
 
 ## Usage
-The `Client` begins communication with the host. A handshake is sent, the `Host` responds with
-a handshake reply, and the two are bound and ready to mingle.
+The `Client` begins communication with the `Host`. A handshake is sent, the `Host` responds with
+a handshake reply, finishing `Client` initialization. The two are bound and ready to mingle.
 
 ***
 
@@ -69,5 +69,6 @@ Client Page Ready
 ```
 
 ## API
+
 
 ## Licensing

@@ -1,16 +1,8 @@
 {
-  "name": "postmate.js",
-  "version": "1.0.0",
-  "description": "",
-  "main": "postmate.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "serve": "python -m SimpleHTTPServer 4000",
-    "build": "gulp build",
-    "lint": "gulp lint"
-  },
-  "author": "",
-  "license": "ISC",
+  "name": "postmate",
+  "version": "0.1.0",
+  "description": "A powerful, simple, promise-based postMessage library",
+  "main": "lib/postmate.js",
   "devDependencies": {
     "babel-preset-es2015-rollup": "^1.1.1",
     "eslint-config-airbnb": "^9.0.1",
@@ -22,5 +14,27 @@
     "rollup-stream": "^1.11.0",
     "uglify-js": "^2.7.0",
     "vinyl-source-stream": "^1.1.0"
-  }
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "serve": "python -m SimpleHTTPServer 4000",
+    "build": "gulp build",
+    "lint": "gulp lint"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dollarshaveclub/postmate.git"
+  },
+  "keywords": [
+    "postMessage",
+    "secure",
+    "handshake",
+    "promise"
+  ],
+  "author": "Jacob Kelley <jakie8@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/dollarshaveclub/postmate/issues"
+  },
+  "homepage": "https://github.com/dollarshaveclub/postmate#readme"
 }

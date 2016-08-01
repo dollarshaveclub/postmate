@@ -22,9 +22,6 @@
         url
       })
         .then(host => {
-          // host.get('token', {
-          //   oauthToken: 'foo-bar-baz'
-          // }).then(ccToken => console.log(ccToken));
           console.log("Client Page Ready");
           host.get('height', {foo:'bar'})
             .then(height => host.frame.style.height = `${height}px`);
