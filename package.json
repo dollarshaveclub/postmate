@@ -1,0 +1,12 @@
+{
+  "name": "postmate.js",
+  "version": "1.0.0",
+  "description": "",
+  "main": "postmate.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "serve": "python -m SimpleHTTPServer 4000"
+  },
+  "author": "",
+  "license": "ISC"
+}

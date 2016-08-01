@@ -1,0 +1,24 @@
+<!doctype html>
+<html>
+  <head>
+    <style>
+      body {
+        height: 1000px;
+        padding: 0;
+        margin: 0;
+      }
+    </style>
+  </head>
+  <body>
+
+    <script type="text/javascript" src="postmate.js"></script>
+    <script type="text/javascript">
+      let height = function () { return document.height || document.body.offsetHeight; };
+      new Postmate({height}).then(client => {
+        console.log('Host Page Ready', {client});
+      });
+        // .then(client.get('window.innerHeight'))
+        // .then(response => function () {});
+    </script>
+  </body>
+</html>
