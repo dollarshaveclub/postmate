@@ -4,15 +4,35 @@
 
 > A powerful, simple, promise-based `postMessage` library.
 
+[![npm][npm-image]][npm-url]
+
+[npm-image]: https://img.shields.io/npm/v/postmate.svg?style=flat-square
+[npm-url]: https://www.npmjs.com/package/postmate
+
+_Postmate_ is a promise-base API built on `postMessage`. It allows a parent page
+to speak with a child `iFrame` across origins with minimal effort.
+
+You can download the compiled javascript directly [here](/build/postmate.min.js)
+
+* [Features](#features)
 * [Installing](#installing)
 * [Glossary](#glossary)
 * [Usage](#usage)
 * [API](#api)
+* [Further Reading](#further-reading)
+* [License](#license)
 
 ***
 
+## Features
+* Promise based API for elegant and simple communication
+* Secure. Two way parent <-> child handshake, with origin and message validation.
+* Child can expose properties, functions, or promises that the parent can retrieve.
+* *Zero* dependencies. Provide your own polyfill or abstraction for the `Promise` API if needed
+* Lightweight, weighing in at ~ `3kb`
+
 ## Installing
-```sh
+```bash
 $ npm i postmate # Install via NPM
 $ bower i postmate # Install via Bower
 ```
@@ -55,6 +75,15 @@ new Postmate({
 
 ***
 
+## API
+
+
+***
+
+## Further Reading
+
+### Handshake and Initialization Flow
+
 The Handshake and ready sequence is as follows:
 ```
 Parent: Loading frame
@@ -70,4 +99,5 @@ Parent awaiting messages...
 Parent Page Ready
 ```
 
-## API
+## License
+MIT
