@@ -147,6 +147,15 @@ Name | Type | Description
 
 ***
 
+> ##`child.frame`
+```javascript
+new Postmate.Handshake(options).then(child => {
+  child.get('height')
+    .then(height => child.frame.style.height = `${height}px`);
+});
+```
+> The iFrame Element that the parent is communicating with
+
 ## Further Reading
 
 ### Handshake and Initialization Flow
