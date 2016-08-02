@@ -95,9 +95,6 @@ Name | Type | Description
 **`container`** | `DOM Node Element` | _An element to append the iFrame to_
 **`url`** | `String` | _A URL to load in the iFrame. The origin of this URL will also be used for securing message transport_
 
-**`container`**: DOM Node Element
-**`url`**: String, the URL
-
 ***
 
 > ## `Postmate(context)`
