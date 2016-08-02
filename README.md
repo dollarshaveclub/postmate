@@ -18,13 +18,13 @@ $ bower i postmate # Install via Bower
 ```
 
 ## Glossary
-* **`Client`**: The **parent** page that will embed an `iFrame`
-* **`Host`**: The **child** page that will expose information to the `Client`
-* **`Consumer`**: The API that the `Client` or `Host` exposes
+* **`Parent`**: The **top level** page that will embed an `iFrame`, creating a `Child`
+* **`Child`**: The **bottom level** page that will expose information to the `Parent`, the page that is embedded within an `iFrame`
+* **`Consumer API`**: The object that the `Parent` _and_ `Child` exposes to their respective environments
 
 ## Usage
-The `Client` begins communication with the `Host`. A handshake is sent, the `Host` responds with
-a handshake reply, finishing `Client` initialization. The two are bound and ready to mingle.
+The `Parent` begins communication with the `Child`. A handshake is sent, the `Child` responds with
+a handshake reply, finishing `Parent` initialization. The two are bound and ready to mingle.
 
 ***
 
@@ -36,12 +36,12 @@ const pm = new Postmate.Handshake({
   url: 'http://child.com/index.html' // Page to load, must have postmate.js. This will also be the origin used for communication.
 });
 
-// When client <-> host handshake is complete, data may be requested from the host
-pm.then(host => {
+// When parent <-> child handshake is complete, data may be requested from the child
+pm.then(child => {
 
   // Fetch the height property in child.html and set it to the iFrames height
-  host.get('height')
-    .then(height => host.frame.style.height = `${height}px`);
+  child.get('height')
+    .then(height => child.frame.style.height = `${height}px`);
 });
 ```
 
@@ -57,17 +57,17 @@ new Postmate({
 
 The Handshake and ready sequence is as follows:
 ```
-Client: Loading frame
-Client: Sending handshake
-Host: Received handshake from Client
-Host: Sending handshake reply to Client
-Registering consumer: host
-Host awaiting messages...
-Host Page Ready
-Client: Received handshake reply from Host
-Registering consumer: client
-Client awaiting messages...
-Client Page Ready
+Parent: Loading frame
+Parent: Sending handshake
+Child: Received handshake from Parent
+Child: Sending handshake reply to Parent
+Registering consumer: child
+Child awaiting messages...
+Child Page Ready
+Parent: Received handshake reply from Child
+Registering consumer: parent
+Parent awaiting messages...
+Parent Page Ready
 ```
 
 ## API

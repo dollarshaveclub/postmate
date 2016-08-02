@@ -15,16 +15,16 @@
     <script type="text/javascript" src="../build/postmate.min.js"></script>
     <script type="text/javascript">
       var container = document.getElementById('target');
-      var url = 'http://localhost:4001/sandbox/host.html';
+      var url = 'http://localhost:4001/sandbox/child.html';
 
       new Postmate.Handshake({
         container,
         url
       })
-        .then(host => {
-          console.log("Client Page Ready");
-          host.get('height', {foo:'bar'})
-            .then(height => host.frame.style.height = `${height}px`);
+        .then(child => {
+          console.log("Parent Page Ready");
+          child.get('height', {foo:'bar'})
+            .then(height => child.frame.style.height = `${height}px`);
         });
     </script>
   </body>
