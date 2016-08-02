@@ -34,30 +34,31 @@ You can download the compiled javascript directly [here](/build/postmate.min.js)
 ## Installing
 ```bash
 $ npm i postmate # Install via NPM
+# or
 $ bower i postmate # Install via Bower
 ```
 
 ## Glossary
 * **`Parent`**: The **top level** page that will embed an `iFrame`, creating a `Child`
-* **`Child`**: The **bottom level** page that will expose information to the `Parent`, the page that is embedded within an `iFrame`
+* **`Child`**: The **bottom level** page that exposes information to the `Parent`. This is the `iFrame`s `src`
 * **`Consumer API`**: The object that the `Parent` _and_ `Child` exposes to their respective environments
 
 ## Usage
 The `Parent` begins communication with the `Child`. A handshake is sent, the `Child` responds with
-a handshake reply, finishing `Parent` initialization. The two are bound and ready to mingle.
+a handshake reply, finishing `Parent` initialization. The two are bound and ready to communicate.
 
 ***
 
 **parent.com**
 ```javascript
 // Kick off the handshake with the iFrame
-const pm = new Postmate.Handshake({
+const handshake = new Postmate.Handshake({
   container: document.getElementById('some-div'), // Element to inject frame into
-  url: 'http://child.com/index.html' // Page to load, must have postmate.js. This will also be the origin used for communication.
+  url: 'http://child.com/page.html' // Page to load, must have postmate.js. This will also be the origin used for communication.
 });
 
 // When parent <-> child handshake is complete, data may be requested from the child
-pm.then(child => {
+handshake.then(child => {
 
   // Fetch the height property in child.html and set it to the iFrames height
   child.get('height')
@@ -65,7 +66,7 @@ pm.then(child => {
 });
 ```
 
-**child.com/index.html**
+**child.com/page.html**
 ```javascript
 new Postmate({
   // Expose your gettable properties. May be functions, promises, or regular values
@@ -76,7 +77,73 @@ new Postmate({
 ***
 
 ## API
+> ## `Postmate.Handshake(options)`
+```javascript
+new Postmate.Handshake({
+  container: document.body,
+  url: 'http://child.com/'
+});
+```
+> This is authored in the parent page. Initiates a handshake with the child. Returns a Promise that signals when communication is ready to begin.
 
+**Returns**: Promise(child)
+
+#### Properties
+
+Name | Type | Description
+:--- | :--- | :---
+**`container`** | `DOM Node Element` | _An element to append the iFrame to_
+**`url`** | `String` | _A URL to load in the iFrame. The origin of this URL will also be used for securing message transport_
+
+**`container`**: DOM Node Element
+**`url`**: String, the URL
+
+***
+
+> ## `Postmate(context)`
+
+
+> ```javascript
+new Postmate({
+  // Functions
+  height: (metadata) => document.height || document.body.offsetHeight,
+>  
+  // Properties
+  foo: "bar",
+>  
+  // Promises
+  data: fetch(new Request('data.json'))
+});
+```
+> This is authored in the child page. Attaches Message Event listeners for a handshake. Once handshake is accepted, an event listener is bound to receive requests from the Parent.
+
+#### Parameters
+
+Name | Type | Description
+:--- | :--- | :---
+**`context`** | `Object` | _An object of gettable properties to expose to the parent. Value types may be anything accepted in `postMessage`. In addition, functions may be defined and can accept optional metadata arguments about the request. Promises may also be set as values or returned from functions._
+
+***
+
+> ## `child.get(key, data)`
+```javascript
+new Postmate.Handshake({
+  container: document.body,
+  url: 'http://child.com/'
+}).then(child => {
+  child.get('something', { foo: 'bar' }).then(value => console.log(value));
+});
+```
+> Requests a property by key name from the childs `context` object.
+
+**Returns**: Promise(value)
+
+#### Parameters
+
+Name | Type | Description
+:--- | :--- | :---
+**`key`** | `String` | _The string property to lookup in the childs `context`_
+**`data`** | `Object` | _Any serializable value or data that you wish to pass to the child for additional information_
 
 ***
 
