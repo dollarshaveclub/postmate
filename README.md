@@ -1,5 +1,5 @@
 <a href="https://github.com/dollarshaveclub/postmate">
-  <img src="https://dollarshaveclub.github.io/postmate/assets/postmate.svg">
+  <img src="https://dollarshaveclub.github.io/postmate/assets/postmate-v3.svg">
 </a>
 
 > A powerful, simple, promise-based `postMessage` library.
