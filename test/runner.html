@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Mocha Tests</title>
+        <link rel="stylesheet" href="../node_modules/mocha/mocha.css">
+        <meta charset="utf-8">
+    </head>
+    <body>
+        <div id="mocha"></div>
+        <script src="../node_modules/mocha/mocha.js"></script>
+        <script src="../node_modules/chai/chai.js"></script>
+        <script src="../node_modules/rsvp/dist/rsvp.min.js"></script>
+        <script>window.Promise = RSVP.Promise;</script>
+        <script>mocha.setup('bdd')</script>
+        <script src="../build/postmate.min.js"></script>
+        <script src="./test.js"></script>
+        <div id="frame"></div>
+        <script>
+          if (window.mochaPhantomJS) { mochaPhantomJS.run(); }
+          else { mocha.run(); }
+        </script>
+    </body>
+</html>

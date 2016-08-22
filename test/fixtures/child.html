@@ -3,7 +3,7 @@
   <head>
     <style>
       body {
-        height: 1000px;
+        height: 1234px;
         padding: 0;
         margin: 0;
       }
@@ -13,7 +13,7 @@
     <script type="text/javascript" src="../build/postmate.min.js"></script>
     <script type="text/javascript">
       let height = function () { return document.height || document.body.offsetHeight; };
-      new Postmate({ height }).then(() => console.log('Child Page Ready'));
+      new Postmate({ height });
     </script>
   </body>
 </html>
