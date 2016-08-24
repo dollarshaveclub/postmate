@@ -13,7 +13,8 @@
     <script type="text/javascript" src="../build/postmate.min.js"></script>
     <script type="text/javascript">
       let height = function () { return document.height || document.body.offsetHeight; };
-      new Postmate({ height });
+      let dynamicResponse = function (opts) { return opts.uid + 1; }
+      new Postmate({ height, dynamicResponse });
     </script>
   </body>
 </html>
