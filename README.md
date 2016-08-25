@@ -4,11 +4,8 @@
 
 > A powerful, simple, promise-based `postMessage` library.
 
-[![npm][npm-image]][npm-url]
+[![npm](https://img.shields.io/npm/v/postmate.svg)][https://www.npmjs.com/package/postmate]
 [![Build Status](https://travis-ci.org/dollarshaveclub/postmate.svg?branch=master)](https://travis-ci.org/dollarshaveclub/postmate)
-
-[npm-image]: https://img.shields.io/npm/v/postmate.svg?style=flat-square
-[npm-url]: https://www.npmjs.com/package/postmate
 
 _Postmate_ is a promise-based API built on `postMessage`. It allows a parent page
 to speak with a child `iFrame` across origins with minimal effort.

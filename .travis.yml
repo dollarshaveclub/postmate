@@ -7,15 +7,17 @@ sudo: false
 
 before_install:
   - npm config set spin false
-  - npm install -g bower gulp
+  - npm install -g bower
   - bower --version
   - npm install phantomjs-prebuilt
   - phantomjs --version
-  - npm run build
 
 install:
   - npm install
   - bower install
+
+after_install:
+  - npm run build
 
 script:
   - npm test
