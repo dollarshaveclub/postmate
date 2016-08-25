@@ -11,7 +11,7 @@ describe('postmate', function() {
   });
 
   it('should complete a handshake', function (done) {
-    new Postmate.Handshake({
+    new Postmate({
       container: document.getElementById('frame'),
       url: 'http://localhost:9000/child.html'
     }).then(function (child) {
@@ -19,8 +19,8 @@ describe('postmate', function() {
     });
   });
 
-  it('should fetch properties from the child', function (done) {
-    new Postmate.Handshake({
+  it('should fetch values from the child model', function (done) {
+    new Postmate({
       container: document.getElementById('frame'),
       url: 'http://localhost:9000/child.html'
     }).then(function (child) {
@@ -32,19 +32,44 @@ describe('postmate', function() {
     });
   });
 
-  it('should fetch properties with additional data from the child', function (done) {
+  it('should fetch values from the child model from defaults set by the parent', function (done) {
 
     var uid = new Date().getTime();
 
-    new Postmate.Handshake({
+    new Postmate({
       container: document.getElementById('frame'),
-      url: 'http://localhost:9000/child.html'
+      url: 'http://localhost:9000/child.html',
+      model: {
+        uid: uid
+      }
     }).then(function (child) {
-      child.get('dynamicResponse', { uid: uid }).then(function (response) {
-        expect(response).to.equal(++uid);
+      child.get('uid').then(function (response) {
+        expect(response).to.equal(uid);
         done();
       })
       .catch(err => done(err));
+    });
+  });
+
+  it('should listen and receive events from the child', function (done) {
+
+    var uid = new Date().getTime();
+
+    new Postmate({
+      container: document.getElementById('frame'),
+      url: 'http://localhost:9000/child.html',
+      model: {
+        uid: uid
+      }
+    }).then(function (child) {
+
+      child.on('validated', function (response) {
+        expect(response).to.equal(uid);
+        done();
+      });
+
+      // This is abnormal, but we are going to trigger the event 1 second after this function is called
+      child.get('doValidate').then(v => console.log(v)).catch(err => done(err));
     });
   });
 });

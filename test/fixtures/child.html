@@ -12,9 +12,17 @@
   <body>
     <script type="text/javascript" src="../build/postmate.min.js"></script>
     <script type="text/javascript">
+      let parentAPI = null;
       let height = function () { return document.height || document.body.offsetHeight; };
-      let dynamicResponse = function (opts) { return opts.uid + 1; }
-      new Postmate({ height, dynamicResponse });
+      let foo = "foo";
+      let doValidate = function () {
+        setTimeout(function () {
+          parentAPI.emit('validated', parentAPI.model.uid);
+        }, 1000);
+      };
+
+      new Postmate.Model({ height, foo, doValidate })
+      .then(parent => { parentAPI = parent; });
     </script>
   </body>
 </html>

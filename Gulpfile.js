@@ -26,7 +26,7 @@ const banner = ['/**',
 
 gulp.task('build', () =>
   rollup({
-    entry: './lib/postmate.js',
+    entry: './src/postmate.js',
     format: 'umd',
     moduleName: 'Postmate',
     plugins: [
@@ -72,5 +72,5 @@ gulp.task('test', ['parent-test-server', 'child-test-server'], () => {
   return stream;
 });
 
-gulp.task('watch', () => gulp.watch('./lib/postmate.js', ['build']));
+gulp.task('watch', () => gulp.watch('./src/postmate.js', ['build']));
 gulp.task('build-watch', ['build', 'watch']);
