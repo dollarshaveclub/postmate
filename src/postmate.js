@@ -69,7 +69,7 @@ class ParentAPI {
     log('Parent: Registering API');
     log('Parent: Awaiting messages...');
 
-    parent.addEventListener('message', e => {
+    this.listener = e => {
       const { data, name } = (((e || {}).data || {}).value || {});
       if (e.data.postmate === 'emit') {
         log(`Parent: Received event emission: ${name}`);
@@ -77,7 +77,9 @@ class ParentAPI {
           this.events[name].call(this, data);
         }
       }
-    }, false);
+    };
+
+    this.parent.addEventListener('message', this.listener, false);
     log('Parent: Awaiting event emissions from Child');
   }
 
@@ -107,6 +109,11 @@ class ParentAPI {
 
   on(eventName, callback) {
     this.events[eventName] = callback;
+  }
+
+  destroy() {
+    log('Parent: Destroying Postmate instance');
+    window.removeEventListener('message', this.listener, false);
   }
 }
 
