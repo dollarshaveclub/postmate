@@ -5,6 +5,7 @@
 > A powerful, simple, promise-based `postMessage` library.
 
 [![npm][npm-image]][npm-url]
+[![Build Status](https://travis-ci.org/dollarshaveclub/postmate.svg?branch=master)](https://travis-ci.org/dollarshaveclub/postmate)
 
 [npm-image]: https://img.shields.io/npm/v/postmate.svg?style=flat-square
 [npm-url]: https://www.npmjs.com/package/postmate
