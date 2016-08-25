@@ -18,7 +18,7 @@
       let doValidate = function () {
         setTimeout(function () {
           parentAPI.emit('validated', parentAPI.model.uid);
-        }, 1000);
+        }, 200);
       };
 
       new Postmate.Model({ height, foo, doValidate })

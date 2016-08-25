@@ -56,23 +56,38 @@ function resolveValue(model, property) {
  * Composes an API to be used by the parent
  * @param {Object} info Information on the consumer
  */
-function ParentAPI(info) {
-  const { parent, frame, child, childOrigin } = info;
-  log('Registering Child API');
-  log('Parent awaiting messages...');
+class ParentAPI {
 
-  // List of properties being observed
-  this.events = {};
-  this.listening = false;
+  constructor(info) {
+    this.parent = info.parent;
+    this.frame = info.frame;
+    this.child = info.child;
+    this.childOrigin = info.childOrigin;
 
-  this.frame = frame;
-  this.get = property => {
+    this.events = {};
+
+    log('Parent: Registering API');
+    log('Parent: Awaiting messages...');
+
+    parent.addEventListener('message', e => {
+      const { data, name } = (((e || {}).data || {}).value || {});
+      if (e.data.postmate === 'emit') {
+        log(`Parent: Received event emission: ${name}`);
+        if (name in this.events) {
+          this.events[name].call(this, data);
+        }
+      }
+    }, false);
+    log('Parent: Awaiting event emissions from Child');
+  }
+
+  get(property) {
     return new Promise(resolve => {
       // Extract data from response and kill listeners
       const uid = new Date().getTime();
       const transact = e => {
         if (e.data.uid === uid && e.data.postmate === 'reply') {
-          parent.removeEventListener('message', transact, false);
+          this.parent.removeEventListener('message', transact, false);
           resolve(e.data.value);
         }
       };
@@ -81,75 +96,63 @@ function ParentAPI(info) {
       parent.addEventListener('message', transact, false);
 
       // Then ask child for information
-      child.postMessage({
+      this.child.postMessage({
         postmate: 'request',
         type: MESSAGE_TYPE,
         property,
         uid,
-      }, childOrigin);
+      }, this.childOrigin);
     });
-  };
+  }
 
-  this.on = (eventName, callback) => {
-    const listen = e => {
-      const { data, name } = (((e || {}).data || {}).value || {});
-      if (e.data.postmate === 'emit') {
-        log(`Parent: Received event emission: ${name}`);
-        if (name in this.events) {
-          this.events[name].call(this, data);
-        }
-      }
-    };
-
-    // Attach event listener
-    if (!this.listening) {
-      log('Parent: Awaiting event emissions from Child');
-      parent.addEventListener('message', listen, false);
-      this.listening = true;
-    }
-
+  on(eventName, callback) {
     this.events[eventName] = callback;
-  };
+  }
 }
 
 /**
  * Composes an API to be used by the child
  * @param {Object} info Information on the consumer
  */
-function ChildAPI(info) {
-  const { model, parent, parentOrigin, child } = info;
+class ChildAPI {
 
-  log('Registering Parent API');
-  log('Child awaiting messages...');
+  constructor(info) {
+    this.model = info.model;
+    this.parent = info.parent;
+    this.parentOrigin = info.parentOrigin;
+    this.child = info.child;
 
-  child.addEventListener('message', e => {
-    if (!sanitize(e, parentOrigin)) return;
-    log('Child received message', e.data);
+    log('Child: Registering API');
+    log('Child: Awaiting messages...');
 
-    const { property, uid } = e.data;
-    // Reply to Parent
-    resolveValue(model, property)
-      .then(value => e.source.postMessage({
-        property,
-        postmate: 'reply',
-        type: MESSAGE_TYPE,
-        uid,
-        value,
-      }, e.origin));
-  });
+    this.child.addEventListener('message', e => {
+      if (!sanitize(e, this.parentOrigin)) return;
+      log('Child: Received request', e.data);
 
-  this.model = model;
-  this.emit = (name, data) => {
-    console.log("EMITTING EVENT", name, data);
-    parent.postMessage({
+      const { property, uid } = e.data;
+      // Reply to Parent
+      resolveValue(this.model, property)
+        .then(value => e.source.postMessage({
+          property,
+          postmate: 'reply',
+          type: MESSAGE_TYPE,
+          uid,
+          value,
+        }, e.origin));
+    });
+  }
+
+  emit(name, data) {
+    log(`Child: Emitting Event "${name}"`, data);
+    this.parent.postMessage({
       postmate: 'emit',
       type: MESSAGE_TYPE,
       value: {
         name,
         data,
       },
-    }, parentOrigin);
-  };
+    }, this.parentOrigin);
+  }
 }
 
 /**
