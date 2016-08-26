@@ -19,7 +19,7 @@ You can download the compiled javascript directly [here](/build/postmate.min.js)
 * [Glossary](#glossary)
 * [Usage](#usage)
 * [API](#api)
-* [Further Reading](#further-reading)
+* [Troubleshooting](#troubleshooting)
 * [License](#license)
 
 ***
@@ -181,8 +181,6 @@ new Postmate(options).then(child => {
 #### The child does not respond to communication from the Parent
 > _Make sure that you have initialized Postmate.Model in your child page._
 
-#### Something eslint-disable-line
-> _This is another thing_
 
 ## License
 MIT
