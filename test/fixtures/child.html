@@ -10,19 +10,24 @@
     </style>
   </head>
   <body>
+
+    <script>
+      window.onerror = function () { console.log.apply(console, arguments); };
+    </script>
+    <script src="../node_modules/rsvp/dist/rsvp.min.js"></script>
+    <script>window.Promise = RSVP.Promise;</script>
     <script type="text/javascript" src="../build/postmate.min.js"></script>
     <script type="text/javascript">
-      let parentAPI = null;
-      let height = function () { return document.height || document.body.offsetHeight; };
-      let foo = "foo";
-      let doValidate = function () {
+      var parentAPI = null;
+      var height = function () { return document.height || document.body.offsetHeight; };
+      var foo = "foo";
+      var doValidate = function () {
         setTimeout(function () {
           parentAPI.emit('validated', parentAPI.model.uid);
         }, 200);
       };
-
-      new Postmate.Model({ height, foo, doValidate })
-      .then(parent => { parentAPI = parent; });
+      new Postmate.Model({ height: height, foo: foo, doValidate: doValidate })
+      .then(function (parent) { parentAPI = parent; });
     </script>
   </body>
 </html>

@@ -30,7 +30,7 @@ describe('postmate', function() {
         child.destroy();
         done();
       })
-      .catch(err => done(err));
+      .catch(function(err) { done(err); });
     });
   });
 
@@ -50,7 +50,7 @@ describe('postmate', function() {
         child.destroy();
         done();
       })
-      .catch(err => done(err));
+      .catch(function(err) { done(err); });
     });
   });
 
@@ -73,7 +73,7 @@ describe('postmate', function() {
       });
 
       // This is abnormal, but we are going to trigger the event 1 second after this function is called
-      child.get('doValidate').catch(err => done(err));
+      child.get('doValidate').catch(function(err) { done(err); });
     });
   });
 });

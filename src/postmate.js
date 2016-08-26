@@ -10,6 +10,7 @@ const MESSAGE_TYPE = 'application/x-postmate-v1+json';
  * @param  {Object} ...args Rest Arguments
  */
 function log(...args) {
+  if (!Postmate.debug) return;
   console.log(...args); // eslint-disable-line no-console
 }
 
@@ -82,6 +83,7 @@ class ParentAPI {
     this.parent.addEventListener('message', this.listener, false);
     log('Parent: Awaiting event emissions from Child');
   }
+
 
   get(property) {
     return new Promise(resolve => {

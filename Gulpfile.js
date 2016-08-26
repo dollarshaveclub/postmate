@@ -56,6 +56,7 @@ gulp.task('parent-test-server', done => {
     )
     .listen(9000, done);
 });
+
 gulp.task('child-test-server', done => {
   childServer = http.createServer(
       connect()
@@ -65,11 +66,20 @@ gulp.task('child-test-server', done => {
     .listen(9001, done);
 });
 
-gulp.task('test', ['parent-test-server', 'child-test-server'], () => {
-  const stream = mochaPhantomJS();
+gulp.task('do-test', () => {
+  const stream = mochaPhantomJS({
+    phantomjs: {
+      useColors: true,
+    },
+  });
   stream.write({ path: 'http://localhost:9001/test/runner.html' });
   stream.end();
   return stream;
+});
+
+gulp.task('test', ['parent-test-server', 'child-test-server', 'do-test'], () => {
+  parentServer.close();
+  childServer.close();
 });
 
 gulp.task('watch', () => gulp.watch('./src/postmate.js', ['build']));

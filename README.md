@@ -39,11 +39,13 @@ $ bower i postmate # Install via Bower
 ## Glossary
 * **`Parent`**: The **top level** page that will embed an `iFrame`, creating a `Child`
 * **`Child`**: The **bottom level** page that exposes information to the `Parent`. This is the `iFrame`s `src`
-* **`Consumer API`**: The object that the `Parent` _and_ `Child` exposes to their respective environments
+* **`Model`**: The object that the `Child` exposes to the `Parent`
 
 ## Usage
-The `Parent` begins communication with the `Child`. A handshake is sent, the `Child` responds with
+1. The `Parent` begins communication with the `Child`. A handshake is sent, the `Child` responds with
 a handshake reply, finishing `Parent` initialization. The two are bound and ready to communicate.
+
+2. The `Parent` fetches values from the `Child` by property name. The `Child` can emit messages to the parent.
 
 ***
 
@@ -75,6 +77,11 @@ new Postmate.Model({
 ***
 
 ## API
+
+> ## `Postmate.debug`
+> Logs actions in the respective environment, Parent or Child.
+`Boolean` | _Set to `true` to enable logging_ | `undefined`
+
 > ## `Postmate(options)`
 ```javascript
 new Postmate({
