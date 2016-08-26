@@ -116,6 +116,7 @@ class ParentAPI {
   destroy() {
     log('Parent: Destroying Postmate instance');
     window.removeEventListener('message', this.listener, false);
+    this.frame.parentNode.removeChild(this.frame);
   }
 }
 

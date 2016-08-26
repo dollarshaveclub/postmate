@@ -4,8 +4,10 @@
 
 > A powerful, simple, promise-based `postMessage` library.
 
-[![npm](https://img.shields.io/npm/v/postmate.svg)][https://www.npmjs.com/package/postmate]
+[![npm][npm-image]][npm-url]
 [![Build Status](https://travis-ci.org/dollarshaveclub/postmate.svg?branch=master)](https://travis-ci.org/dollarshaveclub/postmate)
+[npm-image]: https://img.shields.io/npm/v/postmate.svg
+[npm-url]: https://www.npmjs.com/package/postmate
 
 _Postmate_ is a promise-based API built on `postMessage`. It allows a parent page
 to speak with a child `iFrame` across origins with minimal effort.
@@ -79,8 +81,10 @@ new Postmate.Model({
 ## API
 
 > ## `Postmate.debug`
-> Logs actions in the respective environment, Parent or Child.
-`Boolean` | _Set to `true` to enable logging_ | `undefined`
+
+Name | Type | Description | Default
+:--- | :--- | :--- | :---
+`debug` | `Boolean` | _Set to `true` to enable logging of additional information_ | `undefined`
 
 > ## `Postmate(options)`
 ```javascript
@@ -127,7 +131,7 @@ Name | Type | Description
 
 ***
 
-> ## `child.get(key, data)`
+> ## `child.get(key)`
 ```javascript
 new Postmate({
   container: document.body,
@@ -144,8 +148,20 @@ new Postmate({
 
 Name | Type | Description
 :--- | :--- | :---
-**`key`** | `String` | _The string property to lookup in the childs `context`_
-**`data`** | `Object` | _Any serializable value or data that you wish to pass to the child for additional information_
+**`key`** | `String` | _The string property to lookup in the childs `model`_
+
+***
+
+> ## `child.destroy()`
+```javascript
+new Postmate({
+  container: document.body,
+  url: 'http://child.com/'
+}).then(child => child.destroy());
+```
+> Removes the `iFrame` element and destroys any `message` event listeners
+
+**Returns**: Promise(value)
 
 ***
 
@@ -158,24 +174,15 @@ new Postmate(options).then(child => {
 ```
 > The iFrame Element that the parent is communicating with
 
-## Further Reading
+## Troubleshooting
+#### I've enabled logging but the parent or child is not logging everything.
+> _Postmate.debug needs to be set in both the parent and child for each of them to log their respective information_
 
-### Handshake and Initialization Flow
+#### The child does not respond to communication from the Parent
+> _Make sure that you have initialized Postmate.Model in your child page._
 
-The Handshake and ready sequence is as follows:
-```
-Parent: Loading frame
-Parent: Sending handshake
-Child: Received handshake from Parent
-Child: Sending handshake reply to Parent
-Registering consumer: child
-Child awaiting messages...
-Child Page Ready
-Parent: Received handshake reply from Child
-Registering consumer: parent
-Parent awaiting messages...
-Parent Page Ready
-```
+#### Something eslint-disable-line
+> _This is another thing_
 
 ## License
 MIT
