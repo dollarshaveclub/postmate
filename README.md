@@ -223,7 +223,7 @@ new Postmate(options).then(child => {
 > _By default, all `message` events received by any (parent) page can come from any (child) location. This means that the `Parent` must always enforce security within its message event, ensuring that the `child` (origin) is who we expect them to be, that the message is a response from an original request, and that our message is valid. The handshake routine solves this by savind the identities of the child and parent and ensuring that no changes are made to either._
 
 #### How are messages validated?
-> _The origin of the request, the message type, the postMessage mime-type, and in some cases the message response, are all verified against the original data made when the handshake was completed. _
+> _The origin of the request, the message type, the postMessage mime-type, and in some cases the message response, are all verified against the original data made when the handshake was completed._
 
 ## License
 MIT
