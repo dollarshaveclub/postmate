@@ -12,8 +12,8 @@ const serveStatic = require('serve-static');
 const source = require('vinyl-source-stream');
 const uglify = require('rollup-plugin-uglify');
 
-var parentServer
-var childServer;
+var parentServer; // eslint-disable-line no-var
+var childServer; // eslint-disable-line no-var
 
 const pkg = require('./package.json');
 const banner = ['/**',
