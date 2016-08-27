@@ -2,11 +2,13 @@
 const babel = require('rollup-plugin-babel');
 const connect = require('connect');
 const eslint = require('gulp-eslint');
+const fs = require('fs');
 const gulp = require('gulp');
 const header = require('gulp-header');
 const http = require('http');
 const minify = require('uglify-js').minify;
 const mochaPhantomJS = require('gulp-mocha-phantomjs');
+const path = require('path');
 const rollup = require('rollup-stream');
 const serveStatic = require('serve-static');
 const source = require('vinyl-source-stream');
@@ -20,11 +22,11 @@ const banner = ['/**',
   ' * <%= pkg.name %> - <%= pkg.description %>',
   ' * @version v<%= pkg.version %>',
   ' * @link <%= pkg.homepage %>',
-  ' * @license <%= pkg.license %>',
-  ' */',
+  ' * @author <%= pkg.author %>',
+  ' * @license <%= pkg.license %> */',
   ''].join('\n');
 
-gulp.task('build', () =>
+gulp.task('do-build', () =>
   rollup({
     entry: './src/postmate.js',
     format: 'umd',
@@ -40,6 +42,15 @@ gulp.task('build', () =>
     .pipe(header(banner, { pkg }))
     .pipe(gulp.dest('./build'))
 );
+
+gulp.task('update-readme', () => {
+  const readme = path.join(__dirname, 'README.md');
+  const data = fs.readFileSync(readme, 'utf-8');
+  const distSize = fs.statSync(path.join(__dirname, 'build', 'postmate.min.js')).size;
+  const updated = data.replace(/<span class="size">(.*?)<\/span>/,
+    `<span class="size">\`${(distSize / 1024).toFixed(1)}kb\`</span>`);
+  fs.writeFileSync(readme, updated);
+});
 
 gulp.task('lint', () =>
   gulp.src(['**/*.js', '!node_modules/**', '!build/**'])
@@ -83,4 +94,5 @@ gulp.task('test', ['parent-test-server', 'child-test-server', 'do-test'], () => 
 });
 
 gulp.task('watch', () => gulp.watch('./src/postmate.js', ['build']));
+gulp.task('build', ['do-build', 'update-readme']);
 gulp.task('build-watch', ['build', 'watch']);

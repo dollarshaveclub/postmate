@@ -1,6 +1,6 @@
 {
   "name": "postmate",
-  "version": "0.3.0",
+  "version": "1.0.0",
   "description": "A powerful, simple, promise-based postMessage library",
   "main": "src/postmate.js",
   "devDependencies": {
@@ -25,7 +25,7 @@
   },
   "scripts": {
     "test": "gulp test",
-    "build": "gulp build",
+    "build": "gulp build && gulp update-readme",
     "build-watch": "gulp build-watch",
     "lint": "gulp lint",
     "postpublish": "PACKAGE_VERSION=$(cat package.json | grep version | head -1 | awk -F: '{ print $2 }' | sed 's/[\",]//g' | tr -d '[[:space:]]') && git tag $PACKAGE_VERSION && git push origin --tags"

@@ -30,7 +30,7 @@ You can download the compiled javascript directly [here](/build/postmate.min.js)
 * Child exposes a `model`, an object literal whose values consist of serializable values, functions and promises, that the parent can retrieve.
 * Child can emit events that the parent can listen to.
 * *Zero* dependencies. Provide your own polyfill or abstraction for the `Promise` API if needed
-* Lightweight, weighing in at ~ `3kb`
+* Lightweight, weighing in at ~ <span class="size">`4.6kb`</span>
 
 ## Installing
 Postmate can be installed via NPM or Bower.
