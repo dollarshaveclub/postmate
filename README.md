@@ -49,7 +49,7 @@ $ bower i postmate # Install via Bower
 * **`Parent`**: The **top level** page that will embed an `iFrame`, creating a `Child`
 * **`Child`**: The **bottom level** page loaded within the `iFrame`
 * **`Model`**: The object that the `Child` exposes to the `Parent`
-* **Handshake**: The process in which the parent frame identifies itself to the child, and vice versa. When a handshake is complete, the two contexts have bound their event listeners and identified one another.
+* **`Handshake`**: The process in which the parent frame identifies itself to the child, and vice versa. When a handshake is complete, the two contexts have bound their event listeners and identified one another.
 
 ## Usage
 1. The `Parent` begins communication with the `Child`. A handshake is sent, the `Child` responds with a handshake reply, finishing `Parent`/`Child` initialization. The two are bound and ready to communicate securely.
@@ -164,7 +164,7 @@ new Postmate.Model({
 #### Parameters
 
 Name | Type | Description | Default
-:--- | :--- | :---
+:--- | :--- | :--- | :---
 **`model`** | `Object` | _An object of gettable properties to expose to the parent. Value types may be anything accepted in `postMessage`. Promises may also be set as values or returned from functions._ | `{}`
 
 ***
