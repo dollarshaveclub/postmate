@@ -50,7 +50,7 @@ function sanitize(message, allowedOrigin) {
 function resolveValue(model, property) {
   const unwrappedContext = typeof model[property] === 'function'
     ? model[property]() : model[property];
-  return Promise.resolve(unwrappedContext);
+  return Postmate.Promise.resolve(unwrappedContext);
 }
 
 /**
@@ -86,7 +86,7 @@ class ParentAPI {
 
 
   get(property) {
-    return new Promise(resolve => {
+    return new Postmate.Promise(resolve => {
       // Extract data from response and kill listeners
       const uid = new Date().getTime();
       const transact = e => {
@@ -171,6 +171,9 @@ class ChildAPI {
  */
 class Postmate {
 
+  static debug = false;
+  static Promise = window.Promise;
+
   /**
    * Sets options related to the Parent
    * @param {Object} userOptions The element to inject the frame into, and the url
@@ -195,7 +198,7 @@ class Postmate {
    */
   sendHandshake(url) {
     const childOrigin = resolveOrigin(url);
-    return new Promise((resolve, reject) => {
+    return new Postmate.Promise((resolve, reject) => {
       const reply = e => {
         if (!sanitize(e, childOrigin)) return false;
         if (e.data.postmate === 'handshake-reply') {
@@ -251,7 +254,7 @@ Postmate.Model = class Model {
    * @return {Promise} Resolves an object that exposes an API for the Child
    */
   sendHandshakeReply() {
-    return new Promise((resolve, reject) => {
+    return new Postmate.Promise((resolve, reject) => {
       const shake = e => {
         if (e.data.postmate === 'handshake') {
           log('Child: Received handshake from Parent');

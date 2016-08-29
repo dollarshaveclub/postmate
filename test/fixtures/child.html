@@ -15,8 +15,8 @@
       window.onerror = function () { console.log.apply(console, arguments); };
     </script>
     <script src="../node_modules/rsvp/dist/rsvp.min.js"></script>
-    <script>window.Promise = RSVP.Promise;</script>
     <script type="text/javascript" src="../build/postmate.min.js"></script>
+    <script>Postmate.Promise = RSVP.Promise;</script>
     <script type="text/javascript">
       var parentAPI = null;
       var height = function () { return document.height || document.body.offsetHeight; };

@@ -30,7 +30,7 @@ You can download the compiled javascript directly [here](/build/postmate.min.js)
 * Child exposes a `model`, an object literal whose values consist of serializable values, functions and promises, that the parent can retrieve.
 * Child can emit events that the parent can listen to.
 * *Zero* dependencies. Provide your own polyfill or abstraction for the `Promise` API if needed
-* Lightweight, weighing in at ~ <span class="size">`4.6kb`</span>
+* Lightweight, weighing in at ~ <span class="size">`4.7kb`</span>
 
 ## Installing
 Postmate can be installed via NPM or Bower.
@@ -49,10 +49,10 @@ $ bower i postmate # Install via Bower
 * **`Parent`**: The **top level** page that will embed an `iFrame`, creating a `Child`
 * **`Child`**: The **bottom level** page loaded within the `iFrame`
 * **`Model`**: The object that the `Child` exposes to the `Parent`
+* **Handshake**: The process in which the parent frame identifies itself to the child, and vice versa. When a handshake is complete, the two contexts have bound their event listeners and identified one another.
 
 ## Usage
-1. The `Parent` begins communication with the `Child`. A handshake is sent, the `Child` responds with
-a handshake reply, finishing `Parent`/`Child` initialization. The two are bound and ready to communicate securely.
+1. The `Parent` begins communication with the `Child`. A handshake is sent, the `Child` responds with a handshake reply, finishing `Parent`/`Child` initialization. The two are bound and ready to communicate securely.
 
 2. The `Parent` fetches values from the `Child` by property name. The `Child` can emit messages to the parent.
 
@@ -104,7 +104,19 @@ new Postmate(options);
 
 Name | Type | Description | Default
 :--- | :--- | :--- | :---
-`debug` | `Boolean` | _Set to `true` to enable logging of additional information_ | `undefined`
+`debug` | `Boolean` | _Set to `true` to enable logging of additional information_ | `false`
+
+***
+> ## `Postmate.Promise`
+```javascript
+// parent.com or child.com
+Postmate.Promise = RSVP.Promise;
+new Postmate(options);
+```
+
+Name | Type | Description | Default
+:--- | :--- | :--- | :---
+`Promise` | `Object` | _Replace the Promise API that Postmate uses_ | `window.Promise`
 
 ***
 
