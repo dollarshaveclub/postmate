@@ -6,6 +6,8 @@
 
 [![npm][npm-image]][npm-url]
 [![Build Status](https://travis-ci.org/dollarshaveclub/postmate.svg?branch=master)](https://travis-ci.org/dollarshaveclub/postmate)
+[![Share](https://img.shields.io/twitter/url/http/shields.io.svg?style=social)](https://twitter.com/home?status=Postmate%3A%20A%20powerful,%20simple,%20promise-based%20postMessage%20library%20https%3A//github.com/dollarshaveclub/postmate%20via%20%40DSCEngineering%20%40javascript)
+
 [npm-image]: https://img.shields.io/npm/v/postmate.svg
 [npm-url]: https://www.npmjs.com/package/postmate
 
