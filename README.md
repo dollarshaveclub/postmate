@@ -216,7 +216,11 @@ new Postmate(options).then(child => {
 ```
 > The iFrame Element that the parent is communicating with
 
-## Troubleshooting
+## Troubleshooting/FAQ
+
+### General
+#### Why use Promises for an evented API?
+> _Promises provide a clear API for fetching data. Using an evented approach often starts backwards. if the parent wants to know the childs height, the child would need to alert the parent, whereas with Postmate, the Parent will request that information from the child in a synchronous-like manner. The child can emit events to the parent as well, for those other use-cases that still need to be handled._
 
 ### Silent Parent/Child
 #### I've enabled logging but the parent or child is not logging everything.
