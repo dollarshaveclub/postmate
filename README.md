@@ -11,8 +11,7 @@
 [npm-image]: https://img.shields.io/npm/v/postmate.svg
 [npm-url]: https://www.npmjs.com/package/postmate
 
-_Postmate_ is a promise-based API built on `postMessage`. It allows a parent page
-to speak with a child `iFrame` across origins with minimal effort.
+_Postmate_ is a promise-based API built on `postMessage`. It allows a parent page to speak with a child `iFrame` across origins with minimal effort.
 
 You can download the compiled javascript directly [here](/build/postmate.min.js)
 
@@ -27,12 +26,12 @@ You can download the compiled javascript directly [here](/build/postmate.min.js)
 ***
 
 ## Features
-* Promise based API for elegant and simple communication
-* Secure. Two way parent <-> child handshake, with message validation.
-* Child exposes a `model`, an object literal whose values consist of serializable values, functions and promises, that the parent can retrieve.
-* Child can emit events that the parent can listen to.
-* *Zero* dependencies. Provide your own polyfill or abstraction for the `Promise` API if needed
-* Lightweight, weighing in at ~ <span class="size">`4.7kb`</span>
+* Promise-based API for elegant and simple communication.
+* Secure two-way parent <-> child handshake, with message validation.
+* Child exposes a retrievable `model` object that the parent can access.
+* Child emits events that the parent can listen to.
+* *Zero* dependencies. Provide your own polyfill or abstraction for the `Promise` API if needed.
+* Lightweight, weighing in at ~ <span class="size">`4.7kb`</span>.
 
 ## Installing
 Postmate can be installed via NPM or Bower.
@@ -48,10 +47,10 @@ $ bower i postmate # Install via Bower
 ```
 
 ## Glossary
-* **`Parent`**: The **top level** page that will embed an `iFrame`, creating a `Child`
-* **`Child`**: The **bottom level** page loaded within the `iFrame`
-* **`Model`**: The object that the `Child` exposes to the `Parent`
-* **`Handshake`**: The process in which the parent frame identifies itself to the child, and vice versa. When a handshake is complete, the two contexts have bound their event listeners and identified one another.
+* **`Parent`**: The **top level** page that will embed an `iFrame`, creating a `Child`.
+* **`Child`**: The **bottom level** page loaded within the `iFrame`.
+* **`Model`**: The object that the `Child` exposes to the `Parent`.
+* **`Handshake`**: The process by which the parent frame identifies itself to the child, and vice versa. When a handshake is complete, the two contexts have bound their event listeners and identified one another.
 
 ## Usage
 1. The `Parent` begins communication with the `Child`. A handshake is sent, the `Child` responds with a handshake reply, finishing `Parent`/`Child` initialization. The two are bound and ready to communicate securely.
@@ -59,6 +58,7 @@ $ bower i postmate # Install via Bower
 2. The `Parent` fetches values from the `Child` by property name. The `Child` can emit messages to the parent.
 
 ***
+### Example
 
 **parent.com**
 ```javascript
@@ -140,8 +140,8 @@ new Postmate({
 Name | Type | Description | Default
 :--- | :--- | :--- | :---
 **`container`** (optional) | `DOM Node Element` | _An element to append the iFrame to_ | `document.body`
-**`url`** | `String` | _A URL to load in the iFrame. The origin of this URL will also be used for securing message transport_
-**`model`** | `Object` | _An object literal to represent the default values of the Childs model_
+**`url`** | `String` | _A URL to load in the iFrame. The origin of this URL will also be used for securing message transport | none_
+**`model`** | `Object` | _An object literal to represent the default values of the Childs model_ | none
 
 ***
 
@@ -153,10 +153,10 @@ Name | Type | Description | Default
 new Postmate.Model({
   // Serializable values
   foo: "bar",
->  
+>
   // Functions
   height: () => document.height || document.body.offsetHeight,
->  
+>
   // Promises
   data: fetch(new Request('data.json'))
 });
