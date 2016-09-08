@@ -38,12 +38,12 @@ Postmate can be installed via NPM or Bower.
 
 **NPM**
 ```bash
-$ npm i postmate # Install via NPM
+$ npm i postmate --save # Install via NPM
 ```
 
 **bower**
 ```bash
-$ bower i postmate # Install via Bower
+$ bower i postmate --save # Install via Bower
 ```
 
 ## Glossary
