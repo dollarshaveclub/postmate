@@ -97,7 +97,7 @@ class ParentAPI {
       };
 
       // Prepare for response from Child...
-      parent.addEventListener('message', transact, false);
+      this.parent.addEventListener('message', transact, false);
 
       // Then ask child for information
       this.child.postMessage({
