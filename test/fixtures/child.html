@@ -26,7 +26,17 @@
           parentAPI.emit('validated', parentAPI.model.uid);
         }, 200);
       };
-      new Postmate.Model({ height: height, foo: foo, doValidate: doValidate })
+      var a = function () {
+        return 'a';
+      };
+      var b = function () {
+        return new RSVP.Promise(function (resolve, reject) {
+          setTimeout(function () {
+            resolve('b');
+          }, 300);
+        });
+      };
+      new Postmate.Model({ height: height, foo: foo, doValidate: doValidate, a: a, b: b })
       .then(function (parent) { parentAPI = parent; });
     </script>
   </body>

@@ -72,4 +72,20 @@ describe('postmate', function() {
       child.get('doValidate').catch(function(err) { done(err); });
     });
   });
+
+  it('should resolve multiple promises', function (done) {
+    new Postmate({
+      container: document.getElementById('frame'),
+      url: 'http://localhost:9000/child.html'
+    }).then(function (child) {
+      RSVP.hash({
+        a: child.get('a'),
+        b: child.get('b')
+      }).then(function (data) {
+        expect(data.a).to.equal('a');
+        expect(data.b).to.equal('b');
+        done();
+      });
+    });
+  });
 });
