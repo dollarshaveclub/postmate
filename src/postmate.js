@@ -6,6 +6,20 @@
 const MESSAGE_TYPE = 'application/x-postmate-v1+json';
 
 /**
+ * A unique message ID that is used to ensure responses are sent to the correct requests
+ * @type {Number}
+ */
+let _messageId = 0;
+
+/**
+ * Increments and returns a message ID
+ * @return {Number} A unique ID for a message
+ */
+function messageId() {
+  return ++_messageId;
+}
+
+/**
  * Postmate logging function that enables/disables via config
  * @param  {Object} ...args Rest Arguments
  */
@@ -88,7 +102,7 @@ class ParentAPI {
   get(property) {
     return new Postmate.Promise(resolve => {
       // Extract data from response and kill listeners
-      const uid = new Date().getTime();
+      const uid = messageId();
       const transact = e => {
         if (e.data.uid === uid && e.data.postmate === 'reply') {
           this.parent.removeEventListener('message', transact, false);

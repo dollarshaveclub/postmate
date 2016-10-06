@@ -85,7 +85,7 @@ describe('postmate', function() {
         expect(data.a).to.equal('a');
         expect(data.b).to.equal('b');
         done();
-      });
+      }).catch(function(err) { done(err); });
     });
   });
 });
