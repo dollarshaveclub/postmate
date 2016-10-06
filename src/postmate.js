@@ -186,7 +186,7 @@ class ChildAPI {
 class Postmate {
 
   static debug = false;
-  static Promise = window.Promise;
+  static Promise = Promise;
 
   /**
    * Sets options related to the Parent
