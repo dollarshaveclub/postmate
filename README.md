@@ -261,7 +261,7 @@ new Postmate(options).then(child => {
 > _Postmate (by design) is restrictive in its modes of communication. This enforces a simplistic approach: The parent is responsible for logic contained within the parent, and the child is responsible for logic contained within the child. If you need to retrieve information from parent -> child, consider setting a default `model` in the parent that the child may extend._
 
 #### I want to send messages to the child from the parent
-> _The parent cannot send messages. However, a simple request to a function in the child via `child.get` is possible, and can solve most scenarios, but is advised against._
+> _This is specifically what the `call` function is for._
 
 ### Security
 #### What is the Handshake and why do I need one?
