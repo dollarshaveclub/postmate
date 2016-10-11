@@ -50,6 +50,13 @@ function sanitize(message, allowedOrigin) {
   if (typeof message.data !== 'object') return false;
   if (!('postmate' in message.data)) return false;
   if (message.data.type !== MESSAGE_TYPE) return false;
+  if (!{
+    'handshake-reply': 1,
+    call: 1,
+    emit: 1,
+    reply: 1,
+    request: 1
+  }[message.data.postmate]) return false;
   return true;
 }
 
@@ -123,6 +130,16 @@ class ParentAPI {
     });
   }
 
+  call(property, data) {
+    // Send information to the child
+    this.child.postMessage({
+      postmate: 'call',
+      type: MESSAGE_TYPE,
+      property,
+      data,
+    }, this.childOrigin);
+  }
+
   on(eventName, callback) {
     this.events[eventName] = callback;
   }
@@ -153,7 +170,15 @@ class ChildAPI {
       if (!sanitize(e, this.parentOrigin)) return;
       log('Child: Received request', e.data);
 
-      const { property, uid } = e.data;
+      const { property, uid, data } = e.data;
+
+      if (e.data.postmate === 'call') {
+        if (property in this.model && typeof this.model[property] === 'function') {
+          this.model[property].call(this, data);
+        }
+        return;
+      }
+
       // Reply to Parent
       resolveValue(this.model, property)
         .then(value => e.source.postMessage({
@@ -186,7 +211,7 @@ class ChildAPI {
 class Postmate {
 
   static debug = false;
-  static Promise = Promise;
+  static Promise = window ? window.Promise : Promise;
 
   /**
    * Sets options related to the Parent
