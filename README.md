@@ -30,8 +30,9 @@ You can download the compiled javascript directly [here](/build/postmate.min.js)
 * Secure two-way parent <-> child handshake, with message validation.
 * Child exposes a retrievable `model` object that the parent can access.
 * Child emits events that the parent can listen to.
+* Parent can `call` functions within a `child`
 * *Zero* dependencies. Provide your own polyfill or abstraction for the `Promise` API if needed.
-* Lightweight, weighing in at ~ <span class="size">`4.7kb`</span>.
+* Lightweight, weighing in at ~ <span class="size">`5.1kb`</span>.
 
 ## Installing
 Postmate can be installed via NPM or Bower.
@@ -55,7 +56,7 @@ $ bower i postmate --save # Install via Bower
 ## Usage
 1. The `Parent` begins communication with the `Child`. A handshake is sent, the `Child` responds with a handshake reply, finishing `Parent`/`Child` initialization. The two are bound and ready to communicate securely.
 
-2. The `Parent` fetches values from the `Child` by property name. The `Child` can emit messages to the parent.
+2. The `Parent` fetches values from the `Child` by property name. The `Child` can emit messages to the parent. The `Parent` can `call` functions in the `Child` `Model`.
 
 ***
 ### Example
@@ -190,6 +191,29 @@ new Postmate({
 Name | Type | Description
 :--- | :--- | :---
 **`key`** | `String` (required) | _The string property to lookup in the childs `model`_
+
+***
+
+> ## `child.call(key, data)`
+```javascript
+// parent.com
+new Postmate({
+  container: document.body,
+  url: 'http://child.com/'
+}).then(child => {
+  child.call('sayHi', 'Hello, World!');
+});
+```
+> Calls the function `sayHi` in the `Child` `Model` with the parameter `Hello, World!`
+
+**Returns**: `undefined`
+
+#### Parameters
+
+Name | Type | Description
+:--- | :--- | :---
+**`key`** | `String` (required) | _The string property to lookup in the childs `model`_
+**`data`** | `Mixed` | _The optional data to send to the child function_
 
 ***
 
