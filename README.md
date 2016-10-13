@@ -23,7 +23,7 @@ You can download the compiled javascript directly [here](/build/postmate.min.js)
 * [Glossary](#glossary)
 * [Usage](#usage)
 * [API](#api)
-* [Troubleshooting](#troubleshooting)
+* [Troubleshooting/FAQ](#troubleshootingfaq)
 * [License](#license)
 
 ***
