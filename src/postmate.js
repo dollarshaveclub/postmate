@@ -224,7 +224,7 @@ class Postmate {
     this.parent = window;
     this.frame = document.createElement('iframe');
     (container || document.body).appendChild(this.frame);
-    this.child = this.frame.contentWindow;
+    this.child = this.frame.contentWindow || this.frame.contentDocument.parentWindow;
     this.model = model || {};
 
     return this.sendHandshake(url);
@@ -255,7 +255,9 @@ class Postmate {
       };
 
       this.parent.addEventListener('message', reply, false);
-      this.frame.onload = () => {
+
+
+      const loaded = () => {
         log('Parent: Sending handshake');
         this.child.postMessage({
           postmate: 'handshake',
@@ -263,6 +265,12 @@ class Postmate {
           model: this.model,
         }, childOrigin);
       };
+
+      if (this.frame.attachEvent){
+        this.frame.attachEvent("onload", loaded);
+      } else {
+        this.frame.onload = loaded;
+      }
 
       log('Parent: Loading frame');
       this.frame.src = url;
