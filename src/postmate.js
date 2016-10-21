@@ -211,7 +211,15 @@ class ChildAPI {
 class Postmate {
 
   static debug = false;
-  static Promise = window ? window.Promise : Promise;
+
+  // Internet Explorer craps itself
+  static Promise = (() => {
+    try {
+      return window ? window.Promise : Promise;
+    } catch(e) {
+      return null;
+    }
+  })();
 
   /**
    * Sets options related to the Parent
