@@ -10,7 +10,10 @@
     "postMessage",
     "secure",
     "handshake",
-    "promise"
+    "promise",
+		"iframes",
+		"pci",
+		"security"
   ],
   "license": "MIT",
   "ignore": [
