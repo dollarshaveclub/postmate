@@ -36,7 +36,7 @@ function log(...args) {
 function resolveOrigin(url) {
   const a = document.createElement('a');
   a.href = url;
-  return a.origin;
+  return a.origin || `${a.protocol}//${a.hostname}`;
 }
 
 /**
