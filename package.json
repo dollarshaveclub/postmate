@@ -3,7 +3,7 @@
   "version": "1.1.2",
   "description": "A powerful, simple, promise-based postMessage library",
   "main": "build/postmate.min.js",
-	"files": [
+  "files": [
     "build"
   ],
   "devDependencies": {
@@ -43,9 +43,9 @@
     "secure",
     "handshake",
     "promise",
-		"iframes",
-		"pci",
-		"security"
+    "iframes",
+    "pci",
+    "security"
   ],
   "author": "Jacob Kelley <jakie8@gmail.com>",
   "license": "MIT",

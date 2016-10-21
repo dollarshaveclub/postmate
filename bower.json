@@ -11,9 +11,9 @@
     "secure",
     "handshake",
     "promise",
-		"iframes",
-		"pci",
-		"security"
+    "iframes",
+    "pci",
+    "security"
   ],
   "license": "MIT",
   "ignore": [
