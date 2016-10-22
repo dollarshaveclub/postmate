@@ -1,18 +1,16 @@
 
-const babel = require('rollup-plugin-babel');
+const babel = require('gulp-babel');
+const uglify = require('gulp-uglify');
+const rename = require('gulp-rename');
 const connect = require('connect');
 const eslint = require('gulp-eslint');
 const fs = require('fs');
 const gulp = require('gulp');
 const header = require('gulp-header');
 const http = require('http');
-const minify = require('uglify-js').minify;
 const mochaPhantomJS = require('gulp-mocha-phantomjs');
 const path = require('path');
-const rollup = require('rollup-stream');
 const serveStatic = require('serve-static');
-const source = require('vinyl-source-stream');
-const uglify = require('rollup-plugin-uglify');
 
 var parentServer; // eslint-disable-line no-var
 var childServer; // eslint-disable-line no-var
@@ -27,23 +25,15 @@ const banner = ['/**',
   ''].join('\n');
 
 gulp.task('do-build', () =>
-  rollup({
-    entry: './src/postmate.js',
-    format: 'umd',
-    moduleName: 'Postmate',
-    plugins: [
-      babel({
-        exclude: 'node_modules/**',
-      }),
-      uglify({}, minify),
-    ],
-  })
-    .pipe(source('postmate.min.js'))
+  gulp.src('./src/postmate.js')
+    .pipe(babel())
+    .pipe(uglify())
     .pipe(header(banner, { pkg }))
+    .pipe(rename('postmate.min.js'))
     .pipe(gulp.dest('./build'))
 );
 
-gulp.task('update-readme', () => {
+gulp.task('update-readme', ['do-build'], () => {
   const readme = path.join(__dirname, 'README.md');
   const data = fs.readFileSync(readme, 'utf-8');
   const distSize = fs.statSync(path.join(__dirname, 'build', 'postmate.min.js')).size;
