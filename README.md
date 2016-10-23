@@ -35,7 +35,7 @@ You can download the compiled javascript directly [here](/build/postmate.min.js)
 * Child emits events that the parent can listen to.
 * Parent can `call` functions within a `child`
 * *Zero* dependencies. Provide your own polyfill or abstraction for the `Promise` API if needed.
-* Lightweight, weighing in at ~ <span class="size">`5.2kb`</span>.
+* Lightweight, weighing in at ~ <span class="size">`4.1kb`</span>.
 
 ## Installing
 Postmate can be installed via NPM or Bower.

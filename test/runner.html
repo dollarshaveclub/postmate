@@ -12,7 +12,7 @@
         <script>mocha.setup('bdd')</script>
         <script src="../node_modules/rsvp/dist/rsvp.min.js"></script>
         <script src="../build/postmate.min.js"></script>
-        <script>Postmate.Promise = RSVP.Promise;</script>
+        <script>console.log(Postmate.setPromise);Postmate.setPromise(RSVP.Promise);</script>
         <script src="./test.js"></script>
         <div id="frame"></div>
         <script>
