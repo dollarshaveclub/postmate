@@ -264,14 +264,13 @@ class Postmate {
 
       this.parent.addEventListener('message', reply, false);
 
-
       const loaded = () => {
-        log('Parent: Sending handshake');
-        this.child.postMessage({
+        log('Parent: Sending handshake', { childOrigin });
+        setTimeout(() => this.child.postMessage({
           postmate: 'handshake',
           type: MESSAGE_TYPE,
           model: this.model,
-        }, childOrigin);
+        }, childOrigin), 0);
       };
 
       if (this.frame.attachEvent){
@@ -280,7 +279,7 @@ class Postmate {
         this.frame.onload = loaded;
       }
 
-      log('Parent: Loading frame');
+      log('Parent: Loading frame', { url });
       this.frame.src = url;
     });
   }
