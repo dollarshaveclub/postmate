@@ -42,6 +42,10 @@ Postmate can be installed via NPM or Bower.
 
 **NPM**
 ```bash
+$ yarn add postmate # Install via Yarn
+```
+
+```bash
 $ npm i postmate --save # Install via NPM
 ```
 
