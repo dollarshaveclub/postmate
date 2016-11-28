@@ -5,6 +5,7 @@
   "main": "build/postmate.min.js",
   "jsnext:main": "src/postmate.js",
   "files": [
+    "src",
     "build"
   ],
   "devDependencies": {
