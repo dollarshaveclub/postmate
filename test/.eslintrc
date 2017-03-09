@@ -1,0 +1,10 @@
+{
+  "env": {
+    "mocha": true
+  },
+  "globals": {
+    "RSVP": true,
+    "chai": true,
+    "Postmate": true
+  }
+}

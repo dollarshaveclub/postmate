@@ -1,107 +1,114 @@
-var expect = chai.expect;
+const expect = chai.expect;
 
-describe('postmate', function() {
-
-  it('should pass', function() {
+describe('postmate', () => {
+  it('should pass', () => {
     expect(1).to.equal(1);
   });
 
-  it('should complete a handshake', function (done) {
+  it('should complete a handshake', (done) => {
     new Postmate({
       container: document.getElementById('frame'),
-      url: 'http://localhost:9000/child.html'
-    }).then(function (child) {
+      url: 'http://localhost:9000/child.html',
+    }).then((child) => {
       child.destroy();
       done();
     });
   });
 
-  it('should fetch values from the child model', function (done) {
+  it('should fetch values from the child model', (done) => {
     new Postmate({
       container: document.getElementById('frame'),
-      url: 'http://localhost:9000/child.html'
-    }).then(function (child) {
-      child.get('height').then(function (height) {
+      url: 'http://localhost:9000/child.html',
+    }).then((child) => {
+      child.get('height').then((height) => {
         expect(height).to.equal(1234);
         child.destroy();
         done();
       })
-      .catch(function(err) { done(err); });
+      .catch((err) => { done(err); });
     });
   });
 
-  it('should call a function in the child model', function (done) {
+  it('should call a function in the child model', (done) => {
     new Postmate({
       container: document.getElementById('frame'),
-      url: 'http://localhost:9000/child.html'
-    }).then(function (child) {
-      var uid = Math.random();
+      url: 'http://localhost:9000/child.html',
+    }).then((child) => {
+      const uid = Math.random();
       child.call('setRandomId', uid);
-      child.get('getRandomId').then(function (randomId) {
+      child.get('getRandomId').then((randomId) => {
         expect(randomId).to.equal(uid);
         child.destroy();
         done();
       })
-      .catch(function(err) { done(err); });
+      .catch((err) => { done(err); });
     });
   });
 
-  it('should fetch values from the child model from defaults set by the parent', function (done) {
+  it('should call a function in the child model and return its value', () => new Postmate({
+    container: document.getElementById('frame'),
+    url: 'http://localhost:9000/child.html',
+  }).then((child) => {
+    const uid = Math.random();
+    return child.call('identity', uid).then((value) => {
+      expect(value).to.equal(uid);
+    });
+  }));
 
-    var uid = new Date().getTime();
+  it('should fetch values from the child model from defaults set by the parent', (done) => {
+    const uid = new Date().getTime();
 
     new Postmate({
       container: document.getElementById('frame'),
       url: 'http://localhost:9000/child.html',
       model: {
-        uid: uid
-      }
-    }).then(function (child) {
-      child.get('uid').then(function (response) {
+        uid,
+      },
+    }).then((child) => {
+      child.get('uid').then((response) => {
         expect(response).to.equal(uid);
         child.destroy();
         done();
       })
-      .catch(function(err) { done(err); });
+      .catch((err) => { done(err); });
     });
   });
 
-  it('should listen and receive events from the child', function (done) {
-
-    var uid = new Date().getTime();
+  it('should listen and receive events from the child', (done) => {
+    const uid = new Date().getTime();
 
     new Postmate({
       container: document.getElementById('frame'),
       url: 'http://localhost:9000/child.html',
       model: {
-        uid: uid
-      }
-    }).then(function (child) {
-
-      child.on('validated', function (response) {
+        uid,
+      },
+    }).then((child) => {
+      child.on('validated', (response) => {
         expect(response).to.equal(uid);
         child.destroy();
         done();
       });
 
-      // This is abnormal, but we are going to trigger the event 1 second after this function is called
-      child.get('doValidate').catch(function(err) { done(err); });
+      // This is abnormal, but we are going to trigger the event
+      // 1 second after this function is called
+      child.get('doValidate').catch((err) => { done(err); });
     });
   });
 
-  it('should resolve multiple promises', function (done) {
+  it('should resolve multiple promises', (done) => {
     new Postmate({
       container: document.getElementById('frame'),
-      url: 'http://localhost:9000/child.html'
-    }).then(function (child) {
+      url: 'http://localhost:9000/child.html',
+    }).then((child) => {
       RSVP.hash({
         a: child.get('a'),
-        b: child.get('b')
-      }).then(function (data) {
+        b: child.get('b'),
+      }).then((data) => {
         expect(data.a).to.equal('a');
         expect(data.b).to.equal('b');
         done();
-      }).catch(function(err) { done(err); });
+      }).catch((err) => { done(err); });
     });
   });
 });
