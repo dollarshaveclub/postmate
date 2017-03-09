@@ -1,7 +1,16 @@
 {
+  "parser": "babel-eslint",
   "extends": [
     "airbnb/base"
   ],
   "globals": {
+  },
+  "env": {
+    "browser": true
+  },
+  "rules": {
+    "no-underscore-dangle": 0,
+    "no-plusplus": 0,
+    "no-use-before-define": 0,
   }
 }
