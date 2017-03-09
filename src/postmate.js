@@ -131,13 +131,23 @@ class ParentAPI {
   }
 
   call(property, data) {
-    // Send information to the child
-    this.child.postMessage({
-      postmate: 'call',
-      type: MESSAGE_TYPE,
-      property,
-      data,
-    }, this.childOrigin);
+    return new Postmate.Promise((resolve) => {
+      const uid = messageId();
+      const transact = (e) => {
+        if (e.data.uid === uid && e.data.postmate === 'reply') {
+          this.parent.removeEventListener('message', transact, false);
+          resolve(e.data.value);
+        }
+      };
+
+      // Send information to the child
+      this.child.postMessage({
+        postmate: 'call',
+        type: MESSAGE_TYPE,
+        property,
+        data,
+      }, this.childOrigin);
+    });
   }
 
   on(eventName, callback) {
@@ -174,7 +184,14 @@ class ChildAPI {
 
       if (e.data.postmate === 'call') {
         if (property in this.model && typeof this.model[property] === 'function') {
-          this.model[property].call(this, data);
+          const value = this.model[property].call(this, data);
+          e.source.postMessage({
+            property,
+            postmate: 'reply',
+            type: MESSAGE_TYPE,
+            uid,
+            value,
+          }, e.origin);
         }
         return;
       }
