@@ -46,6 +46,18 @@ describe('postmate', function() {
     });
   });
 
+  it('should call a function in the child model and return its value', function () {
+    return new Postmate({
+      container: document.getElementById('frame'),
+      url: 'http://localhost:9000/child.html'
+    }).then(function (child) {
+      var uid = Math.random();
+      return child.call('identity', uid).then(function (value) {
+        expect(value).to.equal(uid);
+      });
+    });
+  });
+
   it('should fetch values from the child model from defaults set by the parent', function (done) {
 
     var uid = new Date().getTime();
