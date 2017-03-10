@@ -55,7 +55,7 @@ function sanitize(message, allowedOrigin) {
     call: 1,
     emit: 1,
     reply: 1,
-    request: 1
+    request: 1,
   }[message.data.postmate]) return false;
   return true;
 }
@@ -91,7 +91,7 @@ class ParentAPI {
     log('Parent: Registering API');
     log('Parent: Awaiting messages...');
 
-    this.listener = e => {
+    this.listener = (e) => {
       const { data, name } = (((e || {}).data || {}).value || {});
       if (e.data.postmate === 'emit') {
         log(`Parent: Received event emission: ${name}`);
@@ -107,10 +107,10 @@ class ParentAPI {
 
 
   get(property) {
-    return new Postmate.Promise(resolve => {
+    return new Postmate.Promise((resolve) => {
       // Extract data from response and kill listeners
       const uid = messageId();
-      const transact = e => {
+      const transact = (e) => {
         if (e.data.uid === uid && e.data.postmate === 'reply') {
           this.parent.removeEventListener('message', transact, false);
           resolve(e.data.value);
@@ -131,13 +131,26 @@ class ParentAPI {
   }
 
   call(property, data) {
-    // Send information to the child
-    this.child.postMessage({
-      postmate: 'call',
-      type: MESSAGE_TYPE,
-      property,
-      data,
-    }, this.childOrigin);
+    return new Postmate.Promise((resolve) => {
+      const uid = messageId();
+      const transact = (e) => {
+        if (e.data.uid === uid && e.data.postmate === 'reply') {
+          this.parent.removeEventListener('message', transact, false);
+          resolve(e.data.value);
+        }
+      };
+
+      this.parent.addEventListener('message', transact, false);
+
+      // Send information to the child
+      this.child.postMessage({
+        postmate: 'call',
+        type: MESSAGE_TYPE,
+        property,
+        data,
+        uid,
+      }, this.childOrigin);
+    });
   }
 
   on(eventName, callback) {
@@ -166,7 +179,7 @@ class ChildAPI {
     log('Child: Registering API');
     log('Child: Awaiting messages...');
 
-    this.child.addEventListener('message', e => {
+    this.child.addEventListener('message', (e) => {
       if (!sanitize(e, this.parentOrigin)) return;
       log('Child: Received request', e.data);
 
@@ -174,7 +187,16 @@ class ChildAPI {
 
       if (e.data.postmate === 'call') {
         if (property in this.model && typeof this.model[property] === 'function') {
-          this.model[property].call(this, data);
+          new Postmate.Promise(resolve => resolve(this.model[property].call(this, data)))
+          .then((value) => {
+            e.source.postMessage({
+              property,
+              postmate: 'reply',
+              type: MESSAGE_TYPE,
+              uid,
+              value,
+            }, e.origin);
+          });
         }
         return;
       }
@@ -216,7 +238,7 @@ class Postmate {
   static Promise = (() => {
     try {
       return window ? window.Promise : Promise;
-    } catch(e) {
+    } catch (e) {
       return null;
     }
   })();
@@ -246,7 +268,7 @@ class Postmate {
   sendHandshake(url) {
     const childOrigin = resolveOrigin(url);
     return new Postmate.Promise((resolve, reject) => {
-      const reply = e => {
+      const reply = (e) => {
         if (!sanitize(e, childOrigin)) return false;
         if (e.data.postmate === 'handshake-reply') {
           log('Parent: Received handshake reply from Child');
@@ -273,8 +295,8 @@ class Postmate {
         }, childOrigin), 0);
       };
 
-      if (this.frame.attachEvent){
-        this.frame.attachEvent("onload", loaded);
+      if (this.frame.attachEvent) {
+        this.frame.attachEvent('onload', loaded);
       } else {
         this.frame.onload = loaded;
       }
@@ -309,7 +331,7 @@ Postmate.Model = class Model {
    */
   sendHandshakeReply() {
     return new Postmate.Promise((resolve, reject) => {
-      const shake = e => {
+      const shake = (e) => {
         if (e.data.postmate === 'handshake') {
           log('Child: Received handshake from Parent');
           this.child.removeEventListener('message', shake, false);
@@ -323,12 +345,9 @@ Postmate.Model = class Model {
           // Extend model with the one provided by the parent
           const defaults = e.data.model;
           if (defaults) {
-            const keys = Object.keys(defaults);
-            for (let i = 0; i < keys.length; i++) {
-              if (defaults.hasOwnProperty(keys[i])) {
-                this.model[keys[i]] = defaults[keys[i]];
-              }
-            }
+            Object.keys(defaults).forEach((key) => {
+              this.model[key] = defaults[key];
+            });
             log('Child: Inherited and extended model from Parent');
           }
 

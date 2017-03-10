@@ -37,6 +37,7 @@
       };
       var setRandomId = function (data) { randomId = data; };
       var getRandomId = function () { return randomId; };
+      var identity = function (x) { return x; };
 
       new Postmate.Model({
         height: height,
@@ -45,7 +46,8 @@
         a: a,
         b: b,
         setRandomId: setRandomId,
-        getRandomId: getRandomId
+        getRandomId: getRandomId,
+        identity: identity
       })
       .then(function (parent) { parentAPI = parent; });
     </script>
