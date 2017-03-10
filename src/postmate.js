@@ -140,12 +140,15 @@ class ParentAPI {
         }
       };
 
+      this.parent.addEventListener('message', transact, false);
+
       // Send information to the child
       this.child.postMessage({
         postmate: 'call',
         type: MESSAGE_TYPE,
         property,
         data,
+        uid,
       }, this.childOrigin);
     });
   }
@@ -184,14 +187,16 @@ class ChildAPI {
 
       if (e.data.postmate === 'call') {
         if (property in this.model && typeof this.model[property] === 'function') {
-          const value = this.model[property].call(this, data);
-          e.source.postMessage({
-            property,
-            postmate: 'reply',
-            type: MESSAGE_TYPE,
-            uid,
-            value,
-          }, e.origin);
+          new Postmate.Promise(resolve => resolve(this.model[property].call(this, data)))
+          .then((value) => {
+            e.source.postMessage({
+              property,
+              postmate: 'reply',
+              type: MESSAGE_TYPE,
+              uid,
+              value,
+            }, e.origin);
+          });
         }
         return;
       }
@@ -340,7 +345,9 @@ Postmate.Model = class Model {
           // Extend model with the one provided by the parent
           const defaults = e.data.model;
           if (defaults) {
-            Object.assign(this.model, defaults);
+            Object.keys(defaults).forEach((key) => {
+              this.model[key] = defaults[key];
+            });
             log('Child: Inherited and extended model from Parent');
           }
 
