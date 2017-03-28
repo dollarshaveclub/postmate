@@ -245,10 +245,13 @@ class Postmate {
    */
   sendHandshake(url) {
     const childOrigin = resolveOrigin(url);
+    let attempt = 0;
+    let responseInterval;
     return new Postmate.Promise((resolve, reject) => {
       const reply = e => {
         if (!sanitize(e, childOrigin)) return false;
         if (e.data.postmate === 'handshake-reply') {
+          clearInterval(responseInterval);
           log('Parent: Received handshake reply from Child');
           this.parent.removeEventListener('message', reply, false);
           this.childOrigin = e.origin;
@@ -264,13 +267,19 @@ class Postmate {
 
       this.parent.addEventListener('message', reply, false);
 
-      const loaded = () => {
-        log('Parent: Sending handshake', { childOrigin });
-        setTimeout(() => this.child.postMessage({
+      const doSend = () => {
+        attempt++;
+        log(`Parent: Sending handshake attempt ${attempt}`, { childOrigin });
+        this.child.postMessage({
           postmate: 'handshake',
           type: MESSAGE_TYPE,
           model: this.model,
-        }, childOrigin), 0);
+        }, childOrigin);
+      };
+
+      const loaded = () => {
+        doSend();
+        responseInterval = setInterval(doSend, 500);
       };
 
       if (this.frame.attachEvent){
