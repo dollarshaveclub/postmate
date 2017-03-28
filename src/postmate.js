@@ -6,6 +6,12 @@
 const MESSAGE_TYPE = 'application/x-postmate-v1+json';
 
 /**
+ * The maximum number of attempts to send a handshake request to the parent
+ * @type {Number}
+ */
+const maxHandshakeRequests = 5;
+
+/**
  * A unique message ID that is used to ensure responses are sent to the correct requests
  * @type {Number}
  */
@@ -275,6 +281,10 @@ class Postmate {
           type: MESSAGE_TYPE,
           model: this.model,
         }, childOrigin);
+
+        if (attempt === maxHandshakeRequests) {
+          clearInterval(responseInterval);
+        }
       };
 
       const loaded = () => {
