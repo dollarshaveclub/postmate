@@ -1,4 +1,4 @@
 {
-  "presets": [ "es2015-rollup" ],
-  "plugins": ["transform-class-properties"]
+  "presets":  [ [ "es2015", { "modules": false } ] ],
+  "plugins": ["transform-class-properties", "external-helpers"]
 }
