@@ -6,6 +6,13 @@
 const MESSAGE_TYPE = 'application/x-postmate-v1+json';
 
 /**
+ * hasOwnProperty()
+ * @type {Function}
+ * @return {Boolean}
+ */
+const hasOwnProperty = Object.prototype.hasOwnProperty;
+
+/**
  * The maximum number of attempts to send a handshake request to the parent
  * @type {Number}
  */
@@ -61,7 +68,7 @@ function sanitize(message, allowedOrigin) {
     call: 1,
     emit: 1,
     reply: 1,
-    request: 1
+    request: 1,
   }[message.data.postmate]) return false;
   return true;
 }
@@ -97,7 +104,7 @@ class ParentAPI {
     log('Parent: Registering API');
     log('Parent: Awaiting messages...');
 
-    this.listener = e => {
+    this.listener = (e) => {
       const { data, name } = (((e || {}).data || {}).value || {});
       if (e.data.postmate === 'emit') {
         log(`Parent: Received event emission: ${name}`);
@@ -113,10 +120,10 @@ class ParentAPI {
 
 
   get(property) {
-    return new Postmate.Promise(resolve => {
+    return new Postmate.Promise((resolve) => {
       // Extract data from response and kill listeners
       const uid = messageId();
-      const transact = e => {
+      const transact = (e) => {
         if (e.data.uid === uid && e.data.postmate === 'reply') {
           this.parent.removeEventListener('message', transact, false);
           resolve(e.data.value);
@@ -172,7 +179,7 @@ class ChildAPI {
     log('Child: Registering API');
     log('Child: Awaiting messages...');
 
-    this.child.addEventListener('message', e => {
+    this.child.addEventListener('message', (e) => {
       if (!sanitize(e, this.parentOrigin)) return;
       log('Child: Received request', e.data);
 
@@ -222,7 +229,7 @@ class Postmate {
   static Promise = (() => {
     try {
       return window ? window.Promise : Promise;
-    } catch(e) {
+    } catch (e) {
       return null;
     }
   })();
@@ -254,7 +261,7 @@ class Postmate {
     let attempt = 0;
     let responseInterval;
     return new Postmate.Promise((resolve, reject) => {
-      const reply = e => {
+      const reply = (e) => {
         if (!sanitize(e, childOrigin)) return false;
         if (e.data.postmate === 'handshake-reply') {
           clearInterval(responseInterval);
@@ -292,8 +299,8 @@ class Postmate {
         responseInterval = setInterval(doSend, 500);
       };
 
-      if (this.frame.attachEvent){
-        this.frame.attachEvent("onload", loaded);
+      if (this.frame.attachEvent) {
+        this.frame.attachEvent('onload', loaded);
       } else {
         this.frame.onload = loaded;
       }
@@ -328,7 +335,7 @@ Postmate.Model = class Model {
    */
   sendHandshakeReply() {
     return new Postmate.Promise((resolve, reject) => {
-      const shake = e => {
+      const shake = (e) => {
         if (e.data.postmate === 'handshake') {
           log('Child: Received handshake from Parent');
           this.child.removeEventListener('message', shake, false);
@@ -344,7 +351,7 @@ Postmate.Model = class Model {
           if (defaults) {
             const keys = Object.keys(defaults);
             for (let i = 0; i < keys.length; i++) {
-              if (defaults.hasOwnProperty(keys[i])) {
+              if (hasOwnProperty.call(defaults, keys[i])) {
                 this.model[keys[i]] = defaults[keys[i]];
               }
             }

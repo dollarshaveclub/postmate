@@ -1,4 +1,5 @@
 
+/* eslint import/no-extraneous-dependencies: 0 */
 const babel = require('rollup-plugin-babel');
 const connect = require('connect');
 const eslint = require('gulp-eslint');
@@ -18,6 +19,7 @@ var parentServer; // eslint-disable-line no-var
 var childServer; // eslint-disable-line no-var
 
 const pkg = require('./package.json');
+
 const banner = ['/**',
   ' * <%= pkg.name %> - <%= pkg.description %>',
   ' * @version v<%= pkg.version %>',
@@ -59,7 +61,7 @@ gulp.task('lint', () =>
     .pipe(eslint.failAfterError())
 );
 
-gulp.task('parent-test-server', done => {
+gulp.task('parent-test-server', (done) => {
   parentServer = http.createServer(
       connect()
         .use(serveStatic('.'))
@@ -68,7 +70,7 @@ gulp.task('parent-test-server', done => {
     .listen(9000, done);
 });
 
-gulp.task('child-test-server', done => {
+gulp.task('child-test-server', (done) => {
   childServer = http.createServer(
       connect()
         .use(serveStatic('.'))
