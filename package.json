@@ -35,7 +35,7 @@
   "scripts": {
     "eslint": "eslint --fix .",
     "test": "gulp test",
-    "build": "gulp build && gulp update-readme",
+    "build": "gulp build",
     "build-watch": "gulp build-watch",
     "lint": "gulp lint",
     "postpublish": "git tag $npm_package_version && git push origin --tags"
