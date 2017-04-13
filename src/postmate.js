@@ -10,7 +10,7 @@ const MESSAGE_TYPE = 'application/x-postmate-v1+json';
  * @type {Function}
  * @return {Boolean}
  */
-const hasOwnProperty = {}.prototype.hasOwnProperty;
+const hasOwnProperty = Object.prototype.hasOwnProperty;
 
 /**
  * The maximum number of attempts to send a handshake request to the parent
