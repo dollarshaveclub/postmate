@@ -234,8 +234,6 @@ class ChildAPI {
  */
 class Postmate {
 
-  static debug = false;
-
   /**
    * Sets options related to the Parent
    * @param {Object} userOptions The element to inject the frame into, and the url
@@ -334,6 +332,8 @@ class Postmate {
 
   handleHandshakeData(data) {}
 }
+
+Postmate.debug = false;
 
 /**
  * The entry point of the Child
