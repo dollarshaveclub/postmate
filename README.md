@@ -73,7 +73,7 @@ $ bower i postmate --save # Install via Bower
 // Kick off the handshake with the iFrame
 const handshake = new Postmate({
   container: document.getElementById('some-div'), // Element to inject frame into
-  url: 'http://child.com/page.html' // Page to load, must have postmate.js. This will also be the origin used for communication.
+  url: 'http://child.com/page.html' postmate.spec.jstion.
 });
 
 // When parent <-> child handshake is complete, data may be requested from the child

@@ -1,4 +1,4 @@
 {
   "presets":  [ [ "es2015", { "modules": false } ] ],
-  "plugins": ["transform-class-properties", "external-helpers"]
+  "plugins": ["transform-class-properties", "es6-promise"]
 }
