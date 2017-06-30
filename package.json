@@ -1,12 +1,13 @@
 {
-  "name": "webpack-library-starter",
-  "version": "0.3.0",
-  "description": "Produce universal library with webpack and es6",
-  "main": "lib/library.js",
+  "name": "encrypted-postmate",
+  "version": "1.0.0",
+  "description": "A powerful, simple, promise-based, encrypted postMessage library",
+  "main": "build/encrypted-postmate.min.js",
+  "module": "src/encrypted-postmate.js",
   "scripts": {
     "build": "webpack --env build",
     "dev": "webpack --progress --colors --watch --env dev",
-    "test": "karma start karma.config.js --single-run",
+    "test": "karma start karma.config.js --single-run --env build",
     "test:watch": "karma start karma.config.js"
   },
   "devDependencies": {
@@ -20,12 +21,15 @@
     "babel-plugin-transform-class-properties": "^6.24.1",
     "babel-preset-es2015": "6.24.1",
     "chai": "^4.0.2",
+    "electron": "^1.6.11",
     "eslint": "^4.1.1",
     "eslint-loader": "^1.8.0",
     "karma": "^1.7.0",
+    "karma-electron-launcher": "^0.2.0",
     "karma-mocha": "^1.3.0",
     "karma-webpack": "^2.0.3",
     "mocha": "^3.4.2",
+    "optimize-js-plugin": "0.0.4",
     "webpack": "^3.0.0",
     "webpack-bundle-analyzer": "^2.8.2",
     "yargs": "^8.0.2"
@@ -43,8 +47,14 @@
     "umd",
     "commonjs"
   ],
-  "author": "Krasimir Tsonev",
-  "license": "MIT",
+  "author": {
+    "name": "Marat Dyatko",
+    "email": "i@marat.by"
+  },
+  "license": {
+    "type": "MIT",
+    "url": "https://opensource.org/licenses/MIT"
+  },
   "bugs": {
     "url": "https://github.com/krasimir/webpack-library-starter/issues"
   },

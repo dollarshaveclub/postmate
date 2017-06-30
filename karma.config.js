@@ -1,10 +1,11 @@
-const webpackConfig = require('./webpack.config');
+const webpackConfig = require('./webpack.config')[0];
 
 webpackConfig.entry = undefined;
 
 module.exports = function (config) {
   config.set({
     frameworks: ['mocha'],
+    browsers: ['Electron'],
 
     files: [
       {
