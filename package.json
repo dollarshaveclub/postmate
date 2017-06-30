@@ -56,9 +56,9 @@
     "url": "https://opensource.org/licenses/MIT"
   },
   "bugs": {
-    "url": "https://github.com/krasimir/webpack-library-starter/issues"
+    "url": "https://github.com/regily/encrypted-postmate/issues"
   },
-  "homepage": "https://github.com/krasimir/webpack-library-starter",
+  "homepage": "https://github.com/regily/encrypted-postmate",
   "dependencies": {
     "eccjs": "^0.3.1",
     "es6-promise": "^4.1.0"

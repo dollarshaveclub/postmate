@@ -1,18 +1,18 @@
-<a href="https://github.com/dollarshaveclub/postmate">
-  <img src="https://dollarshaveclub.github.io/postmate/assets/postmate-v3.svg">
+<a href="https://github.com/regily/encrypted-postmate">
+  <img src="https://regily.github.io/encrypted-postmate/assets/postmate-v3.svg">
 </a>
 
-> A powerful, simple, promise-based `postMessage` library.
+> A powerful, simple, promise-based, encrypted `postMessage` library.
 
 [![npm][npm-image]][npm-url]
 [![bower][bower-image]][bower-url]
-[![Build Status](https://travis-ci.org/dollarshaveclub/postmate.svg?branch=master)](https://travis-ci.org/dollarshaveclub/postmate)
-[![Share](https://img.shields.io/twitter/url/http/shields.io.svg?style=social)](https://twitter.com/home?status=Postmate%3A%20A%20powerful,%20simple,%20promise-based%20postMessage%20library%20https%3A//github.com/dollarshaveclub/postmate%20via%20%40DSCEngineering%20%40javascript)
+[![Build Status](https://travis-ci.org/regily/encrypted-postmate.svg?branch=master)](https://travis-ci.org/regily/encrypted-postmate)
+[![Share](https://img.shields.io/twitter/url/http/shields.io.svg?style=social)](https://twitter.com/home?status=Postmate%3A%20A%20powerful,%20simple,%20promise-based%20postMessage%20library%20https%3A//github.com/regily/encrypted-postmate%20via%20%40DSCEngineering%20%40javascript)
 
 [npm-image]: https://badge.fury.io/js/postmate.svg
 [npm-url]: https://www.npmjs.com/package/postmate
 [bower-image]: https://badge.fury.io/bo/postmate.svg
-[bower-url]: https://github.com/dollarshaveclub/postmate
+[bower-url]: https://github.com/regily/encrypted-postmate
 
 _Postmate_ is a promise-based API built on `postMessage`. It allows a parent page to speak with a child `iFrame` across origins with minimal effort.
 
@@ -38,20 +38,15 @@ You can download the compiled javascript directly [here](/build/postmate.min.js)
 * Lightweight, weighing in at ~ <span class="size">`5.3kb`</span>.
 
 ## Installing
-Postmate can be installed via NPM or Bower.
+EncryptedPostmate can be installed via NPM or Bower.
 
 **NPM**
 ```bash
-$ yarn add postmate # Install via Yarn
+$ yarn add encrypted-postmate # Install via Yarn
 ```
 
 ```bash
-$ npm i postmate --save # Install via NPM
-```
-
-**bower**
-```bash
-$ bower i postmate --save # Install via Bower
+$ npm i encrypted-postmate --save # Install via NPM
 ```
 
 ## Glossary
@@ -71,7 +66,7 @@ $ bower i postmate --save # Install via Bower
 **parent.com**
 ```javascript
 // Kick off the handshake with the iFrame
-const handshake = new Postmate({
+const handshake = new EncryptedPostmate({
   container: document.getElementById('some-div'), // Element to inject frame into
   url: 'http://child.com/page.html' postmate.spec.jstion.
 });
@@ -90,7 +85,7 @@ handshake.then(child => {
 
 **child.com/page.html**
 ```javascript
-const handshake = new Postmate.Model({
+const handshake = new EncryptedPostmate.Model({
   // Expose your model to the Parent. Property values may be functions, promises, or regular values
   height: () => document.height || document.body.offsetHeight
 });
@@ -108,8 +103,8 @@ handshake.then(parent => {
 > ## `Postmate.debug`
 ```javascript
 // parent.com or child.com
-Postmate.debug = true;
-new Postmate(options);
+EncryptedPostmate.debug = true;
+new EncryptedPostmate(options);
 ```
 
 Name | Type | Description | Default
@@ -117,23 +112,11 @@ Name | Type | Description | Default
 `debug` | `Boolean` | _Set to `true` to enable logging of additional information_ | `false`
 
 ***
-> ## `Postmate.Promise`
-```javascript
-// parent.com or child.com
-Postmate.Promise = RSVP.Promise;
-new Postmate(options);
-```
-
-Name | Type | Description | Default
-:--- | :--- | :--- | :---
-`Promise` | `Object` | _Replace the Promise API that Postmate uses_ | `window.Promise`
-
-***
 
 > ## `Postmate(options)`
 ```javascript
 // parent.com
-new Postmate({
+new EncryptedPostmate({
   container: document.body,
   url: 'http://child.com/',
   model: { foo: 'bar' }
@@ -158,7 +141,7 @@ Name | Type | Description | Default
 
 > ```javascript
 // child.com
-new Postmate.Model({
+new EncryptedPostmate.Model({
   // Serializable values
   foo: "bar",
 >
@@ -182,7 +165,7 @@ Name | Type | Description | Default
 > ## `child.get(key)`
 ```javascript
 // parent.com
-new Postmate({
+new EncryptedPostmate({
   container: document.body,
   url: 'http://child.com/'
 }).then(child => {
@@ -204,7 +187,7 @@ Name | Type | Description
 > ## `child.call(key, data)`
 ```javascript
 // parent.com
-new Postmate({
+new EncryptedPostmate({
   container: document.body,
   url: 'http://child.com/'
 }).then(child => {
@@ -227,7 +210,7 @@ Name | Type | Description
 > ## `child.destroy()`
 ```javascript
 // parent.com
-new Postmate({
+new EncryptedPostmate({
   container: document.body,
   url: 'http://child.com/'
 }).then(child => child.destroy());
@@ -240,7 +223,7 @@ new Postmate({
 
 > ##`child.frame`
 ```javascript
-new Postmate(options).then(child => {
+new EncryptedPostmate(options).then(child => {
   child.get('height')
     .then(height => child.frame.style.height = `${height}px`);
 });
