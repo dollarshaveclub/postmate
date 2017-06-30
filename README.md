@@ -14,7 +14,7 @@
 [bower-image]: https://badge.fury.io/bo/postmate.svg
 [bower-url]: https://github.com/regily/encrypted-postmate
 
-_Postmate_ is a promise-based API built on `postMessage`. It allows a parent page to speak with a child `iFrame` across origins with minimal effort.
+_EncryptedPostmate_ is a promise-based API built on `postMessage`. It allows a parent page to speak with a child `iFrame` across origins with minimal effort.
 
 You can download the compiled javascript directly [here](/build/postmate.min.js)
 
@@ -234,18 +234,18 @@ new EncryptedPostmate(options).then(child => {
 
 ### General
 #### Why use Promises for an evented API?
-> _Promises provide a clear API for fetching data. Using an evented approach often starts backwards. if the parent wants to know the childs height, the child would need to alert the parent, whereas with Postmate, the Parent will request that information from the child in a synchronous-like manner. The child can emit events to the parent as well, for those other use-cases that still need to be handled._
+> _Promises provide a clear API for fetching data. Using an evented approach often starts backwards. if the parent wants to know the childs height, the child would need to alert the parent, whereas with EncryptedPostmate, the Parent will request that information from the child in a synchronous-like manner. The child can emit events to the parent as well, for those other use-cases that still need to be handled._
 
 ### Silent Parent/Child
 #### I've enabled logging but the parent or child is not logging everything.
-> _Postmate.debug needs to be set in both the parent and child for each of them to log their respective information_
+> _EncryptedPostmate.debug needs to be set in both the parent and child for each of them to log their respective information_
 
 #### The child does not respond to communication from the Parent
-> _Make sure that you have initialized Postmate.Model in your child page._
+> _Make sure that you have initialized EncryptedPostmate.Model in your child page._
 
 ### Restrictive Communication
 #### I want to retrieve information from the parent by the child
-> _Postmate (by design) is restrictive in its modes of communication. This enforces a simplistic approach: The parent is responsible for logic contained within the parent, and the child is responsible for logic contained within the child. If you need to retrieve information from parent -> child, consider setting a default `model` in the parent that the child may extend._
+> _EncryptedPostmate (by design) is restrictive in its modes of communication. This enforces a simplistic approach: The parent is responsible for logic contained within the parent, and the child is responsible for logic contained within the child. If you need to retrieve information from parent -> child, consider setting a default `model` in the parent that the child may extend._
 
 #### I want to send messages to the child from the parent
 > _This is specifically what the `call` function is for._
