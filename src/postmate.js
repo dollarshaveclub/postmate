@@ -51,7 +51,7 @@ function resolveOrigin(url) {
   const a = document.createElement('a');
 
   a.href = url;
-  return a.origin || `${a.protocol}//${a.hostname}`;
+  return a.origin || `${a.protocol}//${a.host}`;
 }
 
 /**
@@ -297,10 +297,12 @@ class Postmate {
 
       this.parent.addEventListener('message', reply, false);
 
+      const request = this.getHandshakeRequest();
+
       const doSend = () => {
         attempt++;
-        log(`Parent: Sending handshake attempt ${attempt}`, { childOrigin });
-        this.child.postMessage(this.getHandshakeRequest(), childOrigin);
+        log(`Parent: Sending handshake attempt ${attempt}, ${childOrigin}`);
+        this.child.postMessage(request, childOrigin);
 
         if (attempt === maxHandshakeRequests) {
           clearInterval(responseInterval);
@@ -373,7 +375,7 @@ Postmate.Model = class Model {
           log('Child: Inherited and extended model from Parent');
           this.handleHandshakeData(e.data);
 
-          log('Child: Saving Parent origin', this.parentOrigin);
+          log('Child: Saving Parent origin', e.origin);
           this.parentOrigin = e.origin;
 
           log('Child: Sending handshake reply to Parent');
@@ -385,6 +387,7 @@ Postmate.Model = class Model {
         }
       };
 
+      log('Child: Waiting for handshake from Parent');
       this.child.addEventListener('message', shake, false);
     });
   }

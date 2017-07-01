@@ -3,10 +3,7 @@ const EncryptedPostmate = require('../src/encrypted-postmate');
 const childURL = '/base/test/fixtures/encrypted-child.html';
 
 describe('encrypted postmate', function() {
-
-  it('should pass', function() {
-    expect(1).to.equal(1);
-  });
+  this.timeout(5000);
 
   it('should complete a handshake', function (done) {
     new EncryptedPostmate({
