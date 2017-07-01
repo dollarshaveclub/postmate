@@ -1,3 +1,20 @@
+engines:
+  rubocop:
+    enabled: false
+  brakeman:
+    enabled: false
+  eslint:
+    enabled: true
+  csslint:
+    enabled: false
+  duplication:
+    enabled: true
+    config:
+      languages:
+      - javascript:
+ratings:
+  paths:
+  - src/**
 exclude_paths:
 - "build/"
 - "test/"
