@@ -46,7 +46,8 @@ module.exports = function (config) {
     sauceLabs: {
       testName: 'Encrypted Postmate',
       startConnect: false,
-      tunnelIdentifier: process.env.TRAVIS_JOB_NUMBER
+      tunnelIdentifier: process.env.TRAVIS_JOB_NUMBER,
+      build: process.env.TRAVIS_BUILD_NUMBER
     },
     frameworks: ['mocha'],
     customLaunchers: customLaunchers,
