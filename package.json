@@ -1,6 +1,6 @@
 {
   "name": "encrypted-postmate",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "A powerful, simple, promise-based, encrypted postMessage library",
   "main": "build/encrypted-postmate.min.js",
   "module": "src/encrypted-postmate.js",
