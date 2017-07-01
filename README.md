@@ -4,15 +4,15 @@
 
 > A powerful, simple, promise-based, encrypted `postMessage` library.
 
-[![npm][npm-image]][npm-url]
-[![bower][bower-image]][bower-url]
+[![Cordova NPM](https://img.shields.io/npm/v/encrypted-postmate.svg?style=flat-square)](https://www.npmjs.com/package/encrypted-postmate)
+[![Cordova NPM](https://img.shields.io/npm/dt/encrypted-postmate.svg?style=flat-square)](https://www.npmjs.com/package/encrypted-postmate)
+[![License](https://img.shields.io/npm/l/encrypted-postmate.svg?style=flat-square)](https://github.com/klarna/encrypted-postmate/blob/master/LICENSE)
 [![Build Status](https://travis-ci.org/regily/encrypted-postmate.svg?branch=master)](https://travis-ci.org/regily/encrypted-postmate)
-[![Share](https://img.shields.io/twitter/url/http/shields.io.svg?style=social)](https://twitter.com/home?status=Postmate%3A%20A%20powerful,%20simple,%20promise-based%20postMessage%20library%20https%3A//github.com/regily/encrypted-postmate%20via%20%40DSCEngineering%20%40javascript)
 
-[npm-image]: https://badge.fury.io/js/postmate.svg
-[npm-url]: https://www.npmjs.com/package/postmate
-[bower-image]: https://badge.fury.io/bo/postmate.svg
-[bower-url]: https://github.com/regily/encrypted-postmate
+[![Build Status](https://saucelabs.com/browser-matrix/maratoss.svg)](https://saucelabs.com/beta/builds/1d8ffddd221b46919c95da69c86e666b)
+
+[npm-image]: https://badge.fury.io/js/encrypted-postmate.svg
+[npm-url]: https://www.npmjs.com/package/encrypted-postmate
 
 _EncryptedPostmate_ is a promise-based API built on `postMessage`. It allows a parent page to speak with a child `iFrame` across origins with minimal effort.
 
@@ -34,8 +34,6 @@ You can download the compiled javascript directly [here](/build/postmate.min.js)
 * Child exposes a retrievable `model` object that the parent can access.
 * Child emits events that the parent can listen to.
 * Parent can `call` functions within a `child`
-* *Zero* dependencies. Provide your own polyfill or abstraction for the `Promise` API if needed.
-* Lightweight, weighing in at ~ <span class="size">`5.3kb`</span>.
 
 ## Installing
 EncryptedPostmate can be installed via NPM or Bower.
