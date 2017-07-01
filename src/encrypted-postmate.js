@@ -3,6 +3,27 @@ const Postmate = require('./postmate');
 
 const MESSAGE_TYPE = 'application/x-postmate-v2+json';
 
+const getKeys = (self) => (
+  self.keys = self.keys || {
+    our: {},
+    their: {}
+  }
+);
+
+const encrypt = (self, data) => (
+  ecc.encrypt(
+    self.getKeys().their.enc,
+    JSON.stringify(data)
+  )
+);
+
+const decrypt = (self, data) => (
+  ecc.decrypt(
+    self.getKeys().our.dec,
+    data.postmate
+  )
+);
+
 class EncryptedPostmate extends Postmate {
 
   constructor(userOptions) {
@@ -22,12 +43,7 @@ class EncryptedPostmate extends Postmate {
   }
 
   getKeys() {
-    this.keys = this.keys || {
-      our: {},
-      their: {}
-    };
-
-    return this.keys;
+    return getKeys(this);
   }
 
   handleHandshakeData(data) {
@@ -37,10 +53,7 @@ class EncryptedPostmate extends Postmate {
   }
 
   getIncomingMessage(data) {
-    const message = ecc.decrypt(
-      this.getKeys().our.dec,
-      data.postmate
-    );
+    const message = decrypt(this, data);
 
     return JSON.parse(message);
   }
@@ -52,10 +65,7 @@ class EncryptedPostmate extends Postmate {
 
     return {
       type: this.messageType,
-      postmate: ecc.encrypt(
-        this.getKeys().their.enc,
-        JSON.stringify(data)
-      )
+      postmate: encrypt(this, data)
     };
   }
 }
@@ -67,12 +77,7 @@ EncryptedPostmate.Model = class EncryptedModel extends Postmate.Model {
   }
 
   getKeys() {
-    this.keys = this.keys || {
-      our: {},
-      their: {}
-    };
-
-    return this.keys;
+    return getKeys(this);
   }
 
   handleHandshakeData(data) {
@@ -91,10 +96,7 @@ EncryptedPostmate.Model = class EncryptedModel extends Postmate.Model {
   }
 
   getIncomingMessage(data) {
-    const message = ecc.decrypt(
-      this.getKeys().our.dec,
-      data.postmate
-    );
+    const message = decrypt(this, data);
 
     return JSON.parse(message);
   }
@@ -102,10 +104,7 @@ EncryptedPostmate.Model = class EncryptedModel extends Postmate.Model {
   getOutcomingMessage(data) {
     return {
       type: this.messageType,
-      postmate: ecc.encrypt(
-        this.getKeys().their.enc,
-        JSON.stringify(data)
-      )
+      postmate: encrypt(this, data)
     };
   }
 };
