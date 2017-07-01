@@ -44,7 +44,8 @@ const customLaunchers = {
 module.exports = function (config) {
   config.set({
     sauceLabs: {
-      testName: 'Encrypted Postmate'
+      testName: 'Encrypted Postmate',
+      startConnect: false
     },
     frameworks: ['mocha'],
     customLaunchers: customLaunchers,
