@@ -7,8 +7,5 @@ before_script:
 cache:
   directories:
   - node_modules
-addons:
-  code_climate:
-    repo_token:
 before_deploy:
   - npm run build
