@@ -4,19 +4,17 @@
 
 > A powerful, simple, promise-based, encrypted `postMessage` library.
 
-[![Cordova NPM](https://img.shields.io/npm/v/encrypted-postmate.svg?style=flat-square)](https://www.npmjs.com/package/encrypted-postmate)
-[![Cordova NPM](https://img.shields.io/npm/dt/encrypted-postmate.svg?style=flat-square)](https://www.npmjs.com/package/encrypted-postmate)
+[![NPM](https://img.shields.io/npm/v/encrypted-postmate.svg?style=flat-square)](https://www.npmjs.com/package/encrypted-postmate)
+[![NPM](https://img.shields.io/npm/dt/encrypted-postmate.svg?style=flat-square)](https://www.npmjs.com/package/encrypted-postmate)
+[![Build Status](https://travis-ci.org/Regily/encrypted-postmate.svg?branch=master)](https://travis-ci.org/Regily/encrypted-postmate)
 [![License](https://img.shields.io/npm/l/encrypted-postmate.svg?style=flat-square)](https://github.com/klarna/encrypted-postmate/blob/master/LICENSE)
-[![Build Status](https://travis-ci.org/regily/encrypted-postmate.svg?branch=master)](https://travis-ci.org/regily/encrypted-postmate)
 
-[![Build Status](https://saucelabs.com/browser-matrix/maratoss.svg)](https://saucelabs.com/beta/builds/1d8ffddd221b46919c95da69c86e666b)
+![Build Status](https://saucelabs.com/browser-matrix/maratoss.svg)
 
 [npm-image]: https://badge.fury.io/js/encrypted-postmate.svg
 [npm-url]: https://www.npmjs.com/package/encrypted-postmate
 
 _EncryptedPostmate_ is a promise-based API built on `postMessage`. It allows a parent page to speak with a child `iFrame` across origins with minimal effort.
-
-You can download the compiled javascript directly [here](/build/postmate.min.js)
 
 * [Features](#features)
 * [Installing](#installing)
@@ -36,7 +34,7 @@ You can download the compiled javascript directly [here](/build/postmate.min.js)
 * Parent can `call` functions within a `child`
 
 ## Installing
-EncryptedPostmate can be installed via NPM or Bower.
+EncryptedPostmate can be installed via NPM.
 
 **NPM**
 ```bash
@@ -46,6 +44,8 @@ $ yarn add encrypted-postmate # Install via Yarn
 ```bash
 $ npm i encrypted-postmate --save # Install via NPM
 ```
+
+Also you can download the compiled javascript directly [here](/build/encrypted-postmate.min.js)
 
 ## Glossary
 * **`Parent`**: The **top level** page that will embed an `iFrame`, creating a `Child`.
