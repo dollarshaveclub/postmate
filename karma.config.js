@@ -27,10 +27,10 @@ const customLaunchers = {
   slAndroid: {
     base: 'SauceLabs',
     browserName: 'Browser',
-    version: '4.4',
+    version: '5.0',
     platform: 'Android',
     appiumVersion: '1.6.4',
-    deviceName: 'Samsung Galaxy S3 Emulator',
+    deviceName: 'Android Emulator',
     deviceOrientation: 'portrait'
   },
   slEdge: {

@@ -7,6 +7,7 @@
 [![NPM](https://img.shields.io/npm/v/encrypted-postmate.svg?style=flat-square)](https://www.npmjs.com/package/encrypted-postmate)
 [![NPM](https://img.shields.io/npm/dt/encrypted-postmate.svg?style=flat-square)](https://www.npmjs.com/package/encrypted-postmate)
 [![Build Status](https://travis-ci.org/Regily/encrypted-postmate.svg?branch=master)](https://travis-ci.org/Regily/encrypted-postmate)
+[![Code Climate](https://codeclimate.com/github/Regily/encrypted-postmate/badges/gpa.svg)](https://codeclimate.com/github/Regily/encrypted-postmate)
 [![License](https://img.shields.io/npm/l/encrypted-postmate.svg?style=flat-square)](https://github.com/klarna/encrypted-postmate/blob/master/LICENSE)
 
 ![Build Status](https://saucelabs.com/browser-matrix/maratoss.svg)
