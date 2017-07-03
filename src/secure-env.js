@@ -43,14 +43,6 @@ if (window) {
         console.error(e);
       }
     }
-
-    if (window.performance) {
-      try {
-        Object.freeze(window.performance);
-      } catch (e) {
-        console.error(e);
-      }
-    }
   }
 
 }

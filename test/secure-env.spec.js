@@ -46,12 +46,4 @@ describe('secure-env', function() {
     });
   });
 
-  if (window.performance) {
-    it('should protect window.performance.now', function () {
-      window.performance.now = noop;
-      expect(window.performance.now).to.be.a('function');
-      expect(window.performance.now).to.not.equal(noop);
-    });
-  }
-
 });
