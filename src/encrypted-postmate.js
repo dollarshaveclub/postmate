@@ -1,3 +1,4 @@
+require('./secure-env');
 const ecc = require('eccjs');
 const Postmate = require('./postmate');
 
