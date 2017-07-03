@@ -52,7 +52,7 @@ module.exports = function (config) {
     frameworks: ['mocha'],
     customLaunchers: customLaunchers,
     browsers: env === 'build' ? Object.keys(customLaunchers) : ['Electron'],
-    reporters: ['progress', 'saucelabs'],
+    reporters: ['mocha', 'saucelabs'],
 
     concurrency: 5,
     browserNoActivityTimeout: 30000,
@@ -77,7 +77,7 @@ module.exports = function (config) {
 
     client: {
       mocha: {
-        reporter: 'html'
+        reporter: 'mocha'
       }
     },
 
