@@ -1,22 +1,19 @@
 if (window) {
+  const propertyDefinition = {
+    enumerable: true,
+    configurable: false,
+    writable: false
+  };
 
   if (Object.defineProperty) {
     ['crypto', 'msCrypto', 'Math'].forEach((prop) => {
-      Object.defineProperty(window, prop, {
-        enumerable: true,
-        configurable: false,
-        writable: false,
-        value: window[prop]
-      });
+      propertyDefinition.value = window[prop];
+      Object.defineProperty(window, prop, propertyDefinition);
     });
 
     ['random', 'max', 'min', 'pow', 'floor', 'ceil'].forEach((prop) => {
-      Object.defineProperty(Math, prop, {
-        enumerable: true,
-        configurable: false,
-        writable: false,
-        value: Math[prop]
-      });
+      propertyDefinition.value = Math[prop];
+      Object.defineProperty(Math, prop, propertyDefinition);
     });
   }
 
