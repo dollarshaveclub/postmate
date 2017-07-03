@@ -71,11 +71,10 @@ module.exports = {
 
     obj.tag = kem.tagHex;
 
-    return JSON.stringify(obj);
+    return obj;
   },
 
-  decrypt(deckey, ciphertext) {
-    let obj = JSON.parse(ciphertext);
+  decrypt(deckey, obj) {
     let kem = cache.dec[deckey];
 
     if (!kem) {
