@@ -1,5 +1,5 @@
 require('./secure-env');
-const ecc = require('eccjs');
+const ecc = require('./ecc');
 const Postmate = require('./postmate');
 
 const MESSAGE_TYPE = 'application/x-postmate-v2+json';
@@ -71,7 +71,7 @@ class EncryptedPostmate extends Postmate {
   }
 }
 
-EncryptedPostmate.Model = class EncryptedModel extends Postmate.Model {
+class EncryptedModel extends Postmate.Model {
 
   constructor(model, messageType) {
     return super(model, messageType || MESSAGE_TYPE);
@@ -108,6 +108,8 @@ EncryptedPostmate.Model = class EncryptedModel extends Postmate.Model {
       postmate: encrypt(this, data)
     };
   }
-};
+}
+
+EncryptedPostmate.Model = EncryptedModel;
 
 module.exports = EncryptedPostmate;

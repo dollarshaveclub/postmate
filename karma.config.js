@@ -77,7 +77,7 @@ module.exports = function (config) {
 
     client: {
       mocha: {
-        reporter: 'mocha'
+        reporter: 'html'
       }
     },
 
