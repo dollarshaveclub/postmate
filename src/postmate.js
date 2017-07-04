@@ -65,7 +65,7 @@ function sanitize(message, allowedOrigin, messageType) {
   if (typeof message.data !== 'object') return false;
   if (!('postmate' in message.data)) return false;
   if (message.data.type !== messageType) return false;
-  if (message.data.postmate.substring(0, 1) === '{') return true;
+  if (typeof message.data.postmate === 'object') return true;
   if (!{
     'handshake-reply': 1,
     call: 1,
