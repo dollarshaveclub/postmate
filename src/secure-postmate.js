@@ -25,7 +25,7 @@ const decrypt = (self, data) => (
   )
 );
 
-class EncryptedPostmate extends Postmate {
+class SecurePostmate extends Postmate {
 
   constructor(userOptions) {
     userOptions.messageType = userOptions.messageType || MESSAGE_TYPE;
@@ -71,7 +71,7 @@ class EncryptedPostmate extends Postmate {
   }
 }
 
-class EncryptedModel extends Postmate.Model {
+class SecureModel extends Postmate.Model {
 
   constructor(model, messageType) {
     return super(model, messageType || MESSAGE_TYPE);
@@ -110,6 +110,6 @@ class EncryptedModel extends Postmate.Model {
   }
 }
 
-EncryptedPostmate.Model = EncryptedModel;
+SecurePostmate.Model = SecureModel;
 
-module.exports = EncryptedPostmate;
+module.exports = SecurePostmate;
