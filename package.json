@@ -12,9 +12,9 @@
     "prepublish": "npm run build"
   },
   "devDependencies": {
-    "babel-cli": "6.24.1",
+    "babel-cli": "^6.26.0",
     "babel-core": "^6.25.0",
-    "babel-eslint": "7.2.3",
+    "babel-eslint": "^8.0.1",
     "babel-loader": "^7.1.0",
     "babel-plugin-add-module-exports": "0.2.1",
     "babel-plugin-external-helpers": "^6.22.0",
@@ -35,7 +35,7 @@
     "optimize-js-plugin": "0.0.4",
     "webpack": "^3.0.0",
     "webpack-bundle-analyzer": "^2.8.2",
-    "yargs": "^8.0.2"
+    "yargs": "^9.0.1"
   },
   "repository": {
     "type": "git",

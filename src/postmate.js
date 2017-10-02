@@ -112,6 +112,7 @@ class ParentAPI {
     log('Parent: Awaiting messages...');
 
     this.listener = (e) => {
+      if (!sanitize(e, this.childOrigin, this.messageType)) return;
       const message = this.getIncomingMessage(e.data);
       const { data, name } = (message.value || {});
 
@@ -132,6 +133,7 @@ class ParentAPI {
       // Extract data from response and kill listeners
       const uid = messageId();
       const transact = (e) => {
+        if (!sanitize(e, this.childOrigin, this.messageType)) return;
         const message = this.getIncomingMessage(e.data);
 
         if (message.uid === uid && message.postmate === 'reply') {
