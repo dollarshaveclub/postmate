@@ -1,3 +1,5 @@
 node_modules
 *.log
 ssl/*.pem
+.DS_Store
+.idea

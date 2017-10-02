@@ -37,6 +37,7 @@ function messageId() {
  * @param  {Object} ...args Rest Arguments
  */
 function log(...args) {
+  // eslint-disable-next-line
   if (!Postmate.debug) return;
   console.log(...args); // eslint-disable-line no-console
 }
@@ -48,8 +49,9 @@ function log(...args) {
  */
 function resolveOrigin(url) {
   const a = document.createElement('a');
+
   a.href = url;
-  return a.origin || `${a.protocol}//${a.hostname}`;
+  return a.origin || `${a.protocol}//${a.host}`;
 }
 
 /**
@@ -58,17 +60,18 @@ function resolveOrigin(url) {
  * @param  {String} allowedOrigin The whitelisted origin
  * @return {Boolean}
  */
-function sanitize(message, allowedOrigin) {
+function sanitize(message, allowedOrigin, messageType) {
   if (message.origin !== allowedOrigin) return false;
   if (typeof message.data !== 'object') return false;
   if (!('postmate' in message.data)) return false;
-  if (message.data.type !== MESSAGE_TYPE) return false;
+  if (message.data.type !== messageType) return false;
+  if (typeof message.data.postmate === 'object') return true;
   if (!{
     'handshake-reply': 1,
     call: 1,
     emit: 1,
     reply: 1,
-    request: 1,
+    request: 1
   }[message.data.postmate]) return false;
   return true;
 }
@@ -82,9 +85,10 @@ function sanitize(message, allowedOrigin) {
  * @return {Promise}
  */
 function resolveValue(model, property) {
-  const unwrappedContext = typeof model[property] === 'function'
-    ? model[property]() : model[property];
-  return Postmate.Promise.resolve(unwrappedContext);
+  const unwrappedContext = typeof model[property] === 'function' ?
+    model[property]() : model[property];
+
+  return Promise.resolve(unwrappedContext);
 }
 
 /**
@@ -98,6 +102,9 @@ class ParentAPI {
     this.frame = info.frame;
     this.child = info.child;
     this.childOrigin = info.childOrigin;
+    this.messageType = info.messageType;
+    this.getIncomingMessage = info.getIncomingMessage.bind(info);
+    this.getOutcomingMessage = info.getOutcomingMessage.bind(info);
 
     this.events = {};
 
@@ -105,8 +112,11 @@ class ParentAPI {
     log('Parent: Awaiting messages...');
 
     this.listener = (e) => {
-      const { data, name } = (((e || {}).data || {}).value || {});
-      if (e.data.postmate === 'emit') {
+      if (!sanitize(e, this.childOrigin, this.messageType)) return;
+      const message = this.getIncomingMessage(e.data);
+      const { data, name } = (message.value || {});
+
+      if (message.postmate === 'emit') {
         log(`Parent: Received event emission: ${name}`);
         if (name in this.events) {
           this.events[name].call(this, data);
@@ -118,15 +128,17 @@ class ParentAPI {
     log('Parent: Awaiting event emissions from Child');
   }
 
-
   get(property) {
-    return new Postmate.Promise((resolve) => {
+    return new Promise((resolve) => {
       // Extract data from response and kill listeners
       const uid = messageId();
       const transact = (e) => {
-        if (e.data.uid === uid && e.data.postmate === 'reply') {
+        if (!sanitize(e, this.childOrigin, this.messageType)) return;
+        const message = this.getIncomingMessage(e.data);
+
+        if (message.uid === uid && message.postmate === 'reply') {
           this.parent.removeEventListener('message', transact, false);
-          resolve(e.data.value);
+          resolve(message.value);
         }
       };
 
@@ -134,23 +146,21 @@ class ParentAPI {
       this.parent.addEventListener('message', transact, false);
 
       // Then ask child for information
-      this.child.postMessage({
+      this.child.postMessage(this.getOutcomingMessage({
         postmate: 'request',
-        type: MESSAGE_TYPE,
         property,
-        uid,
-      }, this.childOrigin);
+        uid
+      }), this.childOrigin);
     });
   }
 
   call(property, data) {
     // Send information to the child
-    this.child.postMessage({
+    this.child.postMessage(this.getOutcomingMessage({
       postmate: 'call',
-      type: MESSAGE_TYPE,
       property,
-      data,
-    }, this.childOrigin);
+      data
+    }), this.childOrigin);
   }
 
   on(eventName, callback) {
@@ -162,6 +172,7 @@ class ParentAPI {
     window.removeEventListener('message', this.listener, false);
     this.frame.parentNode.removeChild(this.frame);
   }
+
 }
 
 /**
@@ -175,17 +186,21 @@ class ChildAPI {
     this.parent = info.parent;
     this.parentOrigin = info.parentOrigin;
     this.child = info.child;
+    this.messageType = info.messageType;
+    this.getIncomingMessage = info.getIncomingMessage.bind(info);
+    this.getOutcomingMessage = info.getOutcomingMessage.bind(info);
 
     log('Child: Registering API');
     log('Child: Awaiting messages...');
 
     this.child.addEventListener('message', (e) => {
-      if (!sanitize(e, this.parentOrigin)) return;
-      log('Child: Received request', e.data);
+      if (!sanitize(e, this.parentOrigin, this.messageType)) return;
+      const message = this.getIncomingMessage(e.data);
 
-      const { property, uid, data } = e.data;
+      log('Child: Received request', message);
+      const { property, uid, data } = message;
 
-      if (e.data.postmate === 'call') {
+      if (message.postmate === 'call') {
         if (property in this.model && typeof this.model[property] === 'function') {
           this.model[property].call(this, data);
         }
@@ -194,26 +209,24 @@ class ChildAPI {
 
       // Reply to Parent
       resolveValue(this.model, property)
-        .then(value => e.source.postMessage({
+        .then(value => e.source.postMessage(this.getOutcomingMessage({
           property,
           postmate: 'reply',
-          type: MESSAGE_TYPE,
           uid,
-          value,
-        }, e.origin));
+          value
+        }), e.origin));
     });
   }
 
   emit(name, data) {
     log(`Child: Emitting Event "${name}"`, data);
-    this.parent.postMessage({
+    this.parent.postMessage(this.getOutcomingMessage({
       postmate: 'emit',
-      type: MESSAGE_TYPE,
       value: {
         name,
-        data,
-      },
-    }, this.parentOrigin);
+        data
+      }
+    }), this.parentOrigin);
   }
 }
 
@@ -223,32 +236,29 @@ class ChildAPI {
  */
 class Postmate {
 
-  static debug = false;
-
-  // Internet Explorer craps itself
-  static Promise = (() => {
-    try {
-      return window ? window.Promise : Promise;
-    } catch (e) {
-      return null;
-    }
-  })();
-
   /**
    * Sets options related to the Parent
    * @param {Object} userOptions The element to inject the frame into, and the url
    * @return {Promise}
    */
-  constructor(userOptions) {
-    const { container, url, model } = userOptions;
-
+  constructor({ container, url, model, messageType }) {
     this.parent = window;
     this.frame = document.createElement('iframe');
     (container || document.body).appendChild(this.frame);
     this.child = this.frame.contentWindow || this.frame.contentDocument.parentWindow;
     this.model = model || {};
+    this.messageType = messageType || MESSAGE_TYPE;
 
     return this.sendHandshake(url);
+  }
+
+  getIncomingMessage(data) {
+    return data;
+  }
+
+  getOutcomingMessage(data) {
+    data.type = this.messageType;
+    return data;
   }
 
   /**
@@ -258,17 +268,26 @@ class Postmate {
    */
   sendHandshake(url) {
     const childOrigin = resolveOrigin(url);
+    const messageType = this.messageType;
     let attempt = 0;
     let responseInterval;
-    return new Postmate.Promise((resolve, reject) => {
+
+    return new Promise((resolve, reject) => {
       const reply = (e) => {
-        if (!sanitize(e, childOrigin)) return false;
-        if (e.data.postmate === 'handshake-reply') {
+        if (!sanitize(e, childOrigin, messageType)) return false;
+
+        const message = this.getIncomingMessage(e.data);
+
+        if (message.postmate === 'handshake-reply') {
           clearInterval(responseInterval);
           log('Parent: Received handshake reply from Child');
           this.parent.removeEventListener('message', reply, false);
+
           this.childOrigin = e.origin;
           log('Parent: Saving Child origin', this.childOrigin);
+
+          this.handleHandshakeData(e.data);
+
           return resolve(new ParentAPI(this));
         }
 
@@ -280,14 +299,12 @@ class Postmate {
 
       this.parent.addEventListener('message', reply, false);
 
+      const request = this.getHandshakeRequest();
+
       const doSend = () => {
         attempt++;
-        log(`Parent: Sending handshake attempt ${attempt}`, { childOrigin });
-        this.child.postMessage({
-          postmate: 'handshake',
-          type: MESSAGE_TYPE,
-          model: this.model,
-        }, childOrigin);
+        log(`Parent: Sending handshake attempt ${attempt}, ${childOrigin}`);
+        this.child.postMessage(request, childOrigin);
 
         if (attempt === maxHandshakeRequests) {
           clearInterval(responseInterval);
@@ -309,7 +326,18 @@ class Postmate {
       this.frame.src = url;
     });
   }
+
+  getHandshakeRequest() {
+    return this.getOutcomingMessage({
+      postmate: 'handshake',
+      model: this.model
+    });
+  }
+
+  handleHandshakeData(data) {}
 }
+
+Postmate.debug = false;
 
 /**
  * The entry point of the Child
@@ -322,10 +350,12 @@ Postmate.Model = class Model {
    * @param {Object} model Hash of values, functions, or promises
    * @return {Promise}       The Promise that resolves when the handshake has been received
    */
-  constructor(model) {
+  constructor(model, messageType) {
     this.child = window;
     this.model = model;
     this.parent = this.child.parent;
+    this.messageType = messageType || MESSAGE_TYPE;
+
     return this.sendHandshakeReply();
   }
 
@@ -334,39 +364,66 @@ Postmate.Model = class Model {
    * @return {Promise} Resolves an object that exposes an API for the Child
    */
   sendHandshakeReply() {
-    return new Postmate.Promise((resolve, reject) => {
+    return new Promise((resolve, reject) => {
       const shake = (e) => {
+        if (!e.data.postmate) {
+          return;
+        }
+
         if (e.data.postmate === 'handshake') {
           log('Child: Received handshake from Parent');
           this.child.removeEventListener('message', shake, false);
-          log('Child: Sending handshake reply to Parent');
-          e.source.postMessage({
-            postmate: 'handshake-reply',
-            type: MESSAGE_TYPE,
-          }, e.origin);
+
+          log('Child: Inherited and extended model from Parent');
+          this.handleHandshakeData(e.data);
+
+          log('Child: Saving Parent origin', e.origin);
           this.parentOrigin = e.origin;
 
-          // Extend model with the one provided by the parent
-          const defaults = e.data.model;
-          if (defaults) {
-            const keys = Object.keys(defaults);
-            for (let i = 0; i < keys.length; i++) {
-              if (hasOwnProperty.call(defaults, keys[i])) {
-                this.model[keys[i]] = defaults[keys[i]];
-              }
-            }
-            log('Child: Inherited and extended model from Parent');
-          }
+          log('Child: Sending handshake reply to Parent');
+          e.source.postMessage(this.getOutcomingMessage(this.getHandshakeResponse()), this.parentOrigin);
 
-          log('Child: Saving Parent origin', this.parentOrigin);
-          return resolve(new ChildAPI(this));
+          resolve(new ChildAPI(this));
+        } else {
+          reject('Handshake Reply Failed');
         }
-        return reject('Handshake Reply Failed');
       };
+
+      log('Child: Waiting for handshake from Parent');
       this.child.addEventListener('message', shake, false);
     });
+  }
+
+  handleHandshakeData(data) {
+    // Extend model with the one provided by the parent
+    const defaults = data.model;
+
+    if (defaults) {
+      const keys = Object.keys(defaults);
+
+      for (let i = 0; i < keys.length; i++) {
+        if (hasOwnProperty.call(defaults, keys[i])) {
+          this.model[keys[i]] = defaults[keys[i]];
+        }
+      }
+    }
+  }
+
+  getHandshakeResponse() {
+    return {
+      postmate: 'handshake-reply'
+    };
+  }
+
+  getIncomingMessage(data) {
+    return data;
+  }
+
+  getOutcomingMessage(data) {
+    data.type = this.messageType;
+    return data;
   }
 };
 
 // Export
-export default Postmate;
+module.exports = Postmate;
