@@ -1,8 +1,8 @@
 const expect = require('chai').expect;
-const EncryptedPostmate = require('../src/encrypted-postmate');
-const childURL = '/base/test/fixtures/encrypted-child.html';
+const EncryptedPostmate = require('../src/secure-postmate');
+const childURL = '/base/test/fixtures/secure-child.html';
 
-describe('encrypted postmate', function() {
+describe('secure postmate', function() {
   this.timeout(5000);
 
   it('should complete a handshake', function (done) {

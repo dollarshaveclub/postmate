@@ -1,9 +1,9 @@
 {
-  "name": "encrypted-postmate",
+  "name": "secure-postmate",
   "version": "1.0.5",
-  "description": "A powerful, simple, promise-based, encrypted postMessage library",
-  "main": "build/encrypted-postmate.min.js",
-  "module": "src/encrypted-postmate.js",
+  "description": "A powerful, simple, promise-based, secure postMessage library",
+  "main": "build/secure-postmate.min.js",
+  "module": "src/secure-postmate.js",
   "scripts": {
     "build": "webpack --env build",
     "dev": "webpack --progress --colors --watch --env dev",
@@ -20,35 +20,36 @@
     "babel-plugin-external-helpers": "^6.22.0",
     "babel-plugin-transform-class-properties": "^6.24.1",
     "babel-preset-es2015": "6.24.1",
-    "chai": "^4.0.2",
-    "electron": "^1.6.11",
-    "eslint": "^4.1.1",
-    "eslint-loader": "^1.8.0",
+    "chai": "^4.1.1",
+    "electron": "^1.7.5",
+    "eslint": "^4.4.1",
+    "eslint-loader": "^1.9.0",
     "imports-loader": "^0.7.1",
     "karma": "^1.7.0",
     "karma-electron-launcher": "^0.2.0",
     "karma-mocha": "^1.3.0",
     "karma-mocha-reporter": "^2.2.3",
     "karma-sauce-launcher": "^1.1.0",
-    "karma-webpack": "^2.0.3",
-    "mocha": "^3.4.2",
+    "karma-webpack": "^2.0.4",
+    "mocha": "^3.5.0",
     "optimize-js-plugin": "0.0.4",
-    "webpack": "^3.0.0",
-    "webpack-bundle-analyzer": "^2.8.2",
+    "webpack": "^3.5.2",
+    "webpack-bundle-analyzer": "^2.9.0",
     "yargs": "^8.0.2"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/regily/encrypted-postmate.git"
+    "url": "https://github.com/regily/secure-postmate.git"
   },
   "keywords": [
-    "webpack",
-    "es6",
-    "starter",
-    "library",
-    "universal",
-    "umd",
-    "commonjs"
+    "postMessage",
+    "secure",
+    "encrypted",
+    "encryption",
+    "ecc",
+    "postmate",
+    "cross-window",
+    "communication"
   ],
   "author": {
     "name": "Marat Dyatko",
@@ -59,10 +60,10 @@
     "url": "https://opensource.org/licenses/MIT"
   },
   "bugs": {
-    "url": "https://github.com/regily/encrypted-postmate/issues"
+    "url": "https://github.com/regily/secure-postmate/issues"
   },
-  "homepage": "https://github.com/regily/encrypted-postmate",
+  "homepage": "https://github.com/regily/secure-postmate",
   "dependencies": {
-    "sjcl": "^1.0.6"
+    "sjcl": "^1.0.7"
   }
 }
