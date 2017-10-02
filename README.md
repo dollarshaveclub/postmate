@@ -1,21 +1,21 @@
-<a href="https://github.com/regily/encrypted-postmate">
-  <img src="https://regily.github.io/encrypted-postmate/assets/postmate-v3.svg">
+<a href="https://github.com/regily/secure-postmate">
+  <img src="https://regily.github.io/secure-postmate/assets/postmate-v3.svg">
 </a>
 
-> A powerful, simple, promise-based, encrypted `postMessage` library.
+> A powerful, simple, promise-based, secure `postMessage` library.
 
-[![NPM](https://img.shields.io/npm/v/encrypted-postmate.svg?style=flat-square)](https://www.npmjs.com/package/encrypted-postmate)
-[![NPM](https://img.shields.io/npm/dt/encrypted-postmate.svg?style=flat-square)](https://www.npmjs.com/package/encrypted-postmate)
-[![Build Status](https://travis-ci.org/Regily/encrypted-postmate.svg?branch=master)](https://travis-ci.org/Regily/encrypted-postmate)
-[![Code Climate](https://codeclimate.com/github/Regily/encrypted-postmate/badges/gpa.svg)](https://codeclimate.com/github/Regily/encrypted-postmate)
-[![License](https://img.shields.io/npm/l/encrypted-postmate.svg?style=flat-square)](https://github.com/klarna/encrypted-postmate/blob/master/LICENSE)
+[![NPM](https://img.shields.io/npm/v/secure-postmate.svg?style=flat-square)](https://www.npmjs.com/package/secure-postmate)
+[![NPM](https://img.shields.io/npm/dt/secure-postmate.svg?style=flat-square)](https://www.npmjs.com/package/secure-postmate)
+[![Build Status](https://travis-ci.org/Regily/secure-postmate.svg?branch=master)](https://travis-ci.org/Regily/secure-postmate)
+[![Code Climate](https://codeclimate.com/github/Regily/secure-postmate/badges/gpa.svg)](https://codeclimate.com/github/Regily/secure-postmate)
+[![License](https://img.shields.io/npm/l/secure-postmate.svg?style=flat-square)](https://github.com/klarna/secure-postmate/blob/master/LICENSE)
 
 ![Build Status](https://saucelabs.com/browser-matrix/maratoss.svg)
 
-[npm-image]: https://badge.fury.io/js/encrypted-postmate.svg
-[npm-url]: https://www.npmjs.com/package/encrypted-postmate
+[npm-image]: https://badge.fury.io/js/secure-postmate.svg
+[npm-url]: https://www.npmjs.com/package/secure-postmate
 
-_EncryptedPostmate_ is a promise-based API built on `postMessage`. It allows a parent page to speak with a child `iFrame` across origins with minimal effort.
+_SecurePostmate_ is a promise-based API built on `postMessage`. It allows a parent page to speak with a child `iFrame` across origins with minimal effort. Cross-origin communication is secured by elliptic curve cryptography with dynamic key-pairs generation.
 
 * [Features](#features)
 * [Installing](#installing)
@@ -32,21 +32,22 @@ _EncryptedPostmate_ is a promise-based API built on `postMessage`. It allows a p
 * Secure two-way parent <-> child handshake, with message validation.
 * Child exposes a retrievable `model` object that the parent can access.
 * Child emits events that the parent can listen to.
-* Parent can `call` functions within a `child`
+* Parent can `call` functions within a `child`.
+* ECC encryption using Stanford Javascript Crypto Library.
 
 ## Installing
-EncryptedPostmate can be installed via NPM.
+SecurePostmate can be installed via NPM.
 
 **NPM**
 ```bash
-$ yarn add encrypted-postmate # Install via Yarn
+$ yarn add secure-postmate # Install via Yarn
 ```
 
 ```bash
-$ npm i encrypted-postmate --save # Install via NPM
+$ npm i secure-postmate --save # Install via NPM
 ```
 
-Also you can download the compiled javascript directly [here](/build/encrypted-postmate.min.js)
+Also you can download the compiled javascript directly [here](/build/secure-postmate.min.js)
 
 ## Glossary
 * **`Parent`**: The **top level** page that will embed an `iFrame`, creating a `Child`.
@@ -65,9 +66,9 @@ Also you can download the compiled javascript directly [here](/build/encrypted-p
 **parent.com**
 ```javascript
 // Kick off the handshake with the iFrame
-const handshake = new EncryptedPostmate({
+const handshake = new SecurePostmate({
   container: document.getElementById('some-div'), // Element to inject frame into
-  url: 'http://child.com/page.html' postmate.spec.jstion.
+  url: 'http://child.com/page.html'
 });
 
 // When parent <-> child handshake is complete, data may be requested from the child
@@ -84,7 +85,7 @@ handshake.then(child => {
 
 **child.com/page.html**
 ```javascript
-const handshake = new EncryptedPostmate.Model({
+const handshake = new SecurePostmate.Model({
   // Expose your model to the Parent. Property values may be functions, promises, or regular values
   height: () => document.height || document.body.offsetHeight
 });
@@ -102,8 +103,8 @@ handshake.then(parent => {
 > ## `Postmate.debug`
 ```javascript
 // parent.com or child.com
-EncryptedPostmate.debug = true;
-new EncryptedPostmate(options);
+SecurePostmate.debug = true;
+new SecurePostmate(options);
 ```
 
 Name | Type | Description | Default
@@ -115,7 +116,7 @@ Name | Type | Description | Default
 > ## `Postmate(options)`
 ```javascript
 // parent.com
-new EncryptedPostmate({
+new SecurePostmate({
   container: document.body,
   url: 'http://child.com/',
   model: { foo: 'bar' }
@@ -140,7 +141,7 @@ Name | Type | Description | Default
 
 > ```javascript
 // child.com
-new EncryptedPostmate.Model({
+new SecurePostmate.Model({
   // Serializable values
   foo: "bar",
 >
@@ -164,7 +165,7 @@ Name | Type | Description | Default
 > ## `child.get(key)`
 ```javascript
 // parent.com
-new EncryptedPostmate({
+new SecurePostmate({
   container: document.body,
   url: 'http://child.com/'
 }).then(child => {
@@ -186,7 +187,7 @@ Name | Type | Description
 > ## `child.call(key, data)`
 ```javascript
 // parent.com
-new EncryptedPostmate({
+new SecurePostmate({
   container: document.body,
   url: 'http://child.com/'
 }).then(child => {
@@ -209,7 +210,7 @@ Name | Type | Description
 > ## `child.destroy()`
 ```javascript
 // parent.com
-new EncryptedPostmate({
+new SecurePostmate({
   container: document.body,
   url: 'http://child.com/'
 }).then(child => child.destroy());
@@ -222,7 +223,7 @@ new EncryptedPostmate({
 
 > ##`child.frame`
 ```javascript
-new EncryptedPostmate(options).then(child => {
+new SecurePostmate(options).then(child => {
   child.get('height')
     .then(height => child.frame.style.height = `${height}px`);
 });
@@ -233,18 +234,18 @@ new EncryptedPostmate(options).then(child => {
 
 ### General
 #### Why use Promises for an evented API?
-> _Promises provide a clear API for fetching data. Using an evented approach often starts backwards. if the parent wants to know the childs height, the child would need to alert the parent, whereas with EncryptedPostmate, the Parent will request that information from the child in a synchronous-like manner. The child can emit events to the parent as well, for those other use-cases that still need to be handled._
+> _Promises provide a clear API for fetching data. Using an evented approach often starts backwards. if the parent wants to know the childs height, the child would need to alert the parent, whereas with SecurePostmate, the Parent will request that information from the child in a synchronous-like manner. The child can emit events to the parent as well, for those other use-cases that still need to be handled._
 
 ### Silent Parent/Child
 #### I've enabled logging but the parent or child is not logging everything.
-> _EncryptedPostmate.debug needs to be set in both the parent and child for each of them to log their respective information_
+> _SecurePostmate.debug needs to be set in both the parent and child for each of them to log their respective information_
 
 #### The child does not respond to communication from the Parent
-> _Make sure that you have initialized EncryptedPostmate.Model in your child page._
+> _Make sure that you have initialized SecurePostmate.Model in your child page._
 
 ### Restrictive Communication
 #### I want to retrieve information from the parent by the child
-> _EncryptedPostmate (by design) is restrictive in its modes of communication. This enforces a simplistic approach: The parent is responsible for logic contained within the parent, and the child is responsible for logic contained within the child. If you need to retrieve information from parent -> child, consider setting a default `model` in the parent that the child may extend._
+> _SecurePostmate (by design) is restrictive in its modes of communication. This enforces a simplistic approach: The parent is responsible for logic contained within the parent, and the child is responsible for logic contained within the child. If you need to retrieve information from parent -> child, consider setting a default `model` in the parent that the child may extend._
 
 #### I want to send messages to the child from the parent
 > _This is specifically what the `call` function is for._

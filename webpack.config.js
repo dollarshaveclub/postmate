@@ -19,8 +19,8 @@ module.exports = [
     library: 'Postmate'
   },
   {
-    entry: 'encrypted-postmate',
-    library: 'EncryptedPostmate'
+    entry: 'secure-postmate',
+    library: 'SecurePostmate'
   }
 ].map(function (config) {
   let plugins = [], outputFile;

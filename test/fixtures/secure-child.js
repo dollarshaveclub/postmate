@@ -1,4 +1,4 @@
-const EncryptedPostmate = require('../../src/encrypted-postmate');
+const SecurePostmate = require('../../src/secure-postmate');
 
 let parentAPI = null;
 let randomId = null;
@@ -22,7 +22,7 @@ const b = function () {
 const setRandomId = function (data) { randomId = data; };
 const getRandomId = function () { return randomId; };
 
-new EncryptedPostmate.Model({
+new SecurePostmate.Model({
   height: height,
   foo: foo,
   doValidate: doValidate,
