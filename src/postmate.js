@@ -339,6 +339,9 @@ Postmate.Model = class Model {
   sendHandshakeReply() {
     return new Postmate.Promise((resolve, reject) => {
       const shake = (e) => {
+        if (!e.data.postmate) {
+          return;
+        }
         if (e.data.postmate === 'handshake') {
           log('Child: Received handshake from Parent')
           this.child.removeEventListener('message', shake, false)
