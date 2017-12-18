@@ -3,9 +3,7 @@
   "version": "1.1.9",
   "description": "A powerful, simple, promise-based postMessage library",
   "main": "build/postmate.min.js",
-  "files": [
-    "build"
-  ],
+  "files": ["build"],
   "devDependencies": {
     "babel-eslint": "^7.2.2",
     "babel-plugin-transform-class-properties": "^6.11.5",
@@ -22,6 +20,7 @@
     "gulp": "^3.9.1",
     "gulp-eslint": "^3.0.1",
     "gulp-mocha-phantomjs": "^0.11.0",
+    "jest": "^22.0.0",
     "mocha": "^3.0.2",
     "mocha-phantomjs": "^4.1.0",
     "rollup": "^0.51.5",
@@ -42,19 +41,14 @@
     "lint": "gulp lint",
     "postpublish": "git tag $npm_package_version && git push origin --tags"
   },
+  "jest": {
+    "testRegex": "./tests/unit/.*.js$"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/dollarshaveclub/postmate.git"
   },
-  "keywords": [
-    "postMessage",
-    "secure",
-    "handshake",
-    "promise",
-    "iframes",
-    "pci",
-    "security"
-  ],
+  "keywords": ["postMessage", "secure", "handshake", "promise", "iframes", "pci", "security"],
   "author": "Jacob Kelley <jakie8@gmail.com>",
   "license": "MIT",
   "bugs": {
