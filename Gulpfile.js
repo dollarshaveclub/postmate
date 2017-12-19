@@ -34,13 +34,18 @@ const uglifySetup = {
   }
 }
 
+const babelSetup = {
+  babelrc: false,
+  presets: [['es2015', { modules: false }]],
+  plugins: ["transform-class-properties"],
+  exclude: 'node_modules/**'
+}
+
 gulp.task('do-build', () => rollup
     .rollup({
       input: './src/postmate.js',
       plugins: [
-        babel({
-          exclude: 'node_modules/**'
-        }),
+        babel(babelSetup),
         uglify(uglifySetup)
       ],
       treeshake: false
