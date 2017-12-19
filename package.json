@@ -30,7 +30,6 @@
     "rollup": "^0.51.5",
     "rollup-plugin-babel": "^2.7.1",
     "rollup-plugin-cleanup": "^2.0.0",
-    "rollup-plugin-commonjs": "^8.2.6",
     "rollup-plugin-uglify": "^1.0.2",
     "rsvp": "^3.2.1",
     "serve-static": "^1.11.1",
