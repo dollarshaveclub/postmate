@@ -3,20 +3,14 @@ sudo: false
 language: node_js
 
 node_js:
-  - 5
-  - 4
+  - 8
 
 before_install:
-  - npm config set spin false
   - npm install -g npm
-  - npm install -g bower
-  - bower --version
   - npm install phantomjs-prebuilt
-  - phantomjs --version
 
 install:
   - npm install
-  - bower install
 
 after_install:
   - npm run build
