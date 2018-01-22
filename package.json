@@ -22,7 +22,7 @@
     "eslint-plugin-react": "^6.10.3",
     "gulp": "^3.9.1",
     "gulp-eslint": "^3.0.1",
-    "gulp-mocha-phantomjs": "^0.11.0",
+    "gulp-mocha-phantomjs": "^0.12.2",
     "jest": "^22.0.0",
     "mocha": "^3.0.2",
     "mocha-phantomjs": "^4.1.0",
