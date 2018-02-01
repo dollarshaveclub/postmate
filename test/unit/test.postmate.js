@@ -1,4 +1,4 @@
-import Postmate from '../../src/postmate'
+import { Postmate } from '../../src/postmate'
 
 // Jest works
 test('Jest is working', () => expect(1).toBe(1))

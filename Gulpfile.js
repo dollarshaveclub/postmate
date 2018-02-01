@@ -43,7 +43,7 @@ const babelSetup = {
 
 gulp.task('do-build', () => rollup
     .rollup({
-      input: './src/postmate.js',
+      input: './src/index.js',
       plugins: [
         babel(babelSetup),
         uglify(uglifySetup)

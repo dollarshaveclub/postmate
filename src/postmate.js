@@ -375,4 +375,15 @@ Postmate.Model = class Model {
 }
 
 // Export
-export default Postmate
+export { 
+  _messageId,
+  ChildAPI, 
+  hasOwnProperty,
+  log,
+  maxHandshakeRequests,
+  messageId,
+  MESSAGE_TYPE,
+  ParentAPI,
+  Postmate,
+  resolveOrigin,
+}
