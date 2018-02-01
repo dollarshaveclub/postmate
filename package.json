@@ -19,6 +19,7 @@
     "eslint-module-utils": "^2.0.0",
     "eslint-plugin-import": "^2.2.0",
     "eslint-plugin-jsx-a11y": "^4.0.0",
+    "eslint-plugin-promise": "^3.6.0",
     "eslint-plugin-react": "^6.10.3",
     "gulp": "^3.9.1",
     "gulp-eslint": "^3.0.1",
