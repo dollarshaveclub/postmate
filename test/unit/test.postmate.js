@@ -1,4 +1,16 @@
-import { Postmate } from '../../src/postmate'
+import { 
+  ChildAPI,
+  hasOwnProperty,
+  log,
+  maxHandshakeRequests,
+  messageId,
+  message_type,
+  ParentAPI,
+  Postmate,
+  resolveOrigin,
+  resolveValue,
+  sanitize,
+} from '../../src/postmate'
 
 // Jest works
 test('Jest is working', () => expect(1).toBe(1))
