@@ -3,20 +3,20 @@
  * The type of messages our frames our sending
  * @type {String}
  */
-const MESSAGE_TYPE = 'application/x-postmate-v1+json'
+export const message_type = 'application/x-postmate-v1+json'
 
 /**
  * hasOwnProperty()
  * @type {Function}
  * @return {Boolean}
  */
-const hasOwnProperty = Object.prototype.hasOwnProperty
+export const hasOwnProperty = Object.prototype.hasOwnProperty
 
 /**
  * The maximum number of attempts to send a handshake request to the parent
  * @type {Number}
  */
-const maxHandshakeRequests = 5
+export const maxHandshakeRequests = 5
 
 /**
  * A unique message ID that is used to ensure responses are sent to the correct requests
@@ -28,25 +28,22 @@ let _messageId = 0
  * Increments and returns a message ID
  * @return {Number} A unique ID for a message
  */
-function messageId() {
-  return ++_messageId
-}
+export const messageId = () => ++_messageId
 
 /**
  * Postmate logging function that enables/disables via config
  * @param  {Object} ...args Rest Arguments
  */
-function log(...args) {
-  if (!Postmate.debug) return
-  console.log(...args) // eslint-disable-line no-console
-}
+// eslint-disable-line no-console
+export const log = (...args) => Postmate.debug ? console.log(...args) : null
+
 
 /**
  * Takes a URL and returns the origin
  * @param  {String} url The full URL being requested
  * @return {String}     The URLs origin
  */
-function resolveOrigin(url) {
+export const resolveOrigin = (url) => {
   const a = document.createElement('a')
   a.href = url
   return a.origin || `${a.protocol}//${a.hostname}`
@@ -58,11 +55,11 @@ function resolveOrigin(url) {
  * @param  {String} allowedOrigin The whitelisted origin
  * @return {Boolean}
  */
-function sanitize(message, allowedOrigin) {
+export const sanitize = (message, allowedOrigin) => {
   if (message.origin !== allowedOrigin) return false
   if (typeof message.data !== 'object') return false
   if (!('postmate' in message.data)) return false
-  if (message.data.type !== MESSAGE_TYPE) return false
+  if (message.data.type !== message_type) return false
   if (!{
     'handshake-reply': 1,
     call: 1,
@@ -81,7 +78,7 @@ function sanitize(message, allowedOrigin) {
  *                            passed to functions in the child model
  * @return {Promise}
  */
-function resolveValue(model, property) {
+export const resolveValue = (model, property) => {
   const unwrappedContext = typeof model[property] === 'function'
     ? model[property]() : model[property]
   return Postmate.Promise.resolve(unwrappedContext)
@@ -91,7 +88,7 @@ function resolveValue(model, property) {
  * Composes an API to be used by the parent
  * @param {Object} info Information on the consumer
  */
-class ParentAPI {
+export class ParentAPI {
 
   constructor(info) {
     this.parent = info.parent
@@ -136,7 +133,7 @@ class ParentAPI {
       // Then ask child for information
       this.child.postMessage({
         postmate: 'request',
-        type: MESSAGE_TYPE,
+        type: message_type,
         property,
         uid,
       }, this.childOrigin)
@@ -147,7 +144,7 @@ class ParentAPI {
     // Send information to the child
     this.child.postMessage({
       postmate: 'call',
-      type: MESSAGE_TYPE,
+      type: message_type,
       property,
       data,
     }, this.childOrigin)
@@ -168,7 +165,7 @@ class ParentAPI {
  * Composes an API to be used by the child
  * @param {Object} info Information on the consumer
  */
-class ChildAPI {
+export class ChildAPI {
 
   constructor(info) {
     this.model = info.model
@@ -197,7 +194,7 @@ class ChildAPI {
         .then(value => e.source.postMessage({
           property,
           postmate: 'reply',
-          type: MESSAGE_TYPE,
+          type: message_type,
           uid,
           value,
         }, e.origin))
@@ -208,7 +205,7 @@ class ChildAPI {
     log(`Child: Emitting Event "${name}"`, data)
     this.parent.postMessage({
       postmate: 'emit',
-      type: MESSAGE_TYPE,
+      type: message_type,
       value: {
         name,
         data,
@@ -288,7 +285,7 @@ class Postmate {
         log(`Parent: Sending handshake attempt ${attempt}`, { childOrigin })
         this.child.postMessage({
           postmate: 'handshake',
-          type: MESSAGE_TYPE,
+          type: message_type,
           model: this.model,
         }, childOrigin)
 
@@ -348,7 +345,7 @@ Postmate.Model = class Model {
           log('Child: Sending handshake reply to Parent')
           e.source.postMessage({
             postmate: 'handshake-reply',
-            type: MESSAGE_TYPE,
+            type: message_type,
           }, e.origin)
           this.parentOrigin = e.origin
 
@@ -374,16 +371,4 @@ Postmate.Model = class Model {
   }
 }
 
-// Export
-export { 
-  _messageId,
-  ChildAPI, 
-  hasOwnProperty,
-  log,
-  maxHandshakeRequests,
-  messageId,
-  MESSAGE_TYPE,
-  ParentAPI,
-  Postmate,
-  resolveOrigin,
-}
+export { Postmate }
