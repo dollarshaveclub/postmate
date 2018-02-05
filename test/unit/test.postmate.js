@@ -33,11 +33,44 @@ test('ChildAPI class is ready to rock', () => {
   expect(typeof ChildAPI.emit !== 'undefined')
 })
 
-test('log func is ready to rock', () => {
-  expect(typeof log !== 'undefined')
-  expect(typeof ChildAPI).toBe('function')
+test('hasOwnProperty fun is ready to rock', () => {
+  expect(typeof hasOwnProperty !== 'undefined')
+  expect(typeof hasOwnProperty).toBe('function')
 })
 
+test('log func is ready to rock', () => {
+  expect(typeof log !== 'undefined')
+  expect(typeof log).toBe('function')
+})
+
+test('maxHandshakeRequests class is ready to rock', () => {
+  expect(maxHandshakeRequests === 5)
+})
+
+test('messageId class is ready to rock', () => {
+  expect(typeof messageId !== 'undefined')
+})
+
+test('message_type class is ready to rock', () => {
+  expect(typeof message_type !== 'undefined')
+})
+
+test('ParentAPI class is ready to rock', () => {
+  expect(typeof ParentAPI !== 'undefined')
+  expect(typeof ParentAPI).toBe('function')
+})
+
+test('resolveOrigin class is ready to rock', () => {
+  expect(typeof resolveOrigin !== 'undefined')
+})
+
+test('resolveValue class is ready to rock', () => {
+  expect(typeof resolveValue !== 'undefined')
+})
+
+test('sanitize class is ready to rock', () => {
+  expect(typeof sanitize !== 'undefined')
+})
 
 // test mocks
 // the tests below test the interworkings of Postmate methods
@@ -50,4 +83,28 @@ test('Postmate mocking', () => {
   })
   expect(typeof test.debug === true)
   expect(typeof test).toBe('object')
+})
+
+test('ChildAPI mocking', () => {
+  Postmate.debug = true
+  const info = {
+    model: { foo: 'bar' },
+    parent: document.body,
+    parentOrigin: 'https://parent.com',
+    child: document.body,
+  }
+  const childMock = new ChildAPI(info)
+  expect(typeof childMock).toBe('object')
+})
+
+test('ParentAPI mocking', () => {
+  Postmate.debug = true
+  const info = {
+    model: { foo: 'bar' },
+    parent: document.body,
+    parentOrigin: 'https://parent.com',
+    child: document.body,
+  }
+  const parentMock = new ParentAPI(info)
+  expect(typeof parentMock).toBe('object')
 })
