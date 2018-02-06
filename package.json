@@ -1,6 +1,6 @@
 {
   "name": "postmate",
-  "version": "1.1.9",
+  "version": "1.2.0",
   "description": "A powerful, simple, promise-based postMessage library",
   "main": "build/postmate.min.js",
   "files": [
@@ -11,19 +11,17 @@
     "babel-plugin-transform-class-properties": "^6.11.5",
     "babel-preset-es2015": "^6.24.1",
     "chai": "^3.5.0",
+    "codecov": "^3.0.0",
     "connect": "^3.4.1",
     "es-check": "^2.0.0",
-    "eslint": "^3.19.0",
-    "eslint-config-airbnb": "^14.1.0",
-    "eslint-module-utils": "^2.0.0",
-    "eslint-plugin-import": "^2.2.0",
-    "eslint-plugin-jsx-a11y": "^4.0.0",
-    "eslint-plugin-react": "^6.10.3",
+    "eslint": "^4.17.0",
+    "eslint-config-dollarshaveclub": "^3.0.4",
     "gulp": "^3.9.1",
-    "gulp-eslint": "^3.0.1",
-    "gulp-mocha-phantomjs": "^0.11.0",
+    "gulp-mocha-phantomjs": "^0.12.2",
+    "jest": "^22.0.0",
     "mocha": "^3.0.2",
     "mocha-phantomjs": "^4.1.0",
+    "nyc": "^11.3.0",
     "rollup": "^0.51.5",
     "rollup-plugin-babel": "^2.7.1",
     "rollup-plugin-cleanup": "^2.0.0",
@@ -34,13 +32,17 @@
     "vinyl-source-stream": "^1.1.0"
   },
   "scripts": {
-    "eslint": "eslint --fix .",
-    "test": "gulp test",
+    "eslint": "eslint . --fix .",
+    "test": "npm run test:unit && npm run test:acceptance",
     "test:es-check": "es-check es5 build/*.js",
+    "test:unit": "nyc jest --coverage",
+    "test:acceptance": "gulp test --coverage",
     "build": "gulp build",
     "build-watch": "gulp build-watch",
-    "lint": "gulp lint",
     "postpublish": "git tag $npm_package_version && git push origin --tags"
+  },
+  "jest": {
+    "testRegex": "./test/unit/.*.js$"
   },
   "repository": {
     "type": "git",
