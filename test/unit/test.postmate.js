@@ -1,4 +1,4 @@
-import { 
+import {
   ChildAPI,
   hasOwnProperty,
   log,
@@ -24,7 +24,6 @@ test('Postmate class is ready to rock', () => {
   expect(typeof Postmate.Model).toBe('function')
   expect(typeof Postmate.Promise !== 'undefined')
   expect(typeof Postmate.Promise).toBe('function')
-  expect(typeof Postmate.debug === false)
 })
 
 test('ChildAPI class is ready to rock', () => {
@@ -79,9 +78,9 @@ test('Postmate mocking', () => {
   const test = new Postmate({
     container: document.body,
     url: 'http://child.com/',
-    model: { foo: 'bar' }
+    model: { foo: 'bar' },
   })
-  expect(typeof test.debug === true)
+  expect(test.debug === true)
   expect(typeof test).toBe('object')
 })
 

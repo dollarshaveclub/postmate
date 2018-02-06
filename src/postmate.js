@@ -34,9 +34,7 @@ export const messageId = () => ++_messageId
  * Postmate logging function that enables/disables via config
  * @param  {Object} ...args Rest Arguments
  */
-// eslint-disable-line no-console
-export const log = (...args) => Postmate.debug ? console.log(...args) : null
-
+export const log = (...args) => Postmate.debug ? console.log(...args) : null // eslint-disable-line no-console
 
 /**
  * Takes a URL and returns the origin
@@ -89,8 +87,7 @@ export const resolveValue = (model, property) => {
  * @param {Object} info Information on the consumer
  */
 export class ParentAPI {
-
-  constructor(info) {
+  constructor (info) {
     this.parent = info.parent
     this.frame = info.frame
     this.child = info.child
@@ -115,8 +112,7 @@ export class ParentAPI {
     log('Parent: Awaiting event emissions from Child')
   }
 
-
-  get(property) {
+  get (property) {
     return new Postmate.Promise((resolve) => {
       // Extract data from response and kill listeners
       const uid = messageId()
@@ -140,7 +136,7 @@ export class ParentAPI {
     })
   }
 
-  call(property, data) {
+  call (property, data) {
     // Send information to the child
     this.child.postMessage({
       postmate: 'call',
@@ -150,11 +146,11 @@ export class ParentAPI {
     }, this.childOrigin)
   }
 
-  on(eventName, callback) {
+  on (eventName, callback) {
     this.events[eventName] = callback
   }
 
-  destroy() {
+  destroy () {
     log('Parent: Destroying Postmate instance')
     window.removeEventListener('message', this.listener, false)
     this.frame.parentNode.removeChild(this.frame)
@@ -166,8 +162,7 @@ export class ParentAPI {
  * @param {Object} info Information on the consumer
  */
 export class ChildAPI {
-
-  constructor(info) {
+  constructor (info) {
     this.model = info.model
     this.parent = info.parent
     this.parentOrigin = info.parentOrigin
@@ -201,7 +196,7 @@ export class ChildAPI {
     })
   }
 
-  emit(name, data) {
+  emit (name, data) {
     log(`Child: Emitting Event "${name}"`, data)
     this.parent.postMessage({
       postmate: 'emit',
@@ -219,8 +214,7 @@ export class ChildAPI {
  * @type {Class}
  */
 class Postmate {
-
-  static debug = false
+  static debug = false // eslint-disable-line no-undef
 
   // Internet Explorer craps itself
   static Promise = (() => {
@@ -236,9 +230,9 @@ class Postmate {
    * @param {Object} userOptions The element to inject the frame into, and the url
    * @return {Promise}
    */
-  constructor(userOptions) {
+  constructor (userOptions) {
     const {
-      container = typeof container !== 'undefined' ? container : document.body,
+      container = typeof container !== 'undefined' ? container : document.body, // eslint-disable-line no-use-before-define
       model,
       url,
     } = userOptions
@@ -256,7 +250,7 @@ class Postmate {
    * @param  {String} url The URL to send a handshake request to
    * @return {Promise}     Promise that resolves when the handshake is complete
    */
-  sendHandshake(url) {
+  sendHandshake (url) {
     const childOrigin = resolveOrigin(url)
     let attempt = 0
     let responseInterval
@@ -316,13 +310,12 @@ class Postmate {
  * @type {Class}
  */
 Postmate.Model = class Model {
-
   /**
    * Initializes the child, model, parent, and responds to the Parents handshake
    * @param {Object} model Hash of values, functions, or promises
    * @return {Promise}       The Promise that resolves when the handshake has been received
    */
-  constructor(model) {
+  constructor (model) {
     this.child = window
     this.model = model
     this.parent = this.child.parent
@@ -333,11 +326,11 @@ Postmate.Model = class Model {
    * Responds to a handshake initiated by the Parent
    * @return {Promise} Resolves an object that exposes an API for the Child
    */
-  sendHandshakeReply() {
+  sendHandshakeReply () {
     return new Postmate.Promise((resolve, reject) => {
       const shake = (e) => {
         if (!e.data.postmate) {
-          return;
+          return
         }
         if (e.data.postmate === 'handshake') {
           log('Child: Received handshake from Parent')

@@ -1,8 +1,6 @@
-/* eslint import/no-extraneous-dependencies: 0 */
 const babel = require('rollup-plugin-babel')
 const rollup = require('rollup')
 const connect = require('connect')
-const eslint = require('gulp-eslint')
 const fs = require('fs')
 const gulp = require('gulp')
 const http = require('http')
@@ -11,8 +9,8 @@ const path = require('path')
 const serveStatic = require('serve-static')
 const uglify = require('rollup-plugin-uglify')
 
-var parentServer // eslint-disable-line no-var
-var childServer // eslint-disable-line no-var
+let parentServer 
+let childServer 
 
 const pkg = require('./package.json')
 
@@ -68,14 +66,6 @@ gulp.task('update-readme', () => {
   )
   fs.writeFileSync(readme, updated)
 })
-
-gulp.task('lint', () =>
-  gulp
-    .src(['**/*.js', '!node_modules/**', '!build/**'])
-    .pipe(eslint())
-    .pipe(eslint.format())
-    .pipe(eslint.failAfterError())
-)
 
 gulp.task('parent-test-server', (done) => {
   parentServer = http
