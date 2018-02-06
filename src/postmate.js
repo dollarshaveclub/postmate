@@ -3,14 +3,14 @@
  * The type of messages our frames our sending
  * @type {String}
  */
-export const message_type = 'application/x-postmate-v1+json'
+export const messsageType = 'application/x-postmate-v1+json'
 
 /**
  * hasOwnProperty()
  * @type {Function}
  * @return {Boolean}
  */
-export const hasOwnProperty = Object.prototype.hasOwnProperty
+const hasOwnProperty = Object.prototype.hasOwnProperty
 
 /**
  * The maximum number of attempts to send a handshake request to the parent
@@ -57,7 +57,7 @@ export const sanitize = (message, allowedOrigin) => {
   if (message.origin !== allowedOrigin) return false
   if (typeof message.data !== 'object') return false
   if (!('postmate' in message.data)) return false
-  if (message.data.type !== message_type) return false
+  if (message.data.type !== messsageType) return false
   if (!{
     'handshake-reply': 1,
     call: 1,
@@ -129,7 +129,7 @@ export class ParentAPI {
       // Then ask child for information
       this.child.postMessage({
         postmate: 'request',
-        type: message_type,
+        type: messsageType,
         property,
         uid,
       }, this.childOrigin)
@@ -140,7 +140,7 @@ export class ParentAPI {
     // Send information to the child
     this.child.postMessage({
       postmate: 'call',
-      type: message_type,
+      type: messsageType,
       property,
       data,
     }, this.childOrigin)
@@ -189,7 +189,7 @@ export class ChildAPI {
         .then(value => e.source.postMessage({
           property,
           postmate: 'reply',
-          type: message_type,
+          type: messsageType,
           uid,
           value,
         }, e.origin))
@@ -200,7 +200,7 @@ export class ChildAPI {
     log(`Child: Emitting Event "${name}"`, data)
     this.parent.postMessage({
       postmate: 'emit',
-      type: message_type,
+      type: messsageType,
       value: {
         name,
         data,
@@ -230,12 +230,11 @@ class Postmate {
    * @param {Object} userOptions The element to inject the frame into, and the url
    * @return {Promise}
    */
-  constructor (userOptions) {
-    const {
+  constructor ({
       container = typeof container !== 'undefined' ? container : document.body, // eslint-disable-line no-use-before-define
       model,
       url,
-    } = userOptions
+    } = userOptions) {
     this.parent = window
     this.frame = document.createElement('iframe')
     container.appendChild(this.frame)
@@ -279,7 +278,7 @@ class Postmate {
         log(`Parent: Sending handshake attempt ${attempt}`, { childOrigin })
         this.child.postMessage({
           postmate: 'handshake',
-          type: message_type,
+          type: messsageType,
           model: this.model,
         }, childOrigin)
 
@@ -338,7 +337,7 @@ Postmate.Model = class Model {
           log('Child: Sending handshake reply to Parent')
           e.source.postMessage({
             postmate: 'handshake-reply',
-            type: message_type,
+            type: messsageType,
           }, e.origin)
           this.parentOrigin = e.origin
 

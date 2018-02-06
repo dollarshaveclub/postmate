@@ -1,6 +1,5 @@
 import {
   ChildAPI,
-  hasOwnProperty,
   log,
   maxHandshakeRequests,
   messageId,
@@ -30,11 +29,6 @@ test('ChildAPI class is ready to rock', () => {
   expect(typeof ChildAPI !== 'undefined')
   expect(typeof ChildAPI).toBe('function')
   expect(typeof ChildAPI.emit !== 'undefined')
-})
-
-test('hasOwnProperty fun is ready to rock', () => {
-  expect(typeof hasOwnProperty !== 'undefined')
-  expect(typeof hasOwnProperty).toBe('function')
 })
 
 test('log func is ready to rock', () => {
