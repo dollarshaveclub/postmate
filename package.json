@@ -32,14 +32,13 @@
     "vinyl-source-stream": "^1.1.0"
   },
   "scripts": {
-    "eslint": "eslint --fix .",
+    "eslint": "eslint . --fix .",
     "test": "npm run test:unit && npm run test:acceptance",
     "test:es-check": "es-check es5 build/*.js",
     "test:unit": "nyc jest --coverage",
     "test:acceptance": "gulp test --coverage",
     "build": "gulp build",
     "build-watch": "gulp build-watch",
-    "lint": "eslint . --fix",
     "postpublish": "git tag $npm_package_version && git push origin --tags"
   },
   "jest": {
