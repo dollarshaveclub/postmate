@@ -1,60 +1,12 @@
-const babel = require('rollup-plugin-babel')
-const rollup = require('rollup')
 const connect = require('connect')
-const fs = require('fs')
 const gulp = require('gulp')
 const http = require('http')
 const mochaPhantomJS = require('gulp-mocha-phantomjs')
 const path = require('path')
 const serveStatic = require('serve-static')
-const uglify = require('rollup-plugin-uglify')
 
 let parentServer 
 let childServer 
-
-const pkg = require('./package.json')
-
-const banner = `/**
-  * ${pkg.name} - ${pkg.description}
-  * @version ${pkg.version}
-  * @link ${pkg.homepage}
-  * @author ${pkg.author}
-  * @license ${pkg.license} */
-`
-const uglifySetup = {
-  output: {
-    comments(node, comment) {
-      const text = comment.value
-      const type = comment.type
-      if (type === 'comment2') return /@preserve|@license|@cc_on/i.test(text)
-      return false
-    }
-  }
-}
-
-const babelSetup = {
-  babelrc: false,
-  presets: [['es2015', { modules: false }]],
-  plugins: ["transform-class-properties"],
-  exclude: 'node_modules/**'
-}
-
-gulp.task('do-build', () => rollup
-    .rollup({
-      input: './src/index.js',
-      plugins: [
-        babel(babelSetup),
-        uglify(uglifySetup)
-      ],
-      treeshake: false
-    })
-    .then(bundle => bundle.write({
-      file: 'build/postmate.min.js',
-      format: 'umd',
-      name: 'Postmate',
-      banner,
-      sourcemap: false
-    })))
 
 gulp.task('update-readme', () => {
   const readme = path.join(__dirname, 'README.md')
