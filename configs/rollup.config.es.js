@@ -17,9 +17,9 @@ export default {
   treeshake: false,
   output: {
     banner,
-    file: 'build/postmate.min.js',
-    format: 'umd',
-    name,
+    file: 'build/postmate.es.js',
+    format: 'es',
+    name: 'Postmate',
     sourcemap: false
   }
 }

@@ -9,7 +9,8 @@ import {
 
 const babelSetup = {
   babelrc: false,
-  presets: [['env', { modules: false }]],
+  presets: [['es2015', { modules: false }]],
+  plugins: ["transform-class-properties"],
   exclude: 'node_modules/**'
 }
 
