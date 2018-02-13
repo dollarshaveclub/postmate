@@ -1,10 +1,11 @@
 {
   "name": "postmate",
-  "version": "1.2.0",
+  "version": "1.3.0",
   "description": "A powerful, simple, promise-based postMessage library",
   "main": "build/postmate.min.js",
   "files": [
-    "build"
+    "build",
+    "src"
   ],
   "devDependencies": {
     "babel-eslint": "^7.2.2",
@@ -22,10 +23,9 @@
     "mocha": "^3.0.2",
     "mocha-phantomjs": "^4.1.0",
     "nyc": "^11.3.0",
-    "rollup": "^0.51.5",
-    "rollup-plugin-babel": "^2.7.1",
-    "rollup-plugin-cleanup": "^2.0.0",
-    "rollup-plugin-uglify": "^1.0.2",
+    "rollup": "^0.55.5",
+    "rollup-plugin-babel": "^3.0.3",
+    "rollup-plugin-uglify": "^3.0.0",
     "rsvp": "^3.2.1",
     "serve-static": "^1.11.1",
     "uglify-js": "^2.7.0",
@@ -37,8 +37,10 @@
     "test:es-check": "es-check es5 build/*.js",
     "test:unit": "nyc jest --coverage",
     "test:acceptance": "gulp test --coverage",
-    "build": "gulp build",
-    "build-watch": "gulp build-watch",
+    "build": "npm run build:es && npm run build:standard && npm run build:readme",
+    "build:readme": "node ./scripts/update-readme.js",
+    "build:es": "rollup --config configs/rollup.config.es.js",
+    "build:standard": "rollup --config configs/rollup.config.standard.js",
     "postpublish": "git tag $npm_package_version && git push origin --tags"
   },
   "jest": {
