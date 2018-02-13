@@ -38,7 +38,7 @@
     "test:unit": "nyc jest --coverage",
     "test:acceptance": "gulp test --coverage",
     "build": "npm run build:es && npm run build:standard && npm run build:readme",
-    "build:readme": "node ./configs/readme.js",
+    "build:readme": "node ./scripts/update-readme.js",
     "build:es": "rollup --config configs/rollup.config.es.js",
     "build:standard": "rollup --config configs/rollup.config.standard.js",
     "postpublish": "git tag $npm_package_version && git push origin --tags"
