@@ -12,7 +12,6 @@ export default {
     babel(babelSetup),
     uglify(uglifyOutput),
   ],
-  treeshake: false,
   output: {
     banner,
     file: 'build/postmate.min.js',

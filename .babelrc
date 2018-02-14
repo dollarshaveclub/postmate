@@ -1,6 +1,7 @@
 {
   "presets": [
     ["@babel/preset-env", {
+      "loose": true,
       "targets": {
         "browsers": [
           "defaults",
@@ -9,5 +10,5 @@
       }
     }]
   ],
-  "plugins": ["@babel/plugin-proposal-class-properties"]
+  "plugins": [["@babel/plugin-proposal-class-properties", { "loose": true }]]
 }

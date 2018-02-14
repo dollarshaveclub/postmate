@@ -7,14 +7,21 @@ import {
   version,
 } from '../package.json'
 
+const loose = true
+
 const babelSetup = {
   babelrc: false,
-  presets: [['@babel/preset-env', { modules: false }]],
-  plugins: ['@babel/plugin-proposal-class-properties'],
+  presets: [['@babel/preset-env', { modules: false, loose }]],
+  plugins: [['@babel/plugin-proposal-class-properties', { loose }]],
   exclude: 'node_modules/**',
 }
 
 const uglifyOutput = {
+  compress: {
+    pure_getters: true,
+    unsafe: true,
+  },
+  toplevel: true,
   output: {
     comments: function (node, comment) { // eslint-disable-line func-names
       const text = comment.value
