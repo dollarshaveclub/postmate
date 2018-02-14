@@ -4,27 +4,27 @@ import {
   homepage,
   license,
   name,
-  version
+  version,
 } from '../package.json'
 
 const babelSetup = {
   babelrc: false,
-  presets: [['es2015', { modules: false }]],
-  plugins: ["transform-class-properties"],
-  exclude: 'node_modules/**'
+  presets: [['@babel/preset-env', { modules: false }]],
+  plugins: ['@babel/plugin-proposal-class-properties'],
+  exclude: 'node_modules/**',
 }
 
 const uglifyOutput = {
   output: {
-    comments: function (node, comment) {
+    comments: function (node, comment) { // eslint-disable-line func-names
       const text = comment.value
       const type = comment.type
       if (type === 'comment2') {
         // multiline comment
         return /@preserve|@license|@cc_on/i.test(text)
       }
-    }
-  }
+    },
+  },
 }
 
 const banner = `/**
@@ -40,5 +40,5 @@ export {
   banner,
   name,
   uglifyOutput,
-  version
+  version,
 }

@@ -1,4 +1,13 @@
 {
-  "presets":  [ "es2015" ],
-  "plugins": ["transform-class-properties"]
+  "presets": [
+    ["@babel/preset-env", {
+      "targets": {
+        "browsers": [
+          "defaults",
+          "ie >= 11"
+        ]
+      }
+    }]
+  ],
+  "plugins": ["@babel/plugin-proposal-class-properties"]
 }
