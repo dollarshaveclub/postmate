@@ -68,6 +68,6 @@
   "homepage": "https://github.com/dollarshaveclub/postmate",
   "browserslist": [
     "defaults",
-    "ie >= 9"
+    "ie >= 11"
   ]
 }
