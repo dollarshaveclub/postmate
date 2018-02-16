@@ -29,6 +29,8 @@ You can download the compiled javascript directly [here](/build/postmate.min.js)
 ***
 
 ## Features
+
+[![Greenkeeper badge](https://badges.greenkeeper.io/dollarshaveclub/postmate.svg)](https://greenkeeper.io/)
 * Promise-based API for elegant and simple communication.
 * Secure two-way parent <-> child handshake, with message validation.
 * Child exposes a retrievable `model` object that the parent can access.
