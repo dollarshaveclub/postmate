@@ -34,7 +34,7 @@
   },
   "scripts": {
     "eslint": "eslint . --fix .",
-    "test": "npm run test:unit && npm run test:acceptance",
+    "test": "npm run test:unit && npm run test:acceptance && npm run test:es-check",
     "test:es-check": "es-check es5 build/*.js",
     "test:unit": "nyc jest --coverage",
     "test:acceptance": "gulp test --coverage",
