@@ -4,27 +4,16 @@ import {
   homepage,
   license,
   name,
-  version
+  version,
 } from '../package.json'
+
+const loose = true
 
 const babelSetup = {
   babelrc: false,
-  presets: [['es2015', { modules: false }]],
-  plugins: ["transform-class-properties"],
-  exclude: 'node_modules/**'
-}
-
-const uglifyOutput = {
-  output: {
-    comments: function (node, comment) {
-      const text = comment.value
-      const type = comment.type
-      if (type === 'comment2') {
-        // multiline comment
-        return /@preserve|@license|@cc_on/i.test(text)
-      }
-    }
-  }
+  presets: [['@babel/preset-env', { modules: false, loose }]],
+  plugins: [['@babel/plugin-proposal-class-properties', { loose }]],
+  exclude: 'node_modules/**',
 }
 
 const banner = `/**
@@ -39,6 +28,5 @@ export {
   babelSetup,
   banner,
   name,
-  uglifyOutput,
-  version
+  version,
 }
