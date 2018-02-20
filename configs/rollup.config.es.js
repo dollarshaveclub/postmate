@@ -9,7 +9,6 @@ export default {
   plugins: [
     babel(babelSetup),
   ],
-  treeshake: false,
   output: {
     banner,
     file: 'build/postmate.es.js',
