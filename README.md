@@ -29,13 +29,15 @@ You can download the compiled javascript directly [here](/build/postmate.min.js)
 ***
 
 ## Features
+
+[![Greenkeeper badge](https://badges.greenkeeper.io/dollarshaveclub/postmate.svg)](https://greenkeeper.io/)
 * Promise-based API for elegant and simple communication.
 * Secure two-way parent <-> child handshake, with message validation.
 * Child exposes a retrievable `model` object that the parent can access.
 * Child emits events that the parent can listen to.
 * Parent can `call` functions within a `child`
 * *Zero* dependencies. Provide your own polyfill or abstraction for the `Promise` API if needed.
-* Lightweight, weighing in at ~ <span class="size">`5.4kb`</span>.
+* Lightweight, weighing in at ~ <span class="size">`4.8kb`</span>.
 
 ## Installing
 Postmate can be installed via NPM or Bower.
