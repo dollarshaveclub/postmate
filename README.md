@@ -150,15 +150,13 @@ Name | Type | Description | Default
 > ## `Postmate.Model(model)`
 
 
-> ```javascript
+```javascript
 // child.com
 new Postmate.Model({
   // Serializable values
   foo: "bar",
->
   // Functions
   height: () => document.height || document.body.offsetHeight,
->
   // Promises
   data: fetch(new Request('data.json'))
 });
