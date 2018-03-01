@@ -3,6 +3,7 @@
   "version": "1.4.0",
   "description": "A powerful, simple, promise-based postMessage library",
   "main": "build/postmate.min.js",
+  "module": "build/postmate.es.js",
   "files": [
     "build",
     "src"
