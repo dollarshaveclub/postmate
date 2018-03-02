@@ -3,7 +3,7 @@
  * The type of messages our frames our sending
  * @type {String}
  */
-export const messsageType = 'application/x-postmate-v1+json'
+export const messageType = 'application/x-postmate-v1+json'
 
 /**
  * hasOwnProperty()
