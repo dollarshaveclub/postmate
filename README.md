@@ -5,14 +5,11 @@
 > A powerful, simple, promise-based `postMessage` library.
 
 [![npm][npm-image]][npm-url]
-[![bower][bower-image]][bower-url]
 [![Build Status](https://travis-ci.org/dollarshaveclub/postmate.svg?branch=master)](https://travis-ci.org/dollarshaveclub/postmate)
 [![Share](https://img.shields.io/twitter/url/http/shields.io.svg?style=social)](https://twitter.com/home?status=Postmate%3A%20A%20powerful,%20simple,%20promise-based%20postMessage%20library%20https%3A//github.com/dollarshaveclub/postmate%20via%20%40DSCEngineering%20%40javascript)
 
 [npm-image]: https://badge.fury.io/js/postmate.svg
 [npm-url]: https://www.npmjs.com/package/postmate
-[bower-image]: https://badge.fury.io/bo/postmate.svg
-[bower-url]: https://github.com/dollarshaveclub/postmate
 
 _Postmate_ is a promise-based API built on `postMessage`. It allows a parent page to speak with a child `iFrame` across origins with minimal effort.
 
@@ -49,11 +46,6 @@ $ yarn add postmate # Install via Yarn
 
 ```bash
 $ npm i postmate --save # Install via NPM
-```
-
-**bower**
-```bash
-$ bower i postmate --save # Install via Bower
 ```
 
 ## Glossary
