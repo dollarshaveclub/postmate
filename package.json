@@ -4,7 +4,7 @@
   "description": "A powerful, simple, promise-based postMessage library",
   "main": "build/postmate.js",
   "module": "build/postmate.es.js",
-  "unpkg": "build/postmate.min.js"
+  "unpkg": "build/postmate.min.js",
   "files": [
     "build",
     "src"
