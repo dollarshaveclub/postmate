@@ -5,6 +5,8 @@
   @author Jacob Kelley <jakie8@gmail.com>
   @license MIT
 **/
+'use strict';
+
 /**
  * The type of messages our frames our sending
  * @type {String}
@@ -485,4 +487,4 @@ function () {
   return Model;
 }();
 
-export default Postmate;
+module.exports = Postmate;
