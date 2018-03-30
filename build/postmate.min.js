@@ -1,5 +1,5 @@
 /**
-  postmate - A powerful, simple, promise-based postMessage library
+  @livechat/postmate - A powerful, simple, promise-based postMessage library
   @version v1.5.0
   @link https://github.com/dollarshaveclub/postmate
   @author Jacob Kelley <jakie8@gmail.com>
