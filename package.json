@@ -39,11 +39,12 @@
     "vinyl-source-stream": "^2.0.0"
   },
   "scripts": {
-    "eslint": "eslint . --fix .",
+    "eslint": "eslint . --fix",
+    "eslint:ci": "eslint .",
     "test": "npm run test:unit && npm run test:acceptance && npm run test:es-check",
     "test:es-check": "es-check es5 build/postmate.min.js",
-    "test:unit": "nyc jest --coverage",
-    "test:acceptance": "gulp test --coverage",
+    "test:unit": "jest --coverage",
+    "test:acceptance": "gulp test",
     "build": "npm run build:dist && npm run build:readme",
     "build:readme": "node ./scripts/update-readme.js",
     "build:dist": "rollup --config configs/rollup.config.js",

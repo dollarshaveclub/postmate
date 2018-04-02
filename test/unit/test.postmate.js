@@ -3,7 +3,7 @@ import {
   log,
   maxHandshakeRequests,
   messageId,
-  message_type,
+  messageType,
   ParentAPI,
   Postmate,
   resolveOrigin,
@@ -13,6 +13,10 @@ import {
 
 // Jest works
 test('Jest is working', () => expect(1).toBe(1))
+
+test('Message Type', () => expect(messageType).toBe('application/x-postmate-v1+json'))
+
+test('messageId', () => expect(!isNaN(messageId())).toBe(true))
 
 // test API
 // the tests below test the API generally
@@ -101,3 +105,5 @@ test('ParentAPI mocking', () => {
   const parentMock = new ParentAPI(info)
   expect(typeof parentMock).toBe('object')
 })
+
+
