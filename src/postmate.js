@@ -22,13 +22,13 @@ export const maxHandshakeRequests = 5
  * A unique message ID that is used to ensure responses are sent to the correct requests
  * @type {Number}
  */
-let _messageId = 0
+const _messageId = 0
 
 /**
  * Increments and returns a message ID
  * @return {Number} A unique ID for a message
  */
-export const messageId = () => ++_messageId
+export const messageId = () => _messageId + 1
 
 /**
  * Postmate logging function that enables/disables via config
@@ -229,14 +229,12 @@ export class ChildAPI {
  * @type {Class}
  */
 class Postmate {
-  static debug = false // eslint-disable-line no-undef
-
   // Internet Explorer craps itself
   static Promise = (() => {
     try {
       return window ? window.Promise : Promise
     } catch (e) {
-      return null
+      return log('Promise: error', e)
     }
   })()
 
