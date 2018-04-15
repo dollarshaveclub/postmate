@@ -104,6 +104,7 @@ test('ChildAPI mocking', () => {
     parent: document.body,
     parentOrigin: 'https://parent.com',
     child: document.body,
+    source: window,
   }
   const childMock = new ChildAPI(info)
   expect(typeof childMock).toBe('object')
@@ -116,6 +117,7 @@ test('ParentAPI mocking', () => {
     parent: document.body,
     parentOrigin: 'https://parent.com',
     child: document.body,
+    source: window,
   }
   const parentMock = new ParentAPI(info)
   expect(typeof parentMock).toBe('object')
