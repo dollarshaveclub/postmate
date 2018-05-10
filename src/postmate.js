@@ -44,7 +44,7 @@ export const log = (...args) => Postmate.debug ? console.log(...args) : null // 
 export const resolveOrigin = (url) => {
   const a = document.createElement('a')
   a.href = url
-  return a.origin || `${a.protocol}//${a.hostname}`
+  return a.origin || `${a.protocol}//${a.host}`
 }
 
 /**
