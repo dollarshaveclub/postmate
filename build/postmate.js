@@ -59,7 +59,7 @@ var log = function log() {
 var resolveOrigin = function resolveOrigin(url) {
   var a = document.createElement('a');
   a.href = url;
-  return a.origin || a.protocol + "//" + a.hostname;
+  return a.origin || a.protocol + "//" + a.host;
 };
 /**
  * Ensures that a message is safe to interpret
