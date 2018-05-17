@@ -57,7 +57,9 @@ var log = function log() {
 var resolveOrigin = function resolveOrigin(url) {
   var a = document.createElement('a');
   a.href = url;
-  return a.origin || a.protocol + "//" + a.hostname;
+  var protocol = a.protocol.length > 4 ? a.protocol : window.location.protocol;
+  var host = a.host.length ? a.port === '80' || a.port === '443' ? a.hostname : a.host : window.location.host;
+  return a.origin || protocol + "//" + host;
 };
 /**
  * Ensures that a message is safe to interpret
