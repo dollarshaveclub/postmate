@@ -248,7 +248,6 @@ class Postmate {
    * @return {Promise}
    */
   constructor ({
-    container = typeof container !== 'undefined' ? container : document.body, // eslint-disable-line no-use-before-define
     model,
     url,
   } = userOptions) { // eslint-disable-line no-undef
@@ -256,9 +255,8 @@ class Postmate {
     this.model = model || {}
 
     return this.bodyReady()
-        .then(() => this.createIframe())
+        .then(body => this.createIframe(body))
         .then(frame => {
-          container.appendChild(frame)
           this.frame = frame
           this.child = frame.contentWindow || frame.contentDocument.parentWindow
         })
@@ -284,17 +282,12 @@ class Postmate {
     })
   }
 
-  createIframe () {
+  createIframe (body) {
     const iframe = document.createElement('iframe')
-    iframe.setAttribute('style', 'display: none; margin: 0; padding: 0; border: 0px none; overflow: hidden;')
-    iframe.setAttribute('frameborder', '0')
-    iframe.setAttribute('border', '0')
-    iframe.setAttribute('scrolling', 'no')
-    iframe.setAttribute('allowTransparency', 'true')
-    iframe.setAttribute('tabindex', '-1')
-    iframe.setAttribute('hidden', 'true')
-    iframe.setAttribute('title', '')
-    iframe.setAttribute('role', 'presentation')
+    iframe.setAttribute('style', 'display: none; visibility: hidden;')
+    iframe.setAttribute('width', '0')
+    iframe.setAttribute('height', '0')
+    body.appendChild(iframe)
     return iframe
   }
 
