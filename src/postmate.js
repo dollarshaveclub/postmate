@@ -253,12 +253,49 @@ class Postmate {
     url,
   } = userOptions) { // eslint-disable-line no-undef
     this.parent = window
-    this.frame = document.createElement('iframe')
-    container.appendChild(this.frame)
-    this.child = this.frame.contentWindow || this.frame.contentDocument.parentWindow
     this.model = model || {}
 
-    return this.sendHandshake(url)
+    return this.bodyReady()
+        .then(() => this.createIframe())
+        .then(frame => {
+          container.appendChild(frame)
+          this.frame = frame
+          this.child = frame.contentWindow || frame.contentDocument.parentWindow
+        })
+        .then(() => this.sendHandshake(url))
+  }
+
+  /**
+   * Ensure document body is ready
+   * @return {Promise}     Promise that resolves when document body is ready
+   */
+  bodyReady () {
+    return new Postmate.Promise(resolve => {
+      if (document && document.body) {
+        return resolve(document.body);
+      }
+
+      let interval = setInterval(() => {
+        if (document && document.body) {
+          clearInterval(interval);
+          return resolve(document.body);
+        }
+      }, 10);
+    })
+  }
+
+  createIframe () {
+    const iframe = document.createElement('iframe')
+    iframe.setAttribute('style', 'display: none; margin: 0; padding: 0; border: 0px none; overflow: hidden;')
+    iframe.setAttribute('frameborder', '0')
+    iframe.setAttribute('border', '0')
+    iframe.setAttribute('scrolling', 'no')
+    iframe.setAttribute('allowTransparency', 'true')
+    iframe.setAttribute('tabindex', '-1')
+    iframe.setAttribute('hidden', 'true')
+    iframe.setAttribute('title', '')
+    iframe.setAttribute('role', 'presentation')
+    return iframe
   }
 
   /**
