@@ -124,6 +124,8 @@ function () {
           data = _ref.data,
           name = _ref.name;
 
+      if (!sanitize(e, info.childOrigin)) return;
+
       if (e.data.postmate === 'emit') {
         if (process.env.NODE_ENV !== 'production') {
           log("Parent: Received event emission: " + name);

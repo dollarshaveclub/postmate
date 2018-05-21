@@ -128,6 +128,8 @@
             data = _ref.data,
             name = _ref.name;
 
+        if (!sanitize(e, info.childOrigin)) return;
+
         if (e.data.postmate === 'emit') {
           {
             log("Parent: Received event emission: " + name);

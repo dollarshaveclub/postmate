@@ -104,6 +104,9 @@ export class ParentAPI {
 
     this.listener = (e) => {
       const { data, name } = (((e || {}).data || {}).value || {})
+
+      if (!sanitize(e, info.childOrigin)) return
+
       if (e.data.postmate === 'emit') {
         if (process.env.NODE_ENV !== 'production') {
           log(`Parent: Received event emission: ${name}`)
