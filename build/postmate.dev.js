@@ -294,18 +294,15 @@
       var _this4 = this;
 
       var _ref2 = _temp === void 0 ? userOptions : _temp,
-          _ref2$container = _ref2.container,
-          container = _ref2$container === void 0 ? typeof container !== 'undefined' ? container : document.body : _ref2$container,
           model = _ref2.model,
           url = _ref2.url;
 
       // eslint-disable-line no-undef
       this.parent = window;
       this.model = model || {};
-      return this.bodyReady().then(function () {
-        return _this4.createIframe();
+      return this.bodyReady().then(function (body) {
+        return _this4.createIframe(body);
       }).then(function (frame) {
-        container.appendChild(frame);
         _this4.frame = frame;
         _this4.child = frame.contentWindow || frame.contentDocument.parentWindow;
       }).then(function () {
@@ -335,17 +332,12 @@
       });
     };
 
-    _proto3.createIframe = function createIframe() {
+    _proto3.createIframe = function createIframe(body) {
       var iframe = document.createElement('iframe');
-      iframe.setAttribute('style', 'display: none; margin: 0; padding: 0; border: 0px none; overflow: hidden;');
-      iframe.setAttribute('frameborder', '0');
-      iframe.setAttribute('border', '0');
-      iframe.setAttribute('scrolling', 'no');
-      iframe.setAttribute('allowTransparency', 'true');
-      iframe.setAttribute('tabindex', '-1');
-      iframe.setAttribute('hidden', 'true');
-      iframe.setAttribute('title', '');
-      iframe.setAttribute('role', 'presentation');
+      iframe.setAttribute('style', 'display: none; visibility: hidden;');
+      iframe.setAttribute('width', '0');
+      iframe.setAttribute('height', '0');
+      body.appendChild(iframe);
       return iframe;
     };
     /**
