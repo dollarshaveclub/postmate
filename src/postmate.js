@@ -109,15 +109,15 @@ const createIframe = body => {
 const bodyReady = () => {
   return new Postmate.Promise(resolve => {
     if (document && document.body) {
-      return resolve(document.body);
+      return resolve(document.body)
     }
 
-    let interval = setInterval(() => {
+    const interval = setInterval(() => {
       if (document && document.body) {
-        clearInterval(interval);
-        return resolve(document.body);
+        clearInterval(interval)
+        return resolve(document.body)
       }
-    }, 10);
+    }, 10)
   })
 }
 /**
@@ -294,11 +294,11 @@ class Postmate {
     this.model = model || {}
 
     return bodyReady()
-        .then(body => createIframe(body))
-        .then(frame => {
-          this.frame = frame
-        })
-        .then(() => this.sendHandshake(url))
+      .then(body => createIframe(body))
+      .then(frame => {
+        this.frame = frame
+      })
+      .then(() => this.sendHandshake(url))
   }
 
   /**
@@ -331,10 +331,8 @@ class Postmate {
         if (process.env.NODE_ENV !== 'production') {
           log('Parent: Invalid handshake reply')
         }
-        return reject('Failed handshake')
+        return reject(`Failed handshake. postmate: ${e.data.postmate}`)
       }
-
-      this.parent.addEventListener('message', reply, false)
 
       const doSend = () => {
         attempt++
@@ -353,7 +351,8 @@ class Postmate {
       }
 
       const loaded = () => {
-        this.child = accessContentWindow(this.frame);
+        this.child = accessContentWindow(this.frame)
+        this.parent.addEventListener('message', reply, false)
 
         doSend()
         responseInterval = setInterval(doSend, 500)
