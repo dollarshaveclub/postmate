@@ -329,12 +329,18 @@ function () {
   };
 
   _proto3.createIframe = function createIframe(body) {
-    var iframe = document.createElement('iframe');
-    iframe.setAttribute('style', 'display: none; visibility: hidden;');
-    iframe.setAttribute('width', '0');
-    iframe.setAttribute('height', '0');
-    body.appendChild(iframe);
-    return iframe;
+    return new Postmate.Promise(function (resolve, reject) {
+      var iframe = document.createElement('iframe');
+
+      iframe.onload = function () {
+        resolve(iframe);
+      };
+
+      iframe.setAttribute('style', 'display: none; visibility: hidden;');
+      iframe.setAttribute('width', '0');
+      iframe.setAttribute('height', '0');
+      body.appendChild(iframe);
+    });
   };
   /**
    * Begins the handshake strategy

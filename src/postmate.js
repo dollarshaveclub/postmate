@@ -286,12 +286,14 @@ class Postmate {
   }
 
   createIframe (body) {
-    const iframe = document.createElement('iframe')
-    iframe.setAttribute('style', 'display: none; visibility: hidden;')
-    iframe.setAttribute('width', '0')
-    iframe.setAttribute('height', '0')
-    body.appendChild(iframe)
-    return iframe
+    return new Postmate.Promise((resolve, reject) => {
+      const iframe = document.createElement('iframe')
+      iframe.onload = () => { resolve(iframe) }
+      iframe.setAttribute('style', 'display: none; visibility: hidden;')
+      iframe.setAttribute('width', '0')
+      iframe.setAttribute('height', '0')
+      body.appendChild(iframe)
+    })
   }
 
   /**
