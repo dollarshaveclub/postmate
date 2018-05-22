@@ -95,10 +95,38 @@ var resolveValue = function resolveValue(model, property) {
   var unwrappedContext = typeof model[property] === 'function' ? model[property]() : model[property];
   return Postmate.Promise.resolve(unwrappedContext);
 };
+
+var accessContentWindow = function accessContentWindow(frame) {
+  if (!frame.contentWindow) {
+    if (frame.contentDocument && frame.contentDocument.parentWindow) {
+      throw new Error("iframe.contentWindow is null after onload for: " + frame.src + ", but got parentWindow!");
+    } else {
+      throw new Error("iframe.contentWindow is null after onload for: " + frame.src);
+    }
+  }
+
+  return frame.contentWindow;
+};
+
+var createIframe = function createIframe(body) {
+  return new Postmate.Promise(function (resolve, reject) {
+    var iframe = document.createElement('iframe');
+
+    iframe.onload = function () {
+      resolve(iframe);
+    };
+
+    iframe.setAttribute('style', 'display: none; visibility: hidden;');
+    iframe.setAttribute('width', '0');
+    iframe.setAttribute('height', '0');
+    body.appendChild(iframe);
+  });
+};
 /**
  * Composes an API to be used by the parent
  * @param {Object} info Information on the consumer
  */
+
 
 var ParentAPI =
 /*#__PURE__*/
@@ -297,10 +325,9 @@ function () {
     this.parent = window;
     this.model = model || {};
     return this.bodyReady().then(function (body) {
-      return _this4.createIframe(body);
+      return createIframe(body);
     }).then(function (frame) {
       _this4.frame = frame;
-      _this4.child = frame.contentWindow || frame.contentDocument.parentWindow;
     }).then(function () {
       return _this4.sendHandshake(url);
     });
@@ -325,21 +352,6 @@ function () {
           return resolve(document.body);
         }
       }, 10);
-    });
-  };
-
-  _proto3.createIframe = function createIframe(body) {
-    return new Postmate.Promise(function (resolve, reject) {
-      var iframe = document.createElement('iframe');
-
-      iframe.onload = function () {
-        resolve(iframe);
-      };
-
-      iframe.setAttribute('style', 'display: none; visibility: hidden;');
-      iframe.setAttribute('width', '0');
-      iframe.setAttribute('height', '0');
-      body.appendChild(iframe);
     });
   };
   /**
@@ -409,6 +421,7 @@ function () {
       };
 
       var loaded = function loaded() {
+        _this5.child = accessContentWindow(_this5.frame);
         doSend();
         responseInterval = setInterval(doSend, 500);
       };

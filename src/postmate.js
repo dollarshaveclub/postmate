@@ -95,6 +95,16 @@ const accessContentWindow = frame => {
   return frame.contentWindow
 }
 
+const createIframe = body => {
+  return new Postmate.Promise((resolve, reject) => {
+    const iframe = document.createElement('iframe')
+    iframe.onload = () => { resolve(iframe) }
+    iframe.setAttribute('style', 'display: none; visibility: hidden;')
+    iframe.setAttribute('width', '0')
+    iframe.setAttribute('height', '0')
+    body.appendChild(iframe)
+  })
+}
 /**
  * Composes an API to be used by the parent
  * @param {Object} info Information on the consumer
@@ -269,7 +279,7 @@ class Postmate {
     this.model = model || {}
 
     return this.bodyReady()
-        .then(body => this.createIframe(body))
+        .then(body => createIframe(body))
         .then(frame => {
           this.frame = frame
         })
@@ -292,17 +302,6 @@ class Postmate {
           return resolve(document.body);
         }
       }, 10);
-    })
-  }
-
-  createIframe (body) {
-    return new Postmate.Promise((resolve, reject) => {
-      const iframe = document.createElement('iframe')
-      iframe.onload = () => { resolve(iframe) }
-      iframe.setAttribute('style', 'display: none; visibility: hidden;')
-      iframe.setAttribute('width', '0')
-      iframe.setAttribute('height', '0')
-      body.appendChild(iframe)
     })
   }
 
