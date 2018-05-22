@@ -84,6 +84,17 @@ export const resolveValue = (model, property) => {
   return Postmate.Promise.resolve(unwrappedContext)
 }
 
+const accessContentWindow = frame => {
+  if (!frame.contentWindow) {
+    if (frame.contentDocument && frame.contentDocument.parentWindow) {
+      throw new Error(`iframe.contentWindow is null after onload for: ${frame.src}, but got parentWindow!`);
+    } else {
+      throw new Error(`iframe.contentWindow is null after onload for: ${frame.src}`);
+    }
+  }
+  return frame.contentWindow
+}
+
 /**
  * Composes an API to be used by the parent
  * @param {Object} info Information on the consumer
@@ -261,7 +272,6 @@ class Postmate {
         .then(body => this.createIframe(body))
         .then(frame => {
           this.frame = frame
-          this.child = frame.contentWindow || frame.contentDocument.parentWindow
         })
         .then(() => this.sendHandshake(url))
   }
@@ -348,6 +358,8 @@ class Postmate {
       }
 
       const loaded = () => {
+        this.child = accessContentWindow(this.frame);
+
         doSend()
         responseInterval = setInterval(doSend, 500)
       }
