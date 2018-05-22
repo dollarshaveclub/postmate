@@ -44,7 +44,9 @@ export const log = (...args) => Postmate.debug ? console.log(...args) : null // 
 export const resolveOrigin = (url) => {
   const a = document.createElement('a')
   a.href = url
-  return a.origin || `${a.protocol}//${a.hostname}`
+  const protocol = a.protocol.length > 4 ? a.protocol : window.location.protocol
+  const host = a.host.length ? ((a.port === '80' || a.port === '443') ? a.hostname : a.host) : window.location.host
+  return a.origin || `${protocol}//${host}`
 }
 
 /**
@@ -82,6 +84,42 @@ export const resolveValue = (model, property) => {
   return Postmate.Promise.resolve(unwrappedContext)
 }
 
+const accessContentWindow = frame => {
+  if (!frame.contentWindow) {
+    if (frame.contentDocument && frame.contentDocument.parentWindow) {
+      throw new Error(`iframe.contentWindow is null after onload for: ${frame.src}, but got parentWindow!`);
+    } else {
+      throw new Error(`iframe.contentWindow is null after onload for: ${frame.src}`);
+    }
+  }
+  return frame.contentWindow
+}
+
+const createIframe = body => {
+  return new Postmate.Promise((resolve, reject) => {
+    const iframe = document.createElement('iframe')
+    iframe.onload = () => { resolve(iframe) }
+    iframe.setAttribute('style', 'display: none; visibility: hidden;')
+    iframe.setAttribute('width', '0')
+    iframe.setAttribute('height', '0')
+    body.appendChild(iframe)
+  })
+}
+
+const bodyReady = () => {
+  return new Postmate.Promise(resolve => {
+    if (document && document.body) {
+      return resolve(document.body)
+    }
+
+    const interval = setInterval(() => {
+      if (document && document.body) {
+        clearInterval(interval)
+        return resolve(document.body)
+      }
+    }, 10)
+  })
+}
 /**
  * Composes an API to be used by the parent
  * @param {Object} info Information on the consumer
@@ -102,6 +140,9 @@ export class ParentAPI {
 
     this.listener = (e) => {
       const { data, name } = (((e || {}).data || {}).value || {})
+
+      if (!sanitize(e, info.childOrigin)) return
+
       if (e.data.postmate === 'emit') {
         if (process.env.NODE_ENV !== 'production') {
           log(`Parent: Received event emission: ${name}`)
@@ -246,17 +287,18 @@ class Postmate {
    * @return {Promise}
    */
   constructor ({
-    container = typeof container !== 'undefined' ? container : document.body, // eslint-disable-line no-use-before-define
     model,
     url,
   } = userOptions) { // eslint-disable-line no-undef
     this.parent = window
-    this.frame = document.createElement('iframe')
-    container.appendChild(this.frame)
-    this.child = this.frame.contentWindow || this.frame.contentDocument.parentWindow
     this.model = model || {}
 
-    return this.sendHandshake(url)
+    return bodyReady()
+      .then(body => createIframe(body))
+      .then(frame => {
+        this.frame = frame
+      })
+      .then(() => this.sendHandshake(url))
   }
 
   /**
@@ -289,10 +331,8 @@ class Postmate {
         if (process.env.NODE_ENV !== 'production') {
           log('Parent: Invalid handshake reply')
         }
-        return reject('Failed handshake')
+        return reject(`Failed handshake. postmate: ${e.data.postmate}`)
       }
-
-      this.parent.addEventListener('message', reply, false)
 
       const doSend = () => {
         attempt++
@@ -311,6 +351,9 @@ class Postmate {
       }
 
       const loaded = () => {
+        this.child = accessContentWindow(this.frame)
+        this.parent.addEventListener('message', reply, false)
+
         doSend()
         responseInterval = setInterval(doSend, 500)
       }

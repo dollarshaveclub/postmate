@@ -57,7 +57,9 @@ var log = function log() {
 var resolveOrigin = function resolveOrigin(url) {
   var a = document.createElement('a');
   a.href = url;
-  return a.origin || a.protocol + "//" + a.hostname;
+  var protocol = a.protocol.length > 4 ? a.protocol : window.location.protocol;
+  var host = a.host.length ? a.port === '80' || a.port === '443' ? a.hostname : a.host : window.location.host;
+  return a.origin || protocol + "//" + host;
 };
 /**
  * Ensures that a message is safe to interpret
@@ -93,10 +95,53 @@ var resolveValue = function resolveValue(model, property) {
   var unwrappedContext = typeof model[property] === 'function' ? model[property]() : model[property];
   return Postmate.Promise.resolve(unwrappedContext);
 };
+
+var accessContentWindow = function accessContentWindow(frame) {
+  if (!frame.contentWindow) {
+    if (frame.contentDocument && frame.contentDocument.parentWindow) {
+      throw new Error("iframe.contentWindow is null after onload for: " + frame.src + ", but got parentWindow!");
+    } else {
+      throw new Error("iframe.contentWindow is null after onload for: " + frame.src);
+    }
+  }
+
+  return frame.contentWindow;
+};
+
+var createIframe = function createIframe(body) {
+  return new Postmate.Promise(function (resolve, reject) {
+    var iframe = document.createElement('iframe');
+
+    iframe.onload = function () {
+      resolve(iframe);
+    };
+
+    iframe.setAttribute('style', 'display: none; visibility: hidden;');
+    iframe.setAttribute('width', '0');
+    iframe.setAttribute('height', '0');
+    body.appendChild(iframe);
+  });
+};
+
+var bodyReady = function bodyReady() {
+  return new Postmate.Promise(function (resolve) {
+    if (document && document.body) {
+      return resolve(document.body);
+    }
+
+    var interval = setInterval(function () {
+      if (document && document.body) {
+        clearInterval(interval);
+        return resolve(document.body);
+      }
+    }, 10);
+  });
+};
 /**
  * Composes an API to be used by the parent
  * @param {Object} info Information on the consumer
  */
+
 
 var ParentAPI =
 /*#__PURE__*/
@@ -119,6 +164,8 @@ function () {
       var _ref = ((e || {}).data || {}).value || {},
           data = _ref.data,
           name = _ref.name;
+
+      if (!sanitize(e, info.childOrigin)) return;
 
       if (e.data.postmate === 'emit') {
         if (process.env.NODE_ENV !== 'production') {
@@ -283,19 +330,22 @@ function () {
    * @return {Promise}
    */
   function Postmate(_temp) {
+    var _this4 = this;
+
     var _ref2 = _temp === void 0 ? userOptions : _temp,
-        _ref2$container = _ref2.container,
-        container = _ref2$container === void 0 ? typeof container !== 'undefined' ? container : document.body : _ref2$container,
         model = _ref2.model,
         url = _ref2.url;
 
     // eslint-disable-line no-undef
     this.parent = window;
-    this.frame = document.createElement('iframe');
-    container.appendChild(this.frame);
-    this.child = this.frame.contentWindow || this.frame.contentDocument.parentWindow;
     this.model = model || {};
-    return this.sendHandshake(url);
+    return bodyReady().then(function (body) {
+      return createIframe(body);
+    }).then(function (frame) {
+      _this4.frame = frame;
+    }).then(function () {
+      return _this4.sendHandshake(url);
+    });
   }
   /**
    * Begins the handshake strategy
@@ -307,7 +357,7 @@ function () {
   var _proto3 = Postmate.prototype;
 
   _proto3.sendHandshake = function sendHandshake(url) {
-    var _this4 = this;
+    var _this5 = this;
 
     var childOrigin = resolveOrigin(url);
     var attempt = 0;
@@ -323,15 +373,15 @@ function () {
             log('Parent: Received handshake reply from Child');
           }
 
-          _this4.parent.removeEventListener('message', reply, false);
+          _this5.parent.removeEventListener('message', reply, false);
 
-          _this4.childOrigin = e.origin;
+          _this5.childOrigin = e.origin;
 
           if (process.env.NODE_ENV !== 'production') {
-            log('Parent: Saving Child origin', _this4.childOrigin);
+            log('Parent: Saving Child origin', _this5.childOrigin);
           }
 
-          return resolve(new ParentAPI(_this4));
+          return resolve(new ParentAPI(_this5));
         } // Might need to remove since parent might be receiving different messages
         // from different hosts
 
@@ -343,7 +393,7 @@ function () {
         return reject('Failed handshake');
       };
 
-      _this4.parent.addEventListener('message', reply, false);
+      _this5.parent.addEventListener('message', reply, false);
 
       var doSend = function doSend() {
         attempt++;
@@ -354,10 +404,10 @@ function () {
           });
         }
 
-        _this4.child.postMessage({
+        _this5.child.postMessage({
           postmate: 'handshake',
           type: messsageType,
-          model: _this4.model
+          model: _this5.model
         }, childOrigin);
 
         if (attempt === maxHandshakeRequests) {
@@ -366,14 +416,15 @@ function () {
       };
 
       var loaded = function loaded() {
+        _this5.child = accessContentWindow(_this5.frame);
         doSend();
         responseInterval = setInterval(doSend, 500);
       };
 
-      if (_this4.frame.attachEvent) {
-        _this4.frame.attachEvent('onload', loaded);
+      if (_this5.frame.attachEvent) {
+        _this5.frame.attachEvent('onload', loaded);
       } else {
-        _this4.frame.onload = loaded;
+        _this5.frame.onload = loaded;
       }
 
       if (process.env.NODE_ENV !== 'production') {
@@ -382,7 +433,7 @@ function () {
         });
       }
 
-      _this4.frame.src = url;
+      _this5.frame.src = url;
     });
   };
 
@@ -427,7 +478,7 @@ function () {
   var _proto4 = Model.prototype;
 
   _proto4.sendHandshakeReply = function sendHandshakeReply() {
-    var _this5 = this;
+    var _this6 = this;
 
     return new Postmate.Promise(function (resolve, reject) {
       var shake = function shake(e) {
@@ -440,7 +491,7 @@ function () {
             log('Child: Received handshake from Parent');
           }
 
-          _this5.child.removeEventListener('message', shake, false);
+          _this6.child.removeEventListener('message', shake, false);
 
           if (process.env.NODE_ENV !== 'production') {
             log('Child: Sending handshake reply to Parent');
@@ -450,7 +501,7 @@ function () {
             postmate: 'handshake-reply',
             type: messsageType
           }, e.origin);
-          _this5.parentOrigin = e.origin; // Extend model with the one provided by the parent
+          _this6.parentOrigin = e.origin; // Extend model with the one provided by the parent
 
           var defaults = e.data.model;
 
@@ -459,7 +510,7 @@ function () {
 
             for (var i = 0; i < keys.length; i++) {
               if (hasOwnProperty.call(defaults, keys[i])) {
-                _this5.model[keys[i]] = defaults[keys[i]];
+                _this6.model[keys[i]] = defaults[keys[i]];
               }
             }
 
@@ -469,16 +520,16 @@ function () {
           }
 
           if (process.env.NODE_ENV !== 'production') {
-            log('Child: Saving Parent origin', _this5.parentOrigin);
+            log('Child: Saving Parent origin', _this6.parentOrigin);
           }
 
-          return resolve(new ChildAPI(_this5));
+          return resolve(new ChildAPI(_this6));
         }
 
         return reject('Handshake Reply Failed');
       };
 
-      _this5.child.addEventListener('message', shake, false);
+      _this6.child.addEventListener('message', shake, false);
     });
   };
 
