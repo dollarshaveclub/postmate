@@ -122,6 +122,21 @@ var createIframe = function createIframe(body) {
     body.appendChild(iframe);
   });
 };
+
+var bodyReady = function bodyReady() {
+  return new Postmate.Promise(function (resolve) {
+    if (document && document.body) {
+      return resolve(document.body);
+    }
+
+    var interval = setInterval(function () {
+      if (document && document.body) {
+        clearInterval(interval);
+        return resolve(document.body);
+      }
+    }, 10);
+  });
+};
 /**
  * Composes an API to be used by the parent
  * @param {Object} info Information on the consumer
@@ -324,7 +339,7 @@ function () {
     // eslint-disable-line no-undef
     this.parent = window;
     this.model = model || {};
-    return this.bodyReady().then(function (body) {
+    return bodyReady().then(function (body) {
       return createIframe(body);
     }).then(function (frame) {
       _this4.frame = frame;
@@ -333,33 +348,13 @@ function () {
     });
   }
   /**
-   * Ensure document body is ready
-   * @return {Promise}     Promise that resolves when document body is ready
-   */
-
-
-  var _proto3 = Postmate.prototype;
-
-  _proto3.bodyReady = function bodyReady() {
-    return new Postmate.Promise(function (resolve) {
-      if (document && document.body) {
-        return resolve(document.body);
-      }
-
-      var interval = setInterval(function () {
-        if (document && document.body) {
-          clearInterval(interval);
-          return resolve(document.body);
-        }
-      }, 10);
-    });
-  };
-  /**
    * Begins the handshake strategy
    * @param  {String} url The URL to send a handshake request to
    * @return {Promise}     Promise that resolves when the handshake is complete
    */
 
+
+  var _proto3 = Postmate.prototype;
 
   _proto3.sendHandshake = function sendHandshake(url) {
     var _this5 = this;
