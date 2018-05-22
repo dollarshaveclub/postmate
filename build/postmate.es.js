@@ -95,10 +95,53 @@ var resolveValue = function resolveValue(model, property) {
   var unwrappedContext = typeof model[property] === 'function' ? model[property]() : model[property];
   return Postmate.Promise.resolve(unwrappedContext);
 };
+
+var accessContentWindow = function accessContentWindow(frame) {
+  if (!frame.contentWindow) {
+    if (frame.contentDocument && frame.contentDocument.parentWindow) {
+      throw new Error("iframe.contentWindow is null after onload for: " + frame.src + ", but got parentWindow!");
+    } else {
+      throw new Error("iframe.contentWindow is null after onload for: " + frame.src);
+    }
+  }
+
+  return frame.contentWindow;
+};
+
+var createIframe = function createIframe(body) {
+  return new Postmate.Promise(function (resolve, reject) {
+    var iframe = document.createElement('iframe');
+
+    iframe.onload = function () {
+      resolve(iframe);
+    };
+
+    iframe.setAttribute('style', 'display: none; visibility: hidden;');
+    iframe.setAttribute('width', '0');
+    iframe.setAttribute('height', '0');
+    body.appendChild(iframe);
+  });
+};
+
+var bodyReady = function bodyReady() {
+  return new Postmate.Promise(function (resolve) {
+    if (document && document.body) {
+      return resolve(document.body);
+    }
+
+    var interval = setInterval(function () {
+      if (document && document.body) {
+        clearInterval(interval);
+        return resolve(document.body);
+      }
+    }, 10);
+  });
+};
 /**
  * Composes an API to be used by the parent
  * @param {Object} info Information on the consumer
  */
+
 
 var ParentAPI =
 /*#__PURE__*/
@@ -296,52 +339,22 @@ function () {
     // eslint-disable-line no-undef
     this.parent = window;
     this.model = model || {};
-    return this.bodyReady().then(function (body) {
-      return _this4.createIframe(body);
+    return bodyReady().then(function (body) {
+      return createIframe(body);
     }).then(function (frame) {
       _this4.frame = frame;
-      _this4.child = frame.contentWindow || frame.contentDocument.parentWindow;
     }).then(function () {
       return _this4.sendHandshake(url);
     });
   }
-  /**
-   * Ensure document body is ready
-   * @return {Promise}     Promise that resolves when document body is ready
-   */
-
-
-  var _proto3 = Postmate.prototype;
-
-  _proto3.bodyReady = function bodyReady() {
-    return new Postmate.Promise(function (resolve) {
-      if (document && document.body) {
-        return resolve(document.body);
-      }
-
-      var interval = setInterval(function () {
-        if (document && document.body) {
-          clearInterval(interval);
-          return resolve(document.body);
-        }
-      }, 10);
-    });
-  };
-
-  _proto3.createIframe = function createIframe(body) {
-    var iframe = document.createElement('iframe');
-    iframe.setAttribute('style', 'display: none; visibility: hidden;');
-    iframe.setAttribute('width', '0');
-    iframe.setAttribute('height', '0');
-    body.appendChild(iframe);
-    return iframe;
-  };
   /**
    * Begins the handshake strategy
    * @param  {String} url The URL to send a handshake request to
    * @return {Promise}     Promise that resolves when the handshake is complete
    */
 
+
+  var _proto3 = Postmate.prototype;
 
   _proto3.sendHandshake = function sendHandshake(url) {
     var _this5 = this;
@@ -403,6 +416,7 @@ function () {
       };
 
       var loaded = function loaded() {
+        _this5.child = accessContentWindow(_this5.frame);
         doSend();
         responseInterval = setInterval(doSend, 500);
       };

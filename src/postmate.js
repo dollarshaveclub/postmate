@@ -84,6 +84,42 @@ export const resolveValue = (model, property) => {
   return Postmate.Promise.resolve(unwrappedContext)
 }
 
+const accessContentWindow = frame => {
+  if (!frame.contentWindow) {
+    if (frame.contentDocument && frame.contentDocument.parentWindow) {
+      throw new Error(`iframe.contentWindow is null after onload for: ${frame.src}, but got parentWindow!`);
+    } else {
+      throw new Error(`iframe.contentWindow is null after onload for: ${frame.src}`);
+    }
+  }
+  return frame.contentWindow
+}
+
+const createIframe = body => {
+  return new Postmate.Promise((resolve, reject) => {
+    const iframe = document.createElement('iframe')
+    iframe.onload = () => { resolve(iframe) }
+    iframe.setAttribute('style', 'display: none; visibility: hidden;')
+    iframe.setAttribute('width', '0')
+    iframe.setAttribute('height', '0')
+    body.appendChild(iframe)
+  })
+}
+
+const bodyReady = () => {
+  return new Postmate.Promise(resolve => {
+    if (document && document.body) {
+      return resolve(document.body);
+    }
+
+    let interval = setInterval(() => {
+      if (document && document.body) {
+        clearInterval(interval);
+        return resolve(document.body);
+      }
+    }, 10);
+  })
+}
 /**
  * Composes an API to be used by the parent
  * @param {Object} info Information on the consumer
@@ -257,41 +293,12 @@ class Postmate {
     this.parent = window
     this.model = model || {}
 
-    return this.bodyReady()
-        .then(body => this.createIframe(body))
+    return bodyReady()
+        .then(body => createIframe(body))
         .then(frame => {
           this.frame = frame
-          this.child = frame.contentWindow || frame.contentDocument.parentWindow
         })
         .then(() => this.sendHandshake(url))
-  }
-
-  /**
-   * Ensure document body is ready
-   * @return {Promise}     Promise that resolves when document body is ready
-   */
-  bodyReady () {
-    return new Postmate.Promise(resolve => {
-      if (document && document.body) {
-        return resolve(document.body);
-      }
-
-      let interval = setInterval(() => {
-        if (document && document.body) {
-          clearInterval(interval);
-          return resolve(document.body);
-        }
-      }, 10);
-    })
-  }
-
-  createIframe (body) {
-    const iframe = document.createElement('iframe')
-    iframe.setAttribute('style', 'display: none; visibility: hidden;')
-    iframe.setAttribute('width', '0')
-    iframe.setAttribute('height', '0')
-    body.appendChild(iframe)
-    return iframe
   }
 
   /**
@@ -346,6 +353,8 @@ class Postmate {
       }
 
       const loaded = () => {
+        this.child = accessContentWindow(this.frame);
+
         doSend()
         responseInterval = setInterval(doSend, 500)
       }
