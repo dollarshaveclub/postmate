@@ -27,7 +27,7 @@
     "jest": "^22.0.0",
     "mocha": "^5.0.1",
     "mocha-phantomjs": "^4.1.0",
-    "nyc": "^11.3.0",
+    "nyc": "^12.0.1",
     "regenerator-runtime": "^0.11.1",
     "rollup": "^0.59.3",
     "rollup-plugin-babel": "^4.0.0-beta.0",
