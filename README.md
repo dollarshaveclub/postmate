@@ -140,7 +140,7 @@ new Postmate({
 });
 ```
 
-> This is written in the parent page. Initiates a connection with the child. Returns a Promise that signals when the handshake is complete and communication is ready to begin.
+> This is written in the parent page.  Creates an iFrame at the specified `url`. Initiates a connection with the child. Returns a Promise that signals when the handshake is complete and communication is ready to begin.
 
 **Returns**: Promise(child)
 
