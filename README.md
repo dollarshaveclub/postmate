@@ -2,7 +2,7 @@
   <img src="https://dollarshaveclub.github.io/postmate/assets/postmate-v3.svg">
 </a>
 
-> A powerful, simple, promise-based `postMessage` library.
+> A powerful, simple, promise-based `postMessage` iFrame communication library.
 
 [![npm][npm-image]][npm-url]
 [![Build Status](https://travis-ci.org/dollarshaveclub/postmate.svg?branch=master)](https://travis-ci.org/dollarshaveclub/postmate)
@@ -35,6 +35,8 @@ You can download the compiled javascript directly [here](/build/postmate.min.js)
 * Parent can `call` functions within a `child`
 * *Zero* dependencies. Provide your own polyfill or abstraction for the `Promise` API if needed.
 * Lightweight, weighing in at ~ <span class="size">`1.5kb`</span> (minified & gzipped).
+
+NOTE: While the underlying mechanism is [window.postMessage()](https://developer.mozilla.org/en-US/docs/Web/API/Window/postMessage), only iFrame is supported.
 
 ## Installing
 Postmate can be installed via NPM or Bower.
