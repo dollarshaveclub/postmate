@@ -31,6 +31,10 @@ test('postmate logs args', () => {
   expect(console.log.mock.calls[0][2]).toBe('c')
 })
 
+test('Sanitize', () => {
+  expect(typeof sanitize !== 'undefined')
+})
+
 // test API
 // the tests below test the API generally
 test('Postmate class is ready to rock', () => {
