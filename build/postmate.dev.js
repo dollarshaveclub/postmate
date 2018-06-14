@@ -5,6 +5,12 @@
   @author Jacob Kelley <jakie8@gmail.com>
   @license MIT
 **/
+(function (global, factory) {
+	typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
+	typeof define === 'function' && define.amd ? define(factory) :
+	(global.Postmate = factory());
+}(this, (function () { 'use strict';
+
 /**
  * The type of messages our frames our sending
  * @type {String}
@@ -110,7 +116,7 @@ function () {
     this.childOrigin = info.childOrigin;
     this.events = {};
 
-    if (process.env.NODE_ENV !== 'production') {
+    {
       log('Parent: Registering API');
       log('Parent: Awaiting messages...');
     }
@@ -121,7 +127,7 @@ function () {
           name = _ref.name;
 
       if (e.data.postmate === 'emit') {
-        if (process.env.NODE_ENV !== 'production') {
+        {
           log("Parent: Received event emission: " + name);
         }
 
@@ -133,7 +139,7 @@ function () {
 
     this.parent.addEventListener('message', this.listener, false);
 
-    if (process.env.NODE_ENV !== 'production') {
+    {
       log('Parent: Awaiting event emissions from Child');
     }
   }
@@ -183,7 +189,7 @@ function () {
   };
 
   _proto.destroy = function destroy() {
-    if (process.env.NODE_ENV !== 'production') {
+    {
       log('Parent: Destroying Postmate instance');
     }
 
@@ -209,7 +215,7 @@ function () {
     this.parentOrigin = info.parentOrigin;
     this.child = info.child;
 
-    if (process.env.NODE_ENV !== 'production') {
+    {
       log('Child: Registering API');
       log('Child: Awaiting messages...');
     }
@@ -217,7 +223,7 @@ function () {
     this.child.addEventListener('message', function (e) {
       if (!sanitize(e, _this3.parentOrigin)) return;
 
-      if (process.env.NODE_ENV !== 'production') {
+      {
         log('Child: Received request', e.data);
       }
 
@@ -250,7 +256,7 @@ function () {
   var _proto2 = ChildAPI.prototype;
 
   _proto2.emit = function emit(name, data) {
-    if (process.env.NODE_ENV !== 'production') {
+    {
       log("Child: Emitting Event \"" + name + "\"", data);
     }
 
@@ -319,7 +325,7 @@ function () {
         if (e.data.postmate === 'handshake-reply') {
           clearInterval(responseInterval);
 
-          if (process.env.NODE_ENV !== 'production') {
+          {
             log('Parent: Received handshake reply from Child');
           }
 
@@ -327,7 +333,7 @@ function () {
 
           _this4.childOrigin = e.origin;
 
-          if (process.env.NODE_ENV !== 'production') {
+          {
             log('Parent: Saving Child origin', _this4.childOrigin);
           }
 
@@ -336,7 +342,7 @@ function () {
         // from different hosts
 
 
-        if (process.env.NODE_ENV !== 'production') {
+        {
           log('Parent: Invalid handshake reply');
         }
 
@@ -348,7 +354,7 @@ function () {
       var doSend = function doSend() {
         attempt++;
 
-        if (process.env.NODE_ENV !== 'production') {
+        {
           log("Parent: Sending handshake attempt " + attempt, {
             childOrigin: childOrigin
           });
@@ -376,7 +382,7 @@ function () {
         _this4.frame.onload = loaded;
       }
 
-      if (process.env.NODE_ENV !== 'production') {
+      {
         log('Parent: Loading frame', {
           url: url
         });
@@ -436,13 +442,13 @@ function () {
         }
 
         if (e.data.postmate === 'handshake') {
-          if (process.env.NODE_ENV !== 'production') {
+          {
             log('Child: Received handshake from Parent');
           }
 
           _this5.child.removeEventListener('message', shake, false);
 
-          if (process.env.NODE_ENV !== 'production') {
+          {
             log('Child: Sending handshake reply to Parent');
           }
 
@@ -463,12 +469,12 @@ function () {
               }
             }
 
-            if (process.env.NODE_ENV !== 'production') {
+            {
               log('Child: Inherited and extended model from Parent');
             }
           }
 
-          if (process.env.NODE_ENV !== 'production') {
+          {
             log('Child: Saving Parent origin', _this5.parentOrigin);
           }
 
@@ -485,4 +491,6 @@ function () {
   return Model;
 }();
 
-export default Postmate;
+return Postmate;
+
+})));
