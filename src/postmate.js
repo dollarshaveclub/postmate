@@ -44,7 +44,9 @@ export const log = (...args) => Postmate.debug ? console.log(...args) : null // 
 export const resolveOrigin = (url) => {
   const a = document.createElement('a')
   a.href = url
-  return a.origin || `${a.protocol}//${a.hostname}`
+  const protocol = a.protocol.length > 4 ? a.protocol : window.location.protocol
+  const host = a.host.length ? ((a.port === '80' || a.port === '443') ? a.hostname : a.host) : window.location.host
+  return a.origin || `${protocol}//${host}`
 }
 
 /**
