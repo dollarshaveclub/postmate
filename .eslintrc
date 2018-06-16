@@ -1,23 +1,6 @@
 {
-  "parser": "babel-eslint",
-  "extends": [
-    "airbnb/base"
-  ],
-  "globals": {
-  },
-  "env": {
-    "browser": true
-  },
+  "extends": "dollarshaveclub",
   "rules": {
-    "comma-dangle": ["error", {
-      "arrays": "only-multiline",
-      "objects": "only-multiline",
-      "imports": "only-multiline",
-      "exports": "only-multiline",
-      "functions": "ignore",
-    }],
-    "no-use-before-define": 0,
-    "no-plusplus": 0,
-    "no-underscore-dangle": 0
+    "import/no-duplicates": 0,
   }
 }

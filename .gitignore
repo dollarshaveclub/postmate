@@ -1,3 +1,11 @@
 node_modules
+package-lock.json
 *.log
 ssl/*.pem
+.DS_Store
+tests/.DS_Store
+.nyc_output/
+coverage
+coverage/
+coverage.lcov
+coverage_*/

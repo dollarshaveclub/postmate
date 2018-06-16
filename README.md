@@ -2,17 +2,14 @@
   <img src="https://dollarshaveclub.github.io/postmate/assets/postmate-v3.svg">
 </a>
 
-> A powerful, simple, promise-based `postMessage` library.
+> A powerful, simple, promise-based `postMessage` iFrame communication library.
 
 [![npm][npm-image]][npm-url]
-[![bower][bower-image]][bower-url]
 [![Build Status](https://travis-ci.org/dollarshaveclub/postmate.svg?branch=master)](https://travis-ci.org/dollarshaveclub/postmate)
 [![Share](https://img.shields.io/twitter/url/http/shields.io.svg?style=social)](https://twitter.com/home?status=Postmate%3A%20A%20powerful,%20simple,%20promise-based%20postMessage%20library%20https%3A//github.com/dollarshaveclub/postmate%20via%20%40DSCEngineering%20%40javascript)
 
 [npm-image]: https://badge.fury.io/js/postmate.svg
 [npm-url]: https://www.npmjs.com/package/postmate
-[bower-image]: https://badge.fury.io/bo/postmate.svg
-[bower-url]: https://github.com/dollarshaveclub/postmate
 
 _Postmate_ is a promise-based API built on `postMessage`. It allows a parent page to speak with a child `iFrame` across origins with minimal effort.
 
@@ -29,13 +26,17 @@ You can download the compiled javascript directly [here](/build/postmate.min.js)
 ***
 
 ## Features
+
+[![Greenkeeper badge](https://badges.greenkeeper.io/dollarshaveclub/postmate.svg)](https://greenkeeper.io/)
 * Promise-based API for elegant and simple communication.
 * Secure two-way parent <-> child handshake, with message validation.
 * Child exposes a retrievable `model` object that the parent can access.
 * Child emits events that the parent can listen to.
 * Parent can `call` functions within a `child`
 * *Zero* dependencies. Provide your own polyfill or abstraction for the `Promise` API if needed.
-* Lightweight, weighing in at ~ <span class="size">`5.3kb`</span>.
+* Lightweight, weighing in at ~ <span class="size">`1.5kb`</span> (minified & gzipped).
+
+NOTE: While the underlying mechanism is [window.postMessage()](https://developer.mozilla.org/en-US/docs/Web/API/Window/postMessage), only iFrame is supported.
 
 ## Installing
 Postmate can be installed via NPM or Bower.
@@ -47,11 +48,6 @@ $ yarn add postmate # Install via Yarn
 
 ```bash
 $ npm i postmate --save # Install via NPM
-```
-
-**bower**
-```bash
-$ bower i postmate --save # Install via Bower
 ```
 
 ## Glossary
@@ -106,31 +102,35 @@ handshake.then(parent => {
 ## API
 
 > ## `Postmate.debug`
+
 ```javascript
 // parent.com or child.com
 Postmate.debug = true;
 new Postmate(options);
 ```
 
-Name | Type | Description | Default
-:--- | :--- | :--- | :---
-`debug` | `Boolean` | _Set to `true` to enable logging of additional information_ | `false`
+| Name | Type | Description | Default |
+| --- | --- | --- | --- |
+| `debug` | `Boolean` | _Set to `true` to enable logging of additional information_ | `false` |
 
-***
+---
+
 > ## `Postmate.Promise`
+
 ```javascript
 // parent.com or child.com
 Postmate.Promise = RSVP.Promise;
 new Postmate(options);
 ```
 
-Name | Type | Description | Default
-:--- | :--- | :--- | :---
-`Promise` | `Object` | _Replace the Promise API that Postmate uses_ | `window.Promise`
+| Name | Type | Description | Default |
+| --- | --- | --- | --- |
+| `Promise` | `Object` | _Replace the Promise API that Postmate uses_ | `window.Promise` |
 
-***
+---
 
 > ## `Postmate(options)`
+
 ```javascript
 // parent.com
 new Postmate({
@@ -139,47 +139,47 @@ new Postmate({
   model: { foo: 'bar' }
 });
 ```
-> This is written in the parent page. Initiates a connection with the child. Returns a Promise that signals when the handshake is complete and communication is ready to begin.
+
+> This is written in the parent page.  Creates an iFrame at the specified `url`. Initiates a connection with the child. Returns a Promise that signals when the handshake is complete and communication is ready to begin.
 
 **Returns**: Promise(child)
 
 #### Properties
 
-Name | Type | Description | Default
-:--- | :--- | :--- | :---
-**`container`** (optional) | `DOM Node Element` | _An element to append the iFrame to_ | `document.body`
-**`url`** | `String` | _A URL to load in the iFrame. The origin of this URL will also be used for securing message transport | none_
-**`model`** | `Object` | _An object literal to represent the default values of the Childs model_ | none
+| Name | Type | Description | Default |
+| --- | --- | --- | --- |
+| **`container`** (optional) | `DOM Node Element` | _An element to append the iFrame to_ | `document.body`
+**`url`** | `String` | _A URL to load in the iFrame. The origin of this URL will also be used for securing message transport | none_ |
+**`model`** | `Object` | _An object literal to represent the default values of the Childs model_ | none |
 
-***
+---
 
 > ## `Postmate.Model(model)`
 
-
-> ```javascript
+```javascript
 // child.com
 new Postmate.Model({
   // Serializable values
   foo: "bar",
->
   // Functions
   height: () => document.height || document.body.offsetHeight,
->
   // Promises
   data: fetch(new Request('data.json'))
 });
 ```
+
 > This is written in the child page. Calling `Postmate.Model` initiates a handshake request listener from the `Parent`. Once the handshake is complete, an event listener is bound to receive requests from the `Parent`. The `Child` model is _extended_ from the `model` provided by the `Parent`.
 
 #### Parameters
 
-Name | Type | Description | Default
-:--- | :--- | :--- | :---
-**`model`** | `Object` | _An object of gettable properties to expose to the parent. Value types may be anything accepted in `postMessage`. Promises may also be set as values or returned from functions._ | `{}`
+| Name | Type | Description | Default |
+| --- | --- | --- | --- |
+| **`model`** | `Object` | _An object of gettable properties to expose to the parent. Value types may be anything accepted in `postMessage`. Promises may also be set as values or returned from functions._ | `{}` |
 
-***
+---
 
 > ## `child.get(key)`
+
 ```javascript
 // parent.com
 new Postmate({
@@ -189,19 +189,21 @@ new Postmate({
   child.get('something').then(value => console.log(value));
 });
 ```
+
 > Retrieves a value by property name from the `Childs` `model` object.
 
 **Returns**: Promise(value)
 
 #### Parameters
 
-Name | Type | Description
-:--- | :--- | :---
-**`key`** | `String` (required) | _The string property to lookup in the childs `model`_
+| Name | Type | Description |
+| --- | --- | --- |
+| **`key`** | `String` (required) | _The string property to lookup in the childs `model`_ |
 
-***
+---
 
 > ## `child.call(key, data)`
+
 ```javascript
 // parent.com
 new Postmate({
@@ -211,20 +213,22 @@ new Postmate({
   child.call('sayHi', 'Hello, World!');
 });
 ```
+
 > Calls the function `sayHi` in the `Child` `Model` with the parameter `Hello, World!`
 
 **Returns**: `undefined`
 
 #### Parameters
 
-Name | Type | Description
-:--- | :--- | :---
-**`key`** | `String` (required) | _The string property to lookup in the childs `model`_
-**`data`** | `Mixed` | _The optional data to send to the child function_
+| Name | Type | Description |
+| --- | --- | --- |
+| **`key`** | `String` (required) | _The string property to lookup in the childs `model`_ |
+| **`data`** | `Mixed` | _The optional data to send to the child function_ |
 
-***
+---
 
 > ## `child.destroy()`
+
 ```javascript
 // parent.com
 new Postmate({
@@ -232,19 +236,22 @@ new Postmate({
   url: 'http://child.com/'
 }).then(child => child.destroy());
 ```
+
 > Removes the `iFrame` element and destroys any `message` event listeners
 
 **Returns**: `undefined`
 
-***
+---
 
-> ##`child.frame`
+> ## `child.frame`
+
 ```javascript
 new Postmate(options).then(child => {
   child.get('height')
     .then(height => child.frame.style.height = `${height}px`);
 });
 ```
+
 > The iFrame Element that the parent is communicating with
 
 ## Troubleshooting/FAQ
