@@ -1,6 +1,6 @@
 /**
   postmate - A powerful, simple, promise-based postMessage library
-  @version v1.4.2
+  @version v1.4.3
   @link https://github.com/dollarshaveclub/postmate
   @author Jacob Kelley <jakie8@gmail.com>
   @license MIT
@@ -350,6 +350,11 @@ function () {
       _this4.parent.addEventListener('message', reply, false);
 
       var doSend = function doSend() {
+        if (attempt === maxHandshakeRequests) {
+          clearInterval(responseInterval);
+          return;
+        }
+
         attempt++;
 
         if (process.env.NODE_ENV !== 'production') {
@@ -363,10 +368,6 @@ function () {
           type: messsageType,
           model: _this4.model
         }, childOrigin);
-
-        if (attempt === maxHandshakeRequests) {
-          clearInterval(responseInterval);
-        }
       };
 
       var loaded = function loaded() {
