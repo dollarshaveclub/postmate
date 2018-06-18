@@ -168,7 +168,9 @@ new Postmate.Model({
 });
 ```
 
-> This is written in the child page. Calling `Postmate.Model` initiates a handshake request listener from the `Parent`. Once the handshake is complete, an event listener is bound to receive requests from the `Parent`. The `Child` model is _extended_ from the `model` provided by the `Parent`.
+> This is written in the child page. Calling `Postmate.Model` initiates a handshake request listener from the `Child`. Once the handshake is complete, an event listener is bound to receive requests from the `Parent`. The `Child` model is _extended_ from the `model` provided by the `Parent`.
+
+**Returns**: Promise(handshakeMeta)
 
 #### Parameters
 
