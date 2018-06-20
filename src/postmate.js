@@ -84,7 +84,8 @@ export const sanitize = (message, allowedOrigin) => {
  * @param  {String} origin    Target's origin
  */
 const postMessage = (target, message, origin) => {
-  target.postMessage(message, supportsMessageChannel ? undefined : origin)
+  let isNotDefined
+  target.postMessage(message, supportsMessageChannel ? isNotDefined : origin)
 }
 
 /**

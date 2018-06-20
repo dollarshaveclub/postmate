@@ -35,7 +35,7 @@
     "rollup-plugin-uglify": "^4.0.0",
     "rsvp": "^4.8.1",
     "serve-static": "^1.11.1",
-    "uglify-js": "^3.3.11",
+    "uglify-js": "^3.4.1",
     "vinyl-source-stream": "^2.0.0"
   },
   "scripts": {
