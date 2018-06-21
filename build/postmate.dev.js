@@ -1,6 +1,6 @@
 /**
   postmate - A powerful, simple, promise-based postMessage library
-  @version v1.4.3
+  @version v1.4.4
   @link https://github.com/dollarshaveclub/postmate
   @author Jacob Kelley <jakie8@gmail.com>
   @license MIT
@@ -41,7 +41,7 @@
    * @return {Number} A unique ID for a message
    */
 
-  var messageId = function messageId() {
+  var generateNewMessageId = function generateNewMessageId() {
     return ++_messageId;
   };
   /**
@@ -179,7 +179,7 @@
 
       return new Postmate.Promise(function (resolve) {
         // Extract data from response and kill listeners
-        var uid = messageId();
+        var uid = generateNewMessageId();
 
         var transact = function transact(e) {
           if (!sanitize(e, _this2.childOrigin)) return;

@@ -28,7 +28,7 @@ let _messageId = 0
  * Increments and returns a message ID
  * @return {Number} A unique ID for a message
  */
-export const messageId = () => ++_messageId
+export const generateNewMessageId = () => ++_messageId
 
 /**
  * Postmate logging function that enables/disables via config
@@ -152,7 +152,7 @@ export class ParentAPI {
   get (property) {
     return new Postmate.Promise((resolve) => {
       // Extract data from response and kill listeners
-      const uid = messageId()
+      const uid = generateNewMessageId()
       const transact = (e) => {
         if (!sanitize(e, this.childOrigin)) return
 
