@@ -3,7 +3,7 @@ import {
   ChildAPI,
   log,
   maxHandshakeRequests,
-  messageId,
+  generateNewMessageId,
   messageType,
   ParentAPI,
   Postmate,
@@ -14,11 +14,11 @@ import {
 
 test('Message Type', () => expect(messageType).toBe('application/x-postmate-v1+json'))
 
-test('messageId', () => expect(!isNaN(messageId())).toBe(true))
+test('messageId', () => expect(!isNaN(generateNewMessageId())).toBe(true))
 
-test('messageId adds 1', () => {
-  const result = messageId()
-  expect(result).toBe(1)
+test('generateNewMessageId adds 1', () => {
+  const result = generateNewMessageId()
+  expect(result).toBe(2)
 })
 
 test('postmate logs args', () => {

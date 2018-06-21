@@ -22,13 +22,13 @@ export const maxHandshakeRequests = 5
  * A unique message ID that is used to ensure responses are sent to the correct requests
  * @type {Number}
  */
-const _messageId = 0
+let _messageId = 0
 
 /**
  * Increments and returns a message ID
  * @return {Number} A unique ID for a message
  */
-export const messageId = () => _messageId + 1
+export const generateNewMessageId = () => ++_messageId
 
 /**
  * Postmate logging function that enables/disables via config
@@ -84,7 +84,8 @@ export const sanitize = (message, allowedOrigin) => {
  * @param  {String} origin    Target's origin
  */
 const postMessage = (target, message, origin) => {
-  target.postMessage(message, supportsMessageChannel ? undefined : origin)
+  let isNotDefined
+  target.postMessage(message, supportsMessageChannel ? isNotDefined : origin)
 }
 
 /**
@@ -151,7 +152,7 @@ export class ParentAPI {
   get (property) {
     return new Postmate.Promise((resolve) => {
       // Extract data from response and kill listeners
-      const uid = messageId()
+      const uid = generateNewMessageId()
       const transact = (e) => {
         if (!sanitize(e, this.childOrigin)) return
 
