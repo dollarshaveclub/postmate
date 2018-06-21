@@ -22,13 +22,13 @@ export const maxHandshakeRequests = 5
  * A unique message ID that is used to ensure responses are sent to the correct requests
  * @type {Number}
  */
-const _messageId = 0
+let _messageId = 0
 
 /**
  * Increments and returns a message ID
  * @return {Number} A unique ID for a message
  */
-export const messageId = () => _messageId + 1
+export const messageId = () => ++_messageId
 
 /**
  * Postmate logging function that enables/disables via config

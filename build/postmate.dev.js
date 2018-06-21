@@ -42,7 +42,7 @@
    */
 
   var messageId = function messageId() {
-    return _messageId + 1;
+    return ++_messageId;
   };
   /**
    * Postmate logging function that enables/disables via config

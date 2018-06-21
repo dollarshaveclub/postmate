@@ -94,7 +94,6 @@ describe('postmate', function () {
         a: child.get('a'),
         b: child.get('b'),
       }).then(function (data) {
-        console.log(data)
         expect(data.a).to.equal('a')
         expect(data.b).to.equal('b')
         done()

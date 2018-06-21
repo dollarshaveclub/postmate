@@ -18,7 +18,7 @@ test('messageId', () => expect(!isNaN(messageId())).toBe(true))
 
 test('messageId adds 1', () => {
   const result = messageId()
-  expect(result).toBe(1)
+  expect(result).toBe(2)
 })
 
 test('postmate logs args', () => {
