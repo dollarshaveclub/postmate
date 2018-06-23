@@ -19,7 +19,7 @@
     "codecov": "^3.0.2",
     "connect": "^3.4.1",
     "es-check": "^2.0.4",
-    "eslint": "^4.17.0",
+    "eslint": "^5.0.0",
     "eslint-config-dollarshaveclub": "^3.0.4",
     "gulp": "^3.9.1",
     "gulp-mocha-phantomjs": "^0.12.2",
