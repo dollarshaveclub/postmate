@@ -78,7 +78,7 @@ export const sanitize = (message, allowedOrigin) => {
 }
 
 /**
- * Ensures that a message is safe to interpret
+ * Helper function calling postMessage appropriately based on the target object support
  * @param  {Object} target    Target object - window/port
  * @param  {Object} message   Message to be sent
  * @param  {String} origin    Target's origin
