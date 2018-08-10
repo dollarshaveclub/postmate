@@ -437,7 +437,7 @@ Postmate.Model = class Model {
             type: messageType,
           }
 
-          if (ports) {
+          if (ports && ports.length > 0) {
             const port = ports[0]
             port.postMessage(reply)
             this.source = port
