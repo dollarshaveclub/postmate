@@ -85,7 +85,8 @@ export const sanitize = (message, allowedOrigin) => {
  */
 const postMessage = (target, message, origin) => {
   let isNotDefined
-  target.postMessage(message, supportsMessageChannel ? isNotDefined : origin)
+  var supportOrigin = Object.prototype.toString.call(target) === '[object Window]'
+  target.postMessage(message, supportOrigin ? isNotDefined : origin)
 }
 
 /**
