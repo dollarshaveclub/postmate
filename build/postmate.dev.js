@@ -1,6 +1,6 @@
 /**
   postmate - A powerful, simple, promise-based postMessage library
-  @version v1.4.4
+  @version v1.4.5
   @link https://github.com/dollarshaveclub/postmate
   @author Jacob Kelley <jakie8@gmail.com>
   @license MIT
