@@ -1,6 +1,6 @@
 /**
   postmate - A powerful, simple, promise-based postMessage library
-  @version v1.4.5
+  @version v1.4.6
   @link https://github.com/dollarshaveclub/postmate
   @author Jacob Kelley <jakie8@gmail.com>
   @license MIT
@@ -484,6 +484,11 @@ function () {
   /**
    * Responds to a handshake initiated by the Parent
    * @return {Promise} Resolves an object that exposes an API for the Child
+   * ---
+   * ⚠️ ports if/else (within this method)
+   * - insures that ports is defined
+   * - so that *when* a [port] *is* available
+   * - a postMessage(reply) will be sent
    */
 
 
@@ -515,7 +520,7 @@ function () {
             type: messageType
           };
 
-          if (ports && ports.length > 0) {
+          if (ports) {
             var port = ports[0];
             port.postMessage(reply);
             _this5.source = port;

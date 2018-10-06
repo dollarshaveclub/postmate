@@ -415,6 +415,11 @@ Postmate.Model = class Model {
   /**
    * Responds to a handshake initiated by the Parent
    * @return {Promise} Resolves an object that exposes an API for the Child
+   * ---
+   * ⚠️ ports if/else (within this method)
+   * - insures that ports is defined
+   * - so that *when* a [port] *is* available
+   * - a postMessage(reply) will be sent
    */
   sendHandshakeReply () {
     return new Postmate.Promise((resolve, reject) => {
@@ -437,7 +442,7 @@ Postmate.Model = class Model {
             type: messageType,
           }
 
-          if (ports && ports.length > 0) {
+          if (ports) {
             const port = ports[0]
             port.postMessage(reply)
             this.source = port
