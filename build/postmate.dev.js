@@ -319,15 +319,22 @@
      * @return {Promise}
      */
     function Postmate(_temp) {
+      var _this$frame$classList;
+
       var _ref = _temp === void 0 ? userOptions : _temp,
           _ref$container = _ref.container,
           container = _ref$container === void 0 ? typeof container !== 'undefined' ? container : document.body : _ref$container,
           model = _ref.model,
-          url = _ref.url;
+          url = _ref.url,
+          _ref$classList = _ref.classList,
+          classList = _ref$classList === void 0 ? [] : _ref$classList;
 
       // eslint-disable-line no-undef
       this.parent = window;
       this.frame = document.createElement('iframe');
+
+      (_this$frame$classList = this.frame.classList).add.apply(_this$frame$classList, classList);
+
       container.appendChild(this.frame);
       this.child = this.frame.contentWindow || this.frame.contentDocument.parentWindow;
       this.model = model || {};
