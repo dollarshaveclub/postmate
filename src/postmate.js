@@ -285,7 +285,7 @@ class Postmate {
   } = userOptions) { // eslint-disable-line no-undef
     this.parent = window
     this.frame = document.createElement('iframe')
-    this.frame.classList.add(...classList)
+    this.frame.classList.add.apply(this.frame.classList, classList)
     container.appendChild(this.frame)
     this.child = this.frame.contentWindow || this.frame.contentDocument.parentWindow
     this.model = model || {}
