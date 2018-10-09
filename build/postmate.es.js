@@ -1,6 +1,6 @@
 /**
   postmate - A powerful, simple, promise-based postMessage library
-  @version v1.4.6
+  @version v1.4.7
   @link https://github.com/dollarshaveclub/postmate
   @author Jacob Kelley <jakie8@gmail.com>
   @license MIT
@@ -127,6 +127,7 @@ function () {
     this.child = info.child;
     this.childOrigin = info.childOrigin;
     this.source = info.source;
+    this.target = info.target;
     this.events = {};
 
     if (process.env.NODE_ENV !== 'production') {
@@ -189,7 +190,7 @@ function () {
       _this2.addMessageListener(transact); // Then ask child for information
 
 
-      postMessage(_this2.source, {
+      postMessage(_this2.target, {
         postmate: 'request',
         type: messageType,
         property: property,
@@ -200,7 +201,7 @@ function () {
 
   _proto.call = function call(property, data) {
     // Send information to the child
-    postMessage(this.source, {
+    postMessage(this.target, {
       postmate: 'call',
       type: messageType,
       property: property,
@@ -239,6 +240,7 @@ function () {
     this.parentOrigin = info.parentOrigin;
     this.child = info.child;
     this.source = info.source;
+    this.target = info.target;
 
     if (process.env.NODE_ENV !== 'production') {
       log('Child: Registering API');
@@ -267,7 +269,7 @@ function () {
 
 
       resolveValue(_this3.model, property).then(function (value) {
-        return postMessage(_this3.source, {
+        return postMessage(_this3.target, {
           property: property,
           postmate: 'reply',
           type: messageType,
@@ -285,7 +287,7 @@ function () {
       log("Child: Emitting Event \"" + name + "\"", data);
     }
 
-    postMessage(this.source, {
+    postMessage(this.target, {
       postmate: 'emit',
       type: messageType,
       value: {
@@ -312,14 +314,11 @@ function () {
    * @param {Object} userOptions The element to inject the frame into, and the url
    * @return {Promise}
    */
-  function Postmate(_temp) {
-    var _ref = _temp === void 0 ? userOptions : _temp,
-        _ref$container = _ref.container,
+  function Postmate(_ref) {
+    var _ref$container = _ref.container,
         container = _ref$container === void 0 ? typeof container !== 'undefined' ? container : document.body : _ref$container,
         model = _ref.model,
         url = _ref.url;
-
-    // eslint-disable-line no-undef
     this.parent = window;
     this.frame = document.createElement('iframe');
     container.appendChild(this.frame);
@@ -350,10 +349,15 @@ function () {
         }
       }
 
-      var replyFrom = function replyFrom(source) {
+      var replyFrom = function replyFrom(source, target) {
+        if (target === void 0) {
+          target = source;
+        }
+
         var reply = function reply(e) {
           if (!sanitize(e, childOrigin)) return;
           _this4.source = source;
+          _this4.target = target;
 
           if (e.data.postmate === 'handshake-reply') {
             clearInterval(responseInterval);
@@ -418,7 +422,7 @@ function () {
           removeReplyHandler = replyFrom(port1);
           port1.start();
         } else {
-          removeReplyHandler = replyFrom(_this4.parent);
+          removeReplyHandler = replyFrom(_this4.parent, _this4.child);
         }
 
         _this4.child.postMessage({
@@ -520,12 +524,14 @@ function () {
 
           if (ports) {
             var port = ports[0];
-            port.postMessage(reply);
             _this5.source = port;
+            _this5.target = port;
+            port.postMessage(reply);
             port.start();
           } else {
+            _this5.source = _this5.child;
+            _this5.target = _this5.parent;
             source.postMessage(reply, origin);
-            _this5.source = source;
           }
 
           _this5.parentOrigin = origin; // Extend model with the one provided by the parent
