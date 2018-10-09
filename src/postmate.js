@@ -281,11 +281,11 @@ class Postmate {
     container = typeof container !== 'undefined' ? container : document.body, // eslint-disable-line no-use-before-define
     model,
     url,
-    classList = []
+    classListArray = []
   } = userOptions) { // eslint-disable-line no-undef
     this.parent = window
     this.frame = document.createElement('iframe')
-    this.frame.classList.add.apply(this.frame.classList, classList)
+    this.frame.classList.add.apply(this.frame.classList, classListArray)
     container.appendChild(this.frame)
     this.child = this.frame.contentWindow || this.frame.contentDocument.parentWindow
     this.model = model || {}

@@ -318,13 +318,13 @@ function () {
         container = _ref$container === void 0 ? typeof container !== 'undefined' ? container : document.body : _ref$container,
         model = _ref.model,
         url = _ref.url,
-        _ref$classList = _ref.classList,
-        classList = _ref$classList === void 0 ? [] : _ref$classList;
+        _ref$classListArray = _ref.classListArray,
+        classListArray = _ref$classListArray === void 0 ? [] : _ref$classListArray;
 
     // eslint-disable-line no-undef
     this.parent = window;
     this.frame = document.createElement('iframe');
-    this.frame.classList.add.apply(this.frame.classList, classList);
+    this.frame.classList.add.apply(this.frame.classList, classListArray);
     container.appendChild(this.frame);
     this.child = this.frame.contentWindow || this.frame.contentDocument.parentWindow;
     this.model = model || {};
