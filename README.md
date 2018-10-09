@@ -70,6 +70,7 @@ $ npm i postmate --save # Install via NPM
 const handshake = new Postmate({
   container: document.getElementById('some-div'), // Element to inject frame into
   url: 'http://child.com/page.html' // Page to load, must have postmate.js. This will also be the origin used for communication.
+  classListArray: ["myClass"] //Classes to add to the iframe via classList, useful for styling.
 });
 
 // When parent <-> child handshake is complete, data may be requested from the child
@@ -136,6 +137,7 @@ new Postmate(options);
 new Postmate({
   container: document.body,
   url: 'http://child.com/',
+  classListArray: ["myClass"]
   model: { foo: 'bar' }
 });
 ```
@@ -150,6 +152,7 @@ new Postmate({
 | --- | --- | --- | --- |
 | **`container`** (optional) | `DOM Node Element` | _An element to append the iFrame to_ | `document.body`
 **`url`** | `String` | _A URL to load in the iFrame. The origin of this URL will also be used for securing message transport | none_ |
+**`classListArray`** | `Array` | _An Array to add classes to the iFrame. Useful for styling | none_ |
 **`model`** | `Object` | _An object literal to represent the default values of the Childs model_ | none |
 
 ---
