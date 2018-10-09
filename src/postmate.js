@@ -113,6 +113,7 @@ export class ParentAPI {
     this.child = info.child
     this.childOrigin = info.childOrigin
     this.source = info.source
+    this.target = info.target
 
     this.events = {}
 
@@ -166,7 +167,7 @@ export class ParentAPI {
       this.addMessageListener(transact)
 
       // Then ask child for information
-      postMessage(this.source, {
+      postMessage(this.target, {
         postmate: 'request',
         type: messageType,
         property,
@@ -177,7 +178,7 @@ export class ParentAPI {
 
   call (property, data) {
     // Send information to the child
-    postMessage(this.source, {
+    postMessage(this.target, {
       postmate: 'call',
       type: messageType,
       property,
@@ -209,6 +210,7 @@ export class ChildAPI {
     this.parentOrigin = info.parentOrigin
     this.child = info.child
     this.source = info.source
+    this.target = info.target
 
     if (process.env.NODE_ENV !== 'production') {
       log('Child: Registering API')
@@ -233,7 +235,7 @@ export class ChildAPI {
 
       // Reply to Parent
       resolveValue(this.model, property)
-        .then(value => postMessage(this.source, {
+        .then(value => postMessage(this.target, {
           property,
           postmate: 'reply',
           type: messageType,
@@ -247,7 +249,7 @@ export class ChildAPI {
     if (process.env.NODE_ENV !== 'production') {
       log(`Child: Emitting Event "${name}"`, data)
     }
-    postMessage(this.source, {
+    postMessage(this.target, {
       postmate: 'emit',
       type: messageType,
       value: {
@@ -308,11 +310,13 @@ class Postmate {
         }
       }
 
-      const replyFrom = (source) => {
+      const replyFrom = (source, target = source) => {
         const reply = (e) => {
           if (!sanitize(e, childOrigin)) return
 
           this.source = source
+          this.target = target
+
           if (e.data.postmate === 'handshake-reply') {
             clearInterval(responseInterval)
             if (process.env.NODE_ENV !== 'production') {
@@ -362,7 +366,7 @@ class Postmate {
           removeReplyHandler = replyFrom(port1)
           port1.start()
         } else {
-          removeReplyHandler = replyFrom(this.parent)
+          removeReplyHandler = replyFrom(this.parent, this.child)
         }
 
         this.child.postMessage(
@@ -444,12 +448,16 @@ Postmate.Model = class Model {
 
           if (ports) {
             const port = ports[0]
-            port.postMessage(reply)
             this.source = port
+            this.target = port
+
+            port.postMessage(reply)
             port.start()
           } else {
+            this.source = this.child
+            this.target = this.parent
+
             source.postMessage(reply, origin)
-            this.source = source
           }
 
           this.parentOrigin = origin
