@@ -39,7 +39,7 @@ You can download the compiled javascript directly [here](/build/postmate.min.js)
 NOTE: While the underlying mechanism is [window.postMessage()](https://developer.mozilla.org/en-US/docs/Web/API/Window/postMessage), only iFrame is supported.
 
 ## Installing
-Postmate can be installed via NPM or Bower.
+Postmate can be installed via NPM.
 
 **NPM**
 ```bash
