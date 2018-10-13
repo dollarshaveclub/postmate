@@ -1,23 +1,22 @@
 /**
   postmate - A powerful, simple, promise-based postMessage library
-  @version v1.4.7
+  @version v1.4.8
   @link https://github.com/dollarshaveclub/postmate
   @author Jacob Kelley <jakie8@gmail.com>
   @license MIT
 **/
-/* eslint-env browser */
-
-/**
- * A flag indicating MessageChannel support
- * @type {Boolean}
- */
-var supportsMessageChannel = typeof MessageChannel !== 'undefined';
 /**
  * The type of messages our frames our sending
  * @type {String}
  */
+var messsageType = 'application/x-postmate-v1+json';
+/**
+ * hasOwnProperty()
+ * @type {Function}
+ * @return {Boolean}
+ */
 
-var messageType = 'application/x-postmate-v1+json';
+var hasOwnProperty = Object.prototype.hasOwnProperty;
 /**
  * The maximum number of attempts to send a handshake request to the parent
  * @type {Number}
@@ -35,7 +34,7 @@ var _messageId = 0;
  * @return {Number} A unique ID for a message
  */
 
-var generateNewMessageId = function generateNewMessageId() {
+var messageId = function messageId() {
   return ++_messageId;
 };
 /**
@@ -62,40 +61,26 @@ var resolveOrigin = function resolveOrigin(url) {
   var host = a.host.length ? a.port === '80' || a.port === '443' ? a.hostname : a.host : window.location.host;
   return a.origin || protocol + "//" + host;
 };
-var messageTypes = {
-  handshake: 1,
-  'handshake-reply': 1,
-  call: 1,
-  emit: 1,
-  reply: 1,
-  request: 1
-  /**
-   * Ensures that a message is safe to interpret
-   * @param  {Object}          message       The postmate message being sent
-   * @param  {String|Boolean}  allowedOrigin The whitelisted origin
-   *                                         or false to skip origin check
-   * @return {Boolean}
-   */
-
-};
-var sanitize = function sanitize(message, allowedOrigin) {
-  if (!supportsMessageChannel && typeof allowedOrigin === 'string' && message.origin !== allowedOrigin) return false;
-  if (typeof message.data !== 'object') return false;
-  if (!('postmate' in message.data)) return false;
-  if (message.data.type !== messageType) return false;
-  if (!messageTypes[message.data.postmate]) return false;
-  return true;
-};
 /**
- * Helper function calling postMessage appropriately based on the target object support
- * @param  {Object} target    Target object - window/port
- * @param  {Object} message   Message to be sent
- * @param  {String} origin    Target's origin
+ * Ensures that a message is safe to interpret
+ * @param  {Object} message       The postmate message being sent
+ * @param  {String} allowedOrigin The whitelisted origin
+ * @return {Boolean}
  */
 
-var postMessage = function postMessage(target, message, origin) {
-  var isNotDefined;
-  target.postMessage(message, supportsMessageChannel ? isNotDefined : origin);
+var sanitize = function sanitize(message, allowedOrigin) {
+  if (message.origin !== allowedOrigin) return false;
+  if (typeof message.data !== 'object') return false;
+  if (!('postmate' in message.data)) return false;
+  if (message.data.type !== messsageType) return false;
+  if (!{
+    'handshake-reply': 1,
+    call: 1,
+    emit: 1,
+    reply: 1,
+    request: 1
+  }[message.data.postmate]) return false;
+  return true;
 };
 /**
  * Takes a model, and searches for a value by the property
@@ -105,7 +90,6 @@ var postMessage = function postMessage(target, message, origin) {
  *                            passed to functions in the child model
  * @return {Promise}
  */
-
 
 var resolveValue = function resolveValue(model, property) {
   var unwrappedContext = typeof model[property] === 'function' ? model[property]() : model[property];
@@ -126,22 +110,19 @@ function () {
     this.frame = info.frame;
     this.child = info.child;
     this.childOrigin = info.childOrigin;
-    this.source = info.source;
-    this.target = info.target;
     this.events = {};
 
     if (process.env.NODE_ENV !== 'production') {
       log('Parent: Registering API');
+      log('Parent: Awaiting messages...');
     }
 
     this.listener = function (e) {
-      if (!sanitize(e, _this.childOrigin)) return;
+      var _ref = ((e || {}).data || {}).value || {},
+          data = _ref.data,
+          name = _ref.name;
 
       if (e.data.postmate === 'emit') {
-        var _e$data$value = e.data.value,
-            data = _e$data$value.data,
-            name = _e$data$value.name;
-
         if (process.env.NODE_ENV !== 'production') {
           log("Parent: Received event emission: " + name);
         }
@@ -152,7 +133,7 @@ function () {
       }
     };
 
-    this.addMessageListener(this.listener);
+    this.parent.addEventListener('message', this.listener, false);
 
     if (process.env.NODE_ENV !== 'production') {
       log('Parent: Awaiting event emissions from Child');
@@ -161,38 +142,28 @@ function () {
 
   var _proto = ParentAPI.prototype;
 
-  _proto.addMessageListener = function addMessageListener(listener) {
-    this.source.addEventListener('message', listener, false);
-  };
-
-  _proto.removeMessageListener = function removeMessageListener(listener) {
-    this.source.removeEventListener('message', listener, false);
-  };
-
   _proto.get = function get(property) {
     var _this2 = this;
 
     return new Postmate.Promise(function (resolve) {
       // Extract data from response and kill listeners
-      var uid = generateNewMessageId();
+      var uid = messageId();
 
       var transact = function transact(e) {
-        if (!sanitize(e, _this2.childOrigin)) return;
-
         if (e.data.uid === uid && e.data.postmate === 'reply') {
-          _this2.removeMessageListener(transact);
+          _this2.parent.removeEventListener('message', transact, false);
 
           resolve(e.data.value);
         }
       }; // Prepare for response from Child...
 
 
-      _this2.addMessageListener(transact); // Then ask child for information
+      _this2.parent.addEventListener('message', transact, false); // Then ask child for information
 
 
-      postMessage(_this2.target, {
+      _this2.child.postMessage({
         postmate: 'request',
-        type: messageType,
+        type: messsageType,
         property: property,
         uid: uid
       }, _this2.childOrigin);
@@ -201,9 +172,9 @@ function () {
 
   _proto.call = function call(property, data) {
     // Send information to the child
-    postMessage(this.target, {
+    this.child.postMessage({
       postmate: 'call',
-      type: messageType,
+      type: messsageType,
       property: property,
       data: data
     }, this.childOrigin);
@@ -218,7 +189,7 @@ function () {
       log('Parent: Destroying Postmate instance');
     }
 
-    this.removeMessageListener(this.listener);
+    window.removeEventListener('message', this.listener, false);
     this.frame.parentNode.removeChild(this.frame);
   };
 
@@ -239,15 +210,13 @@ function () {
     this.parent = info.parent;
     this.parentOrigin = info.parentOrigin;
     this.child = info.child;
-    this.source = info.source;
-    this.target = info.target;
 
     if (process.env.NODE_ENV !== 'production') {
       log('Child: Registering API');
       log('Child: Awaiting messages...');
     }
 
-    this.source.addEventListener('message', function (e) {
+    this.child.addEventListener('message', function (e) {
       if (!sanitize(e, _this3.parentOrigin)) return;
 
       if (process.env.NODE_ENV !== 'production') {
@@ -269,13 +238,13 @@ function () {
 
 
       resolveValue(_this3.model, property).then(function (value) {
-        return postMessage(_this3.target, {
+        return e.source.postMessage({
           property: property,
           postmate: 'reply',
-          type: messageType,
+          type: messsageType,
           uid: uid,
           value: value
-        }, _this3.parentOrigin);
+        }, e.origin);
       });
     });
   }
@@ -287,9 +256,9 @@ function () {
       log("Child: Emitting Event \"" + name + "\"", data);
     }
 
-    postMessage(this.target, {
+    this.parent.postMessage({
       postmate: 'emit',
-      type: messageType,
+      type: messsageType,
       value: {
         name: name,
         data: data
@@ -307,6 +276,7 @@ function () {
 var Postmate =
 /*#__PURE__*/
 function () {
+  // eslint-disable-line no-undef
   // Internet Explorer craps itself
 
   /**
@@ -314,11 +284,14 @@ function () {
    * @param {Object} userOptions The element to inject the frame into, and the url
    * @return {Promise}
    */
-  function Postmate(_ref) {
-    var _ref$container = _ref.container,
-        container = _ref$container === void 0 ? typeof container !== 'undefined' ? container : document.body : _ref$container,
-        model = _ref.model,
-        url = _ref.url;
+  function Postmate(_temp) {
+    var _ref2 = _temp === void 0 ? userOptions : _temp,
+        _ref2$container = _ref2.container,
+        container = _ref2$container === void 0 ? typeof container !== 'undefined' ? container : document.body : _ref2$container,
+        model = _ref2.model,
+        url = _ref2.url;
+
+    // eslint-disable-line no-undef
     this.parent = window;
     this.frame = document.createElement('iframe');
     container.appendChild(this.frame);
@@ -341,70 +314,41 @@ function () {
     var childOrigin = resolveOrigin(url);
     var attempt = 0;
     var responseInterval;
-    var removeReplyHandler;
     return new Postmate.Promise(function (resolve, reject) {
-      if (supportsMessageChannel) {
-        if (process.env.NODE_ENV !== 'production') {
-          log("Parent: Supports MessageChannel");
-        }
-      }
+      var reply = function reply(e) {
+        if (!sanitize(e, childOrigin)) return false;
 
-      var replyFrom = function replyFrom(source, target) {
-        if (target === void 0) {
-          target = source;
-        }
-
-        var reply = function reply(e) {
-          if (!sanitize(e, childOrigin)) return;
-          _this4.source = source;
-          _this4.target = target;
-
-          if (e.data.postmate === 'handshake-reply') {
-            clearInterval(responseInterval);
-
-            if (process.env.NODE_ENV !== 'production') {
-              log('Parent: Received handshake reply from Child');
-            }
-
-            removeHandler();
-            _this4.childOrigin = e.origin;
-
-            if (process.env.NODE_ENV !== 'production') {
-              log('Parent: Saving Child origin', _this4.childOrigin);
-            }
-
-            return resolve(new ParentAPI(_this4));
-          } // Might need to remove since parent might be receiving different messages
-          // from different hosts
-
+        if (e.data.postmate === 'handshake-reply') {
+          clearInterval(responseInterval);
 
           if (process.env.NODE_ENV !== 'production') {
-            log('Parent: Invalid handshake reply');
+            log('Parent: Received handshake reply from Child');
           }
 
-          return reject('Failed handshake');
-        };
+          _this4.parent.removeEventListener('message', reply, false);
 
-        source.addEventListener('message', reply, false);
+          _this4.childOrigin = e.origin;
 
-        var removeHandler = function removeHandler() {
-          source.removeEventListener('message', reply, false);
-        };
+          if (process.env.NODE_ENV !== 'production') {
+            log('Parent: Saving Child origin', _this4.childOrigin);
+          }
 
-        return removeHandler;
+          return resolve(new ParentAPI(_this4));
+        } // Might need to remove since parent might be receiving different messages
+        // from different hosts
+
+
+        if (process.env.NODE_ENV !== 'production') {
+          log('Parent: Invalid handshake reply');
+        }
+
+        return reject('Failed handshake');
       };
 
+      _this4.parent.addEventListener('message', reply, false);
+
       var doSend = function doSend() {
-        if (attempt === maxHandshakeRequests) {
-          clearInterval(responseInterval);
-          return;
-        }
-
         attempt++;
-
-        if (removeReplyHandler) {
-          removeReplyHandler();
-        }
 
         if (process.env.NODE_ENV !== 'production') {
           log("Parent: Sending handshake attempt " + attempt, {
@@ -412,24 +356,15 @@ function () {
           });
         }
 
-        var port1, port2;
-
-        if (supportsMessageChannel) {
-          var _ref2 = new MessageChannel();
-
-          port1 = _ref2.port1;
-          port2 = _ref2.port2;
-          removeReplyHandler = replyFrom(port1);
-          port1.start();
-        } else {
-          removeReplyHandler = replyFrom(_this4.parent, _this4.child);
-        }
-
         _this4.child.postMessage({
           postmate: 'handshake',
-          type: messageType,
+          type: messsageType,
           model: _this4.model
-        }, childOrigin, port2 ? [port2] : []);
+        }, childOrigin);
+
+        if (attempt === maxHandshakeRequests) {
+          clearInterval(responseInterval);
+        }
       };
 
       var loaded = function loaded() {
@@ -461,11 +396,13 @@ function () {
  */
 
 
+Postmate.debug = false;
+
 Postmate.Promise = function () {
   try {
     return window ? window.Promise : Promise;
   } catch (e) {
-    return log('Promise: error', e);
+    return null;
   }
 }();
 
@@ -486,11 +423,6 @@ function () {
   /**
    * Responds to a handshake initiated by the Parent
    * @return {Promise} Resolves an object that exposes an API for the Child
-   * ---
-   * ⚠️ ports if/else (within this method)
-   * - insures that ports is defined
-   * - so that *when* a [port] *is* available
-   * - a postMessage(reply) will be sent
    */
 
 
@@ -501,7 +433,9 @@ function () {
 
     return new Postmate.Promise(function (resolve, reject) {
       var shake = function shake(e) {
-        if (!sanitize(e, false)) return;
+        if (!e.data.postmate) {
+          return;
+        }
 
         if (e.data.postmate === 'handshake') {
           if (process.env.NODE_ENV !== 'production') {
@@ -514,34 +448,22 @@ function () {
             log('Child: Sending handshake reply to Parent');
           }
 
-          var source = e.source,
-              ports = e.ports,
-              origin = e.origin;
-          var reply = {
+          e.source.postMessage({
             postmate: 'handshake-reply',
-            type: messageType
-          };
-
-          if (ports) {
-            var port = ports[0];
-            _this5.source = port;
-            _this5.target = port;
-            port.postMessage(reply);
-            port.start();
-          } else {
-            _this5.source = _this5.child;
-            _this5.target = _this5.parent;
-            source.postMessage(reply, origin);
-          }
-
-          _this5.parentOrigin = origin; // Extend model with the one provided by the parent
+            type: messsageType
+          }, e.origin);
+          _this5.parentOrigin = e.origin; // Extend model with the one provided by the parent
 
           var defaults = e.data.model;
 
           if (defaults) {
-            Object.keys(defaults).forEach(function (key) {
-              _this5.model[key] = defaults[key];
-            });
+            var keys = Object.keys(defaults);
+
+            for (var i = 0; i < keys.length; i++) {
+              if (hasOwnProperty.call(defaults, keys[i])) {
+                _this5.model[keys[i]] = defaults[keys[i]];
+              }
+            }
 
             if (process.env.NODE_ENV !== 'production') {
               log('Child: Inherited and extended model from Parent');
