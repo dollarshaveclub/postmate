@@ -11,7 +11,7 @@
  * The type of messages our frames our sending
  * @type {String}
  */
-var messsageType = 'application/x-postmate-v1+json';
+var messageType = 'application/x-postmate-v1+json';
 /**
  * hasOwnProperty()
  * @type {Function}
@@ -32,11 +32,11 @@ var maxHandshakeRequests = 5;
 
 var _messageId = 0;
 /**
- * Increments and returns a message ID
- * @return {Number} A unique ID for a message
+ * A unique message ID that is used to ensure responses are sent to the correct requests
+ * @type {Number}
  */
 
-var messageId = function messageId() {
+var generateNewMessageId = function generateNewMessageId() {
   return ++_messageId;
 };
 /**
@@ -74,7 +74,7 @@ var sanitize = function sanitize(message, allowedOrigin) {
   if (message.origin !== allowedOrigin) return false;
   if (typeof message.data !== 'object') return false;
   if (!('postmate' in message.data)) return false;
-  if (message.data.type !== messsageType) return false;
+  if (message.data.type !== messageType) return false;
   if (!{
     'handshake-reply': 1,
     call: 1,
@@ -149,7 +149,7 @@ function () {
 
     return new Postmate.Promise(function (resolve) {
       // Extract data from response and kill listeners
-      var uid = messageId();
+      var uid = generateNewMessageId();
 
       var transact = function transact(e) {
         if (e.data.uid === uid && e.data.postmate === 'reply') {
@@ -165,7 +165,7 @@ function () {
 
       _this2.child.postMessage({
         postmate: 'request',
-        type: messsageType,
+        type: messageType,
         property: property,
         uid: uid
       }, _this2.childOrigin);
@@ -176,7 +176,7 @@ function () {
     // Send information to the child
     this.child.postMessage({
       postmate: 'call',
-      type: messsageType,
+      type: messageType,
       property: property,
       data: data
     }, this.childOrigin);
@@ -243,7 +243,7 @@ function () {
         return e.source.postMessage({
           property: property,
           postmate: 'reply',
-          type: messsageType,
+          type: messageType,
           uid: uid,
           value: value
         }, e.origin);
@@ -260,7 +260,7 @@ function () {
 
     this.parent.postMessage({
       postmate: 'emit',
-      type: messsageType,
+      type: messageType,
       value: {
         name: name,
         data: data
@@ -286,13 +286,11 @@ function () {
    * @param {Object} userOptions The element to inject the frame into, and the url
    * @return {Promise}
    */
-  function Postmate(_temp) {
-    var _ref2 = _temp === void 0 ? userOptions : _temp,
-        _ref2$container = _ref2.container,
+  function Postmate(_ref2) {
+    var _ref2$container = _ref2.container,
         container = _ref2$container === void 0 ? typeof container !== 'undefined' ? container : document.body : _ref2$container,
         model = _ref2.model,
         url = _ref2.url;
-
     // eslint-disable-line no-undef
     this.parent = window;
     this.frame = document.createElement('iframe');
@@ -360,7 +358,7 @@ function () {
 
         _this4.child.postMessage({
           postmate: 'handshake',
-          type: messsageType,
+          type: messageType,
           model: _this4.model
         }, childOrigin);
 
@@ -452,7 +450,7 @@ function () {
 
           e.source.postMessage({
             postmate: 'handshake-reply',
-            type: messsageType
+            type: messageType
           }, e.origin);
           _this5.parentOrigin = e.origin; // Extend model with the one provided by the parent
 

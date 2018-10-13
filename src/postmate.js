@@ -3,14 +3,7 @@
  * The type of messages our frames our sending
  * @type {String}
  */
-export const messsageType = 'application/x-postmate-v1+json'
-
-/**
- * hasOwnProperty()
- * @type {Function}
- * @return {Boolean}
- */
-const hasOwnProperty = Object.prototype.hasOwnProperty
+export const messageType = 'application/x-postmate-v1+json'
 
 /**
  * The maximum number of attempts to send a handshake request to the parent
@@ -28,7 +21,7 @@ let _messageId = 0
  * Increments and returns a message ID
  * @return {Number} A unique ID for a message
  */
-export const messageId = () => ++_messageId
+export const generateNewMessageId = () => ++_messageId
 
 /**
  * Postmate logging function that enables/disables via config
@@ -49,10 +42,19 @@ export const resolveOrigin = (url) => {
   return a.origin || `${protocol}//${host}`
 }
 
+const messageTypes = {
+  handshake: 1,
+  'handshake-reply': 1,
+  call: 1,
+  emit: 1,
+  reply: 1,
+  request: 1,
+}
+
 /**
  * Ensures that a message is safe to interpret
- * @param  {Object} message       The postmate message being sent
- * @param  {String} allowedOrigin The whitelisted origin
+ * @param  {Object} message The postmate message being sent
+ * @param  {String|Boolean} allowedOrigin The whitelisted origin or false to skip origin check
  * @return {Boolean}
  */
 export const sanitize = (message, allowedOrigin) => {
@@ -62,14 +64,8 @@ export const sanitize = (message, allowedOrigin) => {
   ) return false
   if (!message.data) return false
   if (!('postmate' in message.data)) return false
-  if (message.data.type !== messsageType) return false
-  if (!{
-    'handshake-reply': 1,
-    call: 1,
-    emit: 1,
-    reply: 1,
-    request: 1,
-  }[message.data.postmate]) return false
+  if (message.data.type !== messageType) return false
+  if (!messageTypes[message.data.postmate]) return false
   return true
 }
 
@@ -126,7 +122,7 @@ export class ParentAPI {
   get (property) {
     return new Postmate.Promise((resolve) => {
       // Extract data from response and kill listeners
-      const uid = messageId()
+      const uid = generateNewMessageId()
       const transact = (e) => {
         if (e.data.uid === uid && e.data.postmate === 'reply') {
           this.parent.removeEventListener('message', transact, false)
@@ -140,7 +136,7 @@ export class ParentAPI {
       // Then ask child for information
       this.child.postMessage({
         postmate: 'request',
-        type: messsageType,
+        type: messageType,
         property,
         uid,
       }, this.childOrigin)
@@ -151,7 +147,7 @@ export class ParentAPI {
     // Send information to the child
     this.child.postMessage({
       postmate: 'call',
-      type: messsageType,
+      type: messageType,
       property,
       data,
     }, this.childOrigin)
@@ -207,7 +203,7 @@ export class ChildAPI {
         .then(value => e.source.postMessage({
           property,
           postmate: 'reply',
-          type: messsageType,
+          type: messageType,
           uid,
           value,
         }, e.origin))
@@ -220,7 +216,7 @@ export class ChildAPI {
     }
     this.parent.postMessage({
       postmate: 'emit',
-      type: messsageType,
+      type: messageType,
       value: {
         name,
         data,
@@ -306,7 +302,7 @@ class Postmate {
         }
         this.child.postMessage({
           postmate: 'handshake',
-          type: messsageType,
+          type: messageType,
           model: this.model,
         }, childOrigin)
 
@@ -371,19 +367,16 @@ Postmate.Model = class Model {
           }
           e.source.postMessage({
             postmate: 'handshake-reply',
-            type: messsageType,
+            type: messageType,
           }, e.origin)
           this.parentOrigin = e.origin
 
           // Extend model with the one provided by the parent
           const defaults = e.data.model
           if (defaults) {
-            const keys = Object.keys(defaults)
-            for (let i = 0; i < keys.length; i++) {
-              if (hasOwnProperty.call(defaults, keys[i])) {
-                this.model[keys[i]] = defaults[keys[i]]
-              }
-            }
+            Object.keys(defaults).forEach(key => {
+              this.model[key] = defaults[key]
+            })
             if (process.env.NODE_ENV !== 'production') {
               log('Child: Inherited and extended model from Parent')
             }
