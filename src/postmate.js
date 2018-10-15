@@ -70,7 +70,7 @@ export const sanitize = (message, allowedOrigin) => {
     typeof allowedOrigin === 'string' &&
     message.origin !== allowedOrigin
   ) return false
-  if (typeof message.data !== 'object') return false
+  if (!message.data) return false
   if (!('postmate' in message.data)) return false
   if (message.data.type !== messageType) return false
   if (!messageTypes[message.data.postmate]) return false
