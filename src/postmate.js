@@ -1,10 +1,3 @@
-/* eslint-env browser */
-
-/**
- * A flag indicating MessageChannel support
- * @type {Boolean}
- */
-const supportsMessageChannel = typeof MessageChannel !== 'undefined'
 
 /**
  * The type of messages our frames our sending
@@ -60,32 +53,20 @@ const messageTypes = {
 
 /**
  * Ensures that a message is safe to interpret
- * @param  {Object}          message       The postmate message being sent
- * @param  {String|Boolean}  allowedOrigin The whitelisted origin
- *                                         or false to skip origin check
+ * @param  {Object} message The postmate message being sent
+ * @param  {String|Boolean} allowedOrigin The whitelisted origin or false to skip origin check
  * @return {Boolean}
  */
 export const sanitize = (message, allowedOrigin) => {
-  if (!supportsMessageChannel &&
+  if (
     typeof allowedOrigin === 'string' &&
     message.origin !== allowedOrigin
   ) return false
-  if (typeof message.data !== 'object') return false
+  if (!message.data) return false
   if (!('postmate' in message.data)) return false
   if (message.data.type !== messageType) return false
   if (!messageTypes[message.data.postmate]) return false
   return true
-}
-
-/**
- * Helper function calling postMessage appropriately based on the target object support
- * @param  {Object} target    Target object - window/port
- * @param  {Object} message   Message to be sent
- * @param  {String} origin    Target's origin
- */
-const postMessage = (target, message, origin) => {
-  let isNotDefined
-  target.postMessage(message, supportsMessageChannel ? isNotDefined : origin)
 }
 
 /**
@@ -112,19 +93,17 @@ export class ParentAPI {
     this.frame = info.frame
     this.child = info.child
     this.childOrigin = info.childOrigin
-    this.source = info.source
 
     this.events = {}
 
     if (process.env.NODE_ENV !== 'production') {
       log('Parent: Registering API')
+      log('Parent: Awaiting messages...')
     }
 
     this.listener = (e) => {
-      if (!sanitize(e, this.childOrigin)) return
-
+      const { data, name } = (((e || {}).data || {}).value || {})
       if (e.data.postmate === 'emit') {
-        const { data, name } = e.data.value
         if (process.env.NODE_ENV !== 'production') {
           log(`Parent: Received event emission: ${name}`)
         }
@@ -134,19 +113,10 @@ export class ParentAPI {
       }
     }
 
-    this.addMessageListener(this.listener)
-
+    this.parent.addEventListener('message', this.listener, false)
     if (process.env.NODE_ENV !== 'production') {
       log('Parent: Awaiting event emissions from Child')
     }
-  }
-
-  addMessageListener (listener) {
-    this.source.addEventListener('message', listener, false)
-  }
-
-  removeMessageListener (listener) {
-    this.source.removeEventListener('message', listener, false)
   }
 
   get (property) {
@@ -154,19 +124,17 @@ export class ParentAPI {
       // Extract data from response and kill listeners
       const uid = generateNewMessageId()
       const transact = (e) => {
-        if (!sanitize(e, this.childOrigin)) return
-
         if (e.data.uid === uid && e.data.postmate === 'reply') {
-          this.removeMessageListener(transact)
+          this.parent.removeEventListener('message', transact, false)
           resolve(e.data.value)
         }
       }
 
       // Prepare for response from Child...
-      this.addMessageListener(transact)
+      this.parent.addEventListener('message', transact, false)
 
       // Then ask child for information
-      postMessage(this.source, {
+      this.child.postMessage({
         postmate: 'request',
         type: messageType,
         property,
@@ -177,7 +145,7 @@ export class ParentAPI {
 
   call (property, data) {
     // Send information to the child
-    postMessage(this.source, {
+    this.child.postMessage({
       postmate: 'call',
       type: messageType,
       property,
@@ -193,7 +161,7 @@ export class ParentAPI {
     if (process.env.NODE_ENV !== 'production') {
       log('Parent: Destroying Postmate instance')
     }
-    this.removeMessageListener(this.listener)
+    window.removeEventListener('message', this.listener, false)
     this.frame.parentNode.removeChild(this.frame)
   }
 }
@@ -208,14 +176,13 @@ export class ChildAPI {
     this.parent = info.parent
     this.parentOrigin = info.parentOrigin
     this.child = info.child
-    this.source = info.source
 
     if (process.env.NODE_ENV !== 'production') {
       log('Child: Registering API')
       log('Child: Awaiting messages...')
     }
 
-    this.source.addEventListener('message', (e) => {
+    this.child.addEventListener('message', (e) => {
       if (!sanitize(e, this.parentOrigin)) return
 
       if (process.env.NODE_ENV !== 'production') {
@@ -233,13 +200,13 @@ export class ChildAPI {
 
       // Reply to Parent
       resolveValue(this.model, property)
-        .then(value => postMessage(this.source, {
+        .then(value => e.source.postMessage({
           property,
           postmate: 'reply',
           type: messageType,
           uid,
           value,
-        }, this.parentOrigin))
+        }, e.origin))
     })
   }
 
@@ -247,7 +214,7 @@ export class ChildAPI {
     if (process.env.NODE_ENV !== 'production') {
       log(`Child: Emitting Event "${name}"`, data)
     }
-    postMessage(this.source, {
+    this.parent.postMessage({
       postmate: 'emit',
       type: messageType,
       value: {
@@ -263,12 +230,14 @@ export class ChildAPI {
  * @type {Class}
  */
 class Postmate {
+  static debug = false // eslint-disable-line no-undef
+
   // Internet Explorer craps itself
   static Promise = (() => {
     try {
       return window ? window.Promise : Promise
     } catch (e) {
-      return log('Promise: error', e)
+      return null
     }
   })()
 
@@ -302,80 +271,46 @@ class Postmate {
     const childOrigin = resolveOrigin(url)
     let attempt = 0
     let responseInterval
-    let removeReplyHandler
     return new Postmate.Promise((resolve, reject) => {
-      if (supportsMessageChannel) {
-        if (process.env.NODE_ENV !== 'production') {
-          log(`Parent: Supports MessageChannel`)
-        }
-      }
-
-      const replyFrom = (source) => {
-        const reply = (e) => {
-          if (!sanitize(e, childOrigin)) return
-
-          this.source = source
-          if (e.data.postmate === 'handshake-reply') {
-            clearInterval(responseInterval)
-            if (process.env.NODE_ENV !== 'production') {
-              log('Parent: Received handshake reply from Child')
-            }
-
-            removeHandler()
-
-            this.childOrigin = e.origin
-            if (process.env.NODE_ENV !== 'production') {
-              log('Parent: Saving Child origin', this.childOrigin)
-            }
-            return resolve(new ParentAPI(this))
-          }
-
-          // Might need to remove since parent might be receiving different messages
-          // from different hosts
+      const reply = (e) => {
+        if (!sanitize(e, childOrigin)) return false
+        if (e.data.postmate === 'handshake-reply') {
+          clearInterval(responseInterval)
           if (process.env.NODE_ENV !== 'production') {
-            log('Parent: Invalid handshake reply')
+            log('Parent: Received handshake reply from Child')
           }
-          return reject('Failed handshake')
+          this.parent.removeEventListener('message', reply, false)
+          this.childOrigin = e.origin
+          if (process.env.NODE_ENV !== 'production') {
+            log('Parent: Saving Child origin', this.childOrigin)
+          }
+          return resolve(new ParentAPI(this))
         }
 
-        source.addEventListener('message', reply, false)
-        const removeHandler = () => {
-          source.removeEventListener('message', reply, false)
+        // Might need to remove since parent might be receiving different messages
+        // from different hosts
+        if (process.env.NODE_ENV !== 'production') {
+          log('Parent: Invalid handshake reply')
         }
-        return removeHandler
+        return reject('Failed handshake')
       }
+
+      this.parent.addEventListener('message', reply, false)
 
       const doSend = () => {
-        if (attempt === maxHandshakeRequests) {
-          clearInterval(responseInterval)
-          return
-        }
         attempt++
-        if (removeReplyHandler) {
-          removeReplyHandler()
-        }
         if (process.env.NODE_ENV !== 'production') {
           log(`Parent: Sending handshake attempt ${attempt}`, { childOrigin })
         }
+        this.child.postMessage({
+          postmate: 'handshake',
+          type: messageType,
+          model: this.model,
+        }, childOrigin)
 
-        let port1, port2
-        if (supportsMessageChannel) {
-          ({ port1, port2 } = new MessageChannel())
-          removeReplyHandler = replyFrom(port1)
-          port1.start()
-        } else {
-          removeReplyHandler = replyFrom(this.parent)
+        if (attempt === maxHandshakeRequests) {
+          clearInterval(responseInterval)
         }
-
-        this.child.postMessage(
-          {
-            postmate: 'handshake',
-            type: messageType,
-            model: this.model,
-          },
-          childOrigin,
-          port2 ? [port2] : [],
-        )
       }
 
       const loaded = () => {
@@ -417,17 +352,13 @@ Postmate.Model = class Model {
   /**
    * Responds to a handshake initiated by the Parent
    * @return {Promise} Resolves an object that exposes an API for the Child
-   * ---
-   * ⚠️ ports if/else (within this method)
-   * - insures that ports is defined
-   * - so that *when* a [port] *is* available
-   * - a postMessage(reply) will be sent
    */
   sendHandshakeReply () {
     return new Postmate.Promise((resolve, reject) => {
       const shake = (e) => {
-        if (!sanitize(e, false)) return
-
+        if (!e.data.postmate) {
+          return
+        }
         if (e.data.postmate === 'handshake') {
           if (process.env.NODE_ENV !== 'production') {
             log('Child: Received handshake from Parent')
@@ -436,25 +367,11 @@ Postmate.Model = class Model {
           if (process.env.NODE_ENV !== 'production') {
             log('Child: Sending handshake reply to Parent')
           }
-
-          const {source, ports, origin} = e
-
-          const reply = {
+          e.source.postMessage({
             postmate: 'handshake-reply',
             type: messageType,
-          }
-
-          if (ports) {
-            const port = ports[0]
-            port.postMessage(reply)
-            this.source = port
-            port.start()
-          } else {
-            source.postMessage(reply, origin)
-            this.source = source
-          }
-
-          this.parentOrigin = origin
+          }, e.origin)
+          this.parentOrigin = e.origin
 
           // Extend model with the one provided by the parent
           const defaults = e.data.model
