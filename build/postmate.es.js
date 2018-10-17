@@ -11,13 +11,6 @@
  */
 var messageType = 'application/x-postmate-v1+json';
 /**
- * hasOwnProperty()
- * @type {Function}
- * @return {Boolean}
- */
-
-var hasOwnProperty = Object.prototype.hasOwnProperty;
-/**
  * The maximum number of attempts to send a handshake request to the parent
  * @type {Number}
  */
@@ -30,8 +23,8 @@ var maxHandshakeRequests = 5;
 
 var _messageId = 0;
 /**
- * A unique message ID that is used to ensure responses are sent to the correct requests
- * @type {Number}
+ * Increments and returns a message ID
+ * @return {Number} A unique ID for a message
  */
 
 var generateNewMessageId = function generateNewMessageId() {
@@ -61,25 +54,27 @@ var resolveOrigin = function resolveOrigin(url) {
   var host = a.host.length ? a.port === '80' || a.port === '443' ? a.hostname : a.host : window.location.host;
   return a.origin || protocol + "//" + host;
 };
-/**
- * Ensures that a message is safe to interpret
- * @param  {Object} message       The postmate message being sent
- * @param  {String} allowedOrigin The whitelisted origin
- * @return {Boolean}
- */
+var messageTypes = {
+  handshake: 1,
+  'handshake-reply': 1,
+  call: 1,
+  emit: 1,
+  reply: 1,
+  request: 1
+  /**
+   * Ensures that a message is safe to interpret
+   * @param  {Object} message The postmate message being sent
+   * @param  {String|Boolean} allowedOrigin The whitelisted origin or false to skip origin check
+   * @return {Boolean}
+   */
 
+};
 var sanitize = function sanitize(message, allowedOrigin) {
-  if (message.origin !== allowedOrigin) return false;
-  if (typeof message.data !== 'object') return false;
+  if (typeof allowedOrigin === 'string' && message.origin !== allowedOrigin) return false;
+  if (!message.data) return false;
   if (!('postmate' in message.data)) return false;
   if (message.data.type !== messageType) return false;
-  if (!{
-    'handshake-reply': 1,
-    call: 1,
-    emit: 1,
-    reply: 1,
-    request: 1
-  }[message.data.postmate]) return false;
+  if (!messageTypes[message.data.postmate]) return false;
   return true;
 };
 /**
@@ -284,14 +279,19 @@ function () {
    * @param {Object} userOptions The element to inject the frame into, and the url
    * @return {Promise}
    */
-  function Postmate(_ref2) {
-    var _ref2$container = _ref2.container,
+  function Postmate(_temp) {
+    var _ref2 = _temp === void 0 ? userOptions : _temp,
+        _ref2$container = _ref2.container,
         container = _ref2$container === void 0 ? typeof container !== 'undefined' ? container : document.body : _ref2$container,
         model = _ref2.model,
-        url = _ref2.url;
+        url = _ref2.url,
+        _ref2$classListArray = _ref2.classListArray,
+        classListArray = _ref2$classListArray === void 0 ? [] : _ref2$classListArray;
+
     // eslint-disable-line no-undef
     this.parent = window;
     this.frame = document.createElement('iframe');
+    this.frame.classList.add.apply(this.frame.classList, classListArray);
     container.appendChild(this.frame);
     this.child = this.frame.contentWindow || this.frame.contentDocument.parentWindow;
     this.model = model || {};
@@ -455,13 +455,9 @@ function () {
           var defaults = e.data.model;
 
           if (defaults) {
-            var keys = Object.keys(defaults);
-
-            for (var i = 0; i < keys.length; i++) {
-              if (hasOwnProperty.call(defaults, keys[i])) {
-                _this5.model[keys[i]] = defaults[keys[i]];
-              }
-            }
+            Object.keys(defaults).forEach(function (key) {
+              _this5.model[key] = defaults[key];
+            });
 
             if (process.env.NODE_ENV !== 'production') {
               log('Child: Inherited and extended model from Parent');

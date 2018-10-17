@@ -15,6 +15,18 @@ describe('postmate', function () {
     })
   })
 
+  it('should have classes', function (done) {
+    new Postmate({
+      container: document.getElementById('frame'),
+      url: 'http://localhost:9000/child.html',
+      classListArray: ['classOne', 'classTwo'],
+    }).then(function (child) {
+      expect(document.querySelector('iframe').classList).to.be.include({0: 'classOne', 1: 'classTwo'})
+      child.destroy()
+      done()
+    })
+  })
+
   it('should fetch values from the child model', function (done) {
     new Postmate({
       container: document.getElementById('frame'),
