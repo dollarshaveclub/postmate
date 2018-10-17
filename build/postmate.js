@@ -278,18 +278,16 @@ function () {
 
   /**
    * Sets options related to the Parent
-   * @param {Object} userOptions The element to inject the frame into, and the url
+   * @param {Object} object The element to inject the frame into, and the url
    * @return {Promise}
    */
-  function Postmate(_temp) {
-    var _ref2 = _temp === void 0 ? userOptions : _temp,
-        _ref2$container = _ref2.container,
+  function Postmate(_ref2) {
+    var _ref2$container = _ref2.container,
         container = _ref2$container === void 0 ? typeof container !== 'undefined' ? container : document.body : _ref2$container,
         model = _ref2.model,
         url = _ref2.url,
         _ref2$classListArray = _ref2.classListArray,
         classListArray = _ref2$classListArray === void 0 ? [] : _ref2$classListArray;
-
     // eslint-disable-line no-undef
     this.parent = window;
     this.frame = document.createElement('iframe');

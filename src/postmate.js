@@ -243,7 +243,7 @@ class Postmate {
 
   /**
    * Sets options related to the Parent
-   * @param {Object} userOptions The element to inject the frame into, and the url
+   * @param {Object} object The element to inject the frame into, and the url
    * @return {Promise}
    */
   constructor ({
@@ -251,7 +251,7 @@ class Postmate {
     model,
     url,
     classListArray = [],
-  } = userOptions) { // eslint-disable-line no-undef
+  }) { // eslint-disable-line no-undef
     this.parent = window
     this.frame = document.createElement('iframe')
     this.frame.classList.add.apply(this.frame.classList, classListArray)
