@@ -15,6 +15,22 @@ describe('postmate', function () {
     })
   })
 
+  it('should complete a handshake with existing iframe', function (done) {
+    const iframe = document.createElement('iframe', {
+      id: 'existing_frame',
+      src: 'http://localhost:9000/child.html',
+    })
+    document.body.appendChild(iframe)
+
+    new Postmate({
+      container: iframe,
+      url: 'http://localhost:9000/child.html',
+    }).then(function (child) {
+      child.destroy()
+      done()
+    })
+  })
+
   it('should have classes', function (done) {
     new Postmate({
       container: document.getElementById('frame'),

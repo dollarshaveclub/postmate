@@ -256,9 +256,13 @@ class Postmate {
     classListArray = [],
   }) { // eslint-disable-line no-undef
     this.parent = window
-    this.frame = document.createElement('iframe')
-    this.frame.classList.add.apply(this.frame.classList, classListArray)
-    container.appendChild(this.frame)
+    if (container instanceof window.HTMLElement && container.nodeType === 'iframe') {
+      this.frame = container
+    } else {
+      this.frame = document.createElement('iframe')
+      this.frame.classList.add.apply(this.frame.classList, classListArray)
+      container.appendChild(this.frame)
+    }
     this.child = this.frame.contentWindow || this.frame.contentDocument.parentWindow
     this.model = model || {}
 
@@ -330,7 +334,10 @@ class Postmate {
       if (process.env.NODE_ENV !== 'production') {
         log('Parent: Loading frame', { url })
       }
-      this.frame.src = url
+
+      if (!this.frame.src) {
+        this.frame.src = url
+      }
     })
   }
 }

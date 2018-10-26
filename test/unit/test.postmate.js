@@ -98,6 +98,24 @@ test('Postmate mocking', () => {
   expect(typeof test).toBe('object')
 })
 
+test('Postmate with exisitng iframe mocking', () => {
+  Postmate.debug = true
+
+  const iframe = document.createElement('iframe', {
+    src: 'http://child.com/',
+    id: 'existing_frame',
+  })
+  document.body.appendChild(iframe)
+
+  const test = new Postmate({
+    container: iframe,
+    url: 'http://child.com/',
+    model: { foo: 'bar' },
+  })
+  expect(test.debug === true)
+  expect(typeof test).toBe('object')
+})
+
 test('ChildAPI mocking', () => {
   Postmate.debug = true
   const info = {

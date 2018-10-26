@@ -296,9 +296,15 @@
           classListArray = _ref2$classListArray === void 0 ? [] : _ref2$classListArray;
       // eslint-disable-line no-undef
       this.parent = window;
-      this.frame = document.createElement('iframe');
-      this.frame.classList.add.apply(this.frame.classList, classListArray);
-      container.appendChild(this.frame);
+
+      if (container instanceof window.HTMLElement && container.nodeType === 'iframe') {
+        this.frame = container;
+      } else {
+        this.frame = document.createElement('iframe');
+        this.frame.classList.add.apply(this.frame.classList, classListArray);
+        container.appendChild(this.frame);
+      }
+
       this.child = this.frame.contentWindow || this.frame.contentDocument.parentWindow;
       this.model = model || {};
       return this.sendHandshake(url);
@@ -388,7 +394,9 @@
           });
         }
 
-        _this4.frame.src = url;
+        if (!_this4.frame.src) {
+          _this4.frame.src = url;
+        }
       });
     };
 
