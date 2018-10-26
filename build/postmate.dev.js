@@ -110,6 +110,7 @@
       this.parent = info.parent;
       this.frame = info.frame;
       this.child = info.child;
+      this.existingFrame = info.existingFrame;
       this.childOrigin = info.childOrigin;
       this.events = {};
 
@@ -193,7 +194,10 @@
       }
 
       window.removeEventListener('message', this.listener, false);
-      this.frame.parentNode.removeChild(this.frame);
+
+      if (!this.existingFrame) {
+        this.frame.parentNode.removeChild(this.frame);
+      }
     };
 
     return ParentAPI;
@@ -299,10 +303,12 @@
 
       if (container instanceof window.HTMLElement && container.nodeType === 'iframe') {
         this.frame = container;
+        this.existingFrame = true;
       } else {
         this.frame = document.createElement('iframe');
         this.frame.classList.add.apply(this.frame.classList, classListArray);
         container.appendChild(this.frame);
+        this.existingFrame = false;
       }
 
       this.child = this.frame.contentWindow || this.frame.contentDocument.parentWindow;
