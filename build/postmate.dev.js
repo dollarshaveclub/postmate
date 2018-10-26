@@ -1,6 +1,6 @@
 /**
   @livechat/postmate - A powerful, simple, promise-based postMessage library
-  @version v1.5.0
+  @version v1.5.1
   @link https://github.com/dollarshaveclub/postmate
   @author Jacob Kelley <jakie8@gmail.com>
   @license MIT
@@ -120,9 +120,10 @@
 
       this.listener = function (e) {
         if (!sanitize(e, _this.childOrigin)) return false;
-        var _e$data$value = e.data.value,
-            data = _e$data$value.data,
-            name = _e$data$value.name;
+
+        var _ref = ((e || {}).data || {}).value || {},
+            data = _ref.data,
+            name = _ref.name;
 
         if (e.data.postmate === 'emit') {
           {
@@ -286,13 +287,13 @@
      * @param {Object} object The element to inject the frame into, and the url
      * @return {Promise}
      */
-    function Postmate(_ref) {
-      var _ref$container = _ref.container,
-          container = _ref$container === void 0 ? typeof container !== 'undefined' ? container : document.body : _ref$container,
-          model = _ref.model,
-          url = _ref.url,
-          _ref$classListArray = _ref.classListArray,
-          classListArray = _ref$classListArray === void 0 ? [] : _ref$classListArray;
+    function Postmate(_ref2) {
+      var _ref2$container = _ref2.container,
+          container = _ref2$container === void 0 ? typeof container !== 'undefined' ? container : document.body : _ref2$container,
+          model = _ref2.model,
+          url = _ref2.url,
+          _ref2$classListArray = _ref2.classListArray,
+          classListArray = _ref2$classListArray === void 0 ? [] : _ref2$classListArray;
       // eslint-disable-line no-undef
       this.parent = window;
       this.frame = document.createElement('iframe');

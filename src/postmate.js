@@ -104,7 +104,7 @@ export class ParentAPI {
     this.listener = (e) => {
       if (!sanitize(e, this.childOrigin)) return false
 
-      const { data, name } = e.data.value
+      const { data, name } = (((e || {}).data || {}).value || {})
 
       if (e.data.postmate === 'emit') {
         if (process.env.NODE_ENV !== 'production') {
