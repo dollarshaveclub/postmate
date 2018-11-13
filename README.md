@@ -151,8 +151,8 @@ new Postmate({
 | Name | Type | Description | Default |
 | --- | --- | --- | --- |
 | **`container`** (optional) | `DOM Node Element` | _An element to append the iFrame to_ | `document.body`
-**`url`** | `String` | _A URL to load in the iFrame. The origin of this URL will also be used for securing message transport | none_ |
-**`classListArray`** | `Array` | _An Array to add classes to the iFrame. Useful for styling | none_ |
+**`url`** | `String` | _A URL to load in the iFrame. The origin of this URL will also be used for securing message transport_ | none |
+**`classListArray`** | `Array` | _An Array to add classes to the iFrame. Useful for styling_ | none |
 **`model`** | `Object` | _An object literal to represent the default values of the Childs model_ | none |
 
 ---
