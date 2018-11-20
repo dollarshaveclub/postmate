@@ -19,7 +19,7 @@
     "codecov": "^3.0.2",
     "connect": "^3.4.1",
     "conventional-changelog-cli": "^2.0.5",
-    "es-check": "^4.0.0",
+    "es-check": "^5.0.0",
     "eslint": "^5.0.0",
     "eslint-config-dollarshaveclub": "^3.0.4",
     "gulp": "3.9.1",
