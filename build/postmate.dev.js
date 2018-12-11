@@ -119,6 +119,8 @@
       }
 
       this.listener = function (e) {
+        if (!sanitize(e, _this.childOrigin)) return false;
+
         var _ref = ((e || {}).data || {}).value || {},
             data = _ref.data,
             name = _ref.name;
