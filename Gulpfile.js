@@ -5,8 +5,8 @@ const mochaPhantomJS = require('gulp-mocha-phantomjs')
 const path = require('path')
 const serveStatic = require('serve-static')
 
-let parentServer 
-let childServer 
+let parentServer
+let childServer
 
 gulp.task('parent-test-server', (done) => {
   parentServer = http
@@ -39,7 +39,10 @@ gulp.task('do-test', () => {
   return stream
 })
 
-gulp.task('test', ['parent-test-server', 'child-test-server', 'do-test'], () => {
+gulp.task('finish-test', (done) => {
   parentServer.close()
   childServer.close()
+  done()
 })
+
+gulp.task('test', gulp.series('parent-test-server', 'child-test-server', 'do-test', 'finish-test'))
