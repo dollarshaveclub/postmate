@@ -8,8 +8,8 @@
 (function (global, factory) {
   typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
   typeof define === 'function' && define.amd ? define(factory) :
-  (global.Postmate = factory());
-}(this, (function () { 'use strict';
+  global.Postmate = factory();
+}(typeof self !== 'undefined' ? self : this, function () { 'use strict';
 
   /**
    * The type of messages our frames our sending
@@ -78,7 +78,7 @@
   var sanitize = function sanitize(message, allowedOrigin) {
     if (typeof allowedOrigin === 'string' && message.origin !== allowedOrigin) return false;
     if (!message.data) return false;
-    if (!('postmate' in message.data)) return false;
+    if (typeof message.data === 'object' && !('postmate' in message.data)) return false;
     if (message.data.type !== messageType) return false;
     if (!messageTypes[message.data.postmate]) return false;
     return true;
@@ -120,6 +120,9 @@
 
       this.listener = function (e) {
         if (!sanitize(e, _this.childOrigin)) return false;
+        /**
+         * the assignments below ensures that e, data, and value are all defined
+         */
 
         var _ref = ((e || {}).data || {}).value || {},
             data = _ref.data,
@@ -489,4 +492,4 @@
 
   return Postmate;
 
-})));
+}));
