@@ -72,7 +72,7 @@ var messageTypes = {
 var sanitize = function sanitize(message, allowedOrigin) {
   if (typeof allowedOrigin === 'string' && message.origin !== allowedOrigin) return false;
   if (!message.data) return false;
-  if (!('postmate' in message.data)) return false;
+  if (typeof message.data === 'object' && !('postmate' in message.data)) return false;
   if (message.data.type !== messageType) return false;
   if (!messageTypes[message.data.postmate]) return false;
   return true;
@@ -114,6 +114,9 @@ function () {
 
     this.listener = function (e) {
       if (!sanitize(e, _this.childOrigin)) return false;
+      /**
+       * the assignments below ensures that e, data, and value are all defined
+       */
 
       var _ref = ((e || {}).data || {}).value || {},
           data = _ref.data,
