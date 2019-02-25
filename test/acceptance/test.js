@@ -21,7 +21,7 @@ describe('postmate', function () {
       url: 'http://localhost:9000/child.html',
       classListArray: ['classOne', 'classTwo'],
     }).then(function (child) {
-      expect(document.querySelector('iframe').classList).to.be.include({0: 'classOne', 1: 'classTwo'})
+      expect(document.querySelector('iframe').classList).to.be.include({ 0: 'classOne', 1: 'classTwo' })
       child.destroy()
       done()
     })
