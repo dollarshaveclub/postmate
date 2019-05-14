@@ -21,7 +21,7 @@
     "conventional-changelog-cli": "^2.0.5",
     "es-check": "^5.0.0",
     "eslint": "^5.0.0",
-    "eslint-config-dollarshaveclub": "^3.0.4",
+    "eslint-config-dollarshaveclub": "^6.0.1",
     "gulp": "4.0.2",
     "gulp-mocha-phantomjs": "0.12.2",
     "gzip-size": "^5.0.0",
