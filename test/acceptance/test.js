@@ -15,6 +15,18 @@ describe('postmate', function () {
     })
   })
 
+  it('should have a name', function (done) {
+    new Postmate({
+      container: document.getElementById('frame'),
+      url: 'http://localhost:9000/child.html',
+      name: 'postmate',
+    }).then(function (child) {
+      expect(document.querySelector('iframe').name).to.equal('postmate')
+      child.destroy()
+      done()
+    })
+  })
+
   it('should have classes', function (done) {
     new Postmate({
       container: document.getElementById('frame'),
