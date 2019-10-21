@@ -202,7 +202,7 @@ export class ChildAPI {
 
       if (e.data.postmate === 'call') {
         if (property in this.model && typeof this.model[property] === 'function') {
-          this.model[property].call(this, data)
+          this.model[property](data)
         }
         return
       }

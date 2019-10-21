@@ -45,7 +45,10 @@
         a: a,
         b: b,
         setRandomId: setRandomId,
-        getRandomId: getRandomId
+        getRandomId: getRandomId,
+        setFoo: function (foo) {
+          this.foo = foo;
+        }
       })
       .then(function (parent) { parentAPI = parent; });
     </script>
