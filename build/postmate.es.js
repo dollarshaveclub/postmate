@@ -1,6 +1,6 @@
 /**
   postmate - A powerful, simple, promise-based postMessage library
-  @version v1.5.1
+  @version v1.5.2
   @link https://github.com/dollarshaveclub/postmate
   @author Jacob Kelley <jakie8@gmail.com>
   @license MIT
@@ -230,7 +230,7 @@ function () {
 
       if (e.data.postmate === 'call') {
         if (property in _this3.model && typeof _this3.model[property] === 'function') {
-          _this3.model[property].call(_this3, data);
+          _this3.model[property](data);
         }
 
         return;

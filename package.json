@@ -1,6 +1,6 @@
 {
   "name": "postmate",
-  "version": "1.5.1",
+  "version": "1.5.2",
   "description": "A powerful, simple, promise-based postMessage library",
   "main": "build/postmate.js",
   "module": "build/postmate.es.js",
@@ -22,6 +22,9 @@
     "es-check": "^5.0.0",
     "eslint": "^6.0.0",
     "eslint-config-dollarshaveclub": "^3.0.4",
+    "eslint-plugin-import": "^2.18.2",
+    "eslint-plugin-node": "^10.0.0",
+    "eslint-plugin-standard": "^4.0.1",
     "gulp": "4.0.2",
     "gulp-mocha-phantomjs": "0.12.2",
     "gzip-size": "^5.0.0",
