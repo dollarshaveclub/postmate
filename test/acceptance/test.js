@@ -69,6 +69,21 @@ describe('postmate', function () {
     })
   })
 
+  it('should call a function in the child model with the child model context', function (done) {
+    new Postmate({
+      container: document.getElementById('frame'),
+      url: 'http://localhost:9000/child.html',
+    }).then(function (child) {
+      child.call('setFoo', 'bar')
+      child.get('foo').then(function (foo) {
+        expect(foo).to.equal('bar')
+        child.destroy()
+        done()
+      })
+        .catch(function (err) { done(err) })
+    })
+  })
+
   it('should fetch values from the child model from defaults set by the parent', function (done) {
     var uid = new Date().getTime()
 
