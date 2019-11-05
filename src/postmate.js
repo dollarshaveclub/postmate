@@ -202,7 +202,7 @@ export class ChildAPI {
 
       if (e.data.postmate === 'call') {
         if (property in this.model && typeof this.model[property] === 'function') {
-          this.model[property].call(this, data)
+          this.model[property](data)
         }
         return
       }
@@ -259,10 +259,12 @@ class Postmate {
     container = typeof container !== 'undefined' ? container : document.body, // eslint-disable-line no-use-before-define
     model,
     url,
+    name,
     classListArray = [],
   }) { // eslint-disable-line no-undef
     this.parent = window
     this.frame = document.createElement('iframe')
+    this.frame.name = name || ''
     this.frame.classList.add.apply(this.frame.classList, classListArray)
     container.appendChild(this.frame)
     this.child = this.frame.contentWindow || this.frame.contentDocument.parentWindow
