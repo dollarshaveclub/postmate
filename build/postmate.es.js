@@ -1,6 +1,6 @@
 /**
   postmate - A powerful, simple, promise-based postMessage library
-  @version v1.5.1
+  @version v1.5.2
   @link https://github.com/dollarshaveclub/postmate
   @author Jacob Kelley <jakie8@gmail.com>
   @license MIT
@@ -230,7 +230,7 @@ function () {
 
       if (e.data.postmate === 'call') {
         if (property in _this3.model && typeof _this3.model[property] === 'function') {
-          _this3.model[property].call(_this3, data);
+          _this3.model[property](data);
         }
 
         return;
@@ -289,11 +289,13 @@ function () {
         container = _ref2$container === void 0 ? typeof container !== 'undefined' ? container : document.body : _ref2$container,
         model = _ref2.model,
         url = _ref2.url,
+        name = _ref2.name,
         _ref2$classListArray = _ref2.classListArray,
         classListArray = _ref2$classListArray === void 0 ? [] : _ref2$classListArray;
     // eslint-disable-line no-undef
     this.parent = window;
     this.frame = document.createElement('iframe');
+    this.frame.name = name || '';
     this.frame.classList.add.apply(this.frame.classList, classListArray);
     container.appendChild(this.frame);
     this.child = this.frame.contentWindow || this.frame.contentDocument.parentWindow;
