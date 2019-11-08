@@ -1,6 +1,6 @@
 {
   "name": "postmate",
-  "version": "1.5.2",
+  "version": "1.6.0",
   "description": "A powerful, simple, promise-based postMessage library",
   "main": "build/postmate.js",
   "module": "build/postmate.es.js",
