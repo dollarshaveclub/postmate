@@ -117,7 +117,9 @@ export class ParentAPI {
           log(`Parent: Received event emission: ${name}`)
         }
         if (name in this.events) {
-          this.events[name].call(this, data)
+          this.events[name].forEach(callback => {
+            callback.call(this, data)
+          })
         }
       }
     }
@@ -163,7 +165,10 @@ export class ParentAPI {
   }
 
   on (eventName, callback) {
-    this.events[eventName] = callback
+    if (!this.events[eventName]) {
+      this.events[eventName] = []
+    }
+    this.events[eventName].push(callback)
   }
 
   destroy () {
