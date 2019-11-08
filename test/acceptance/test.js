@@ -15,6 +15,18 @@ describe('postmate', function () {
     })
   })
 
+  it('should have a name', function (done) {
+    new Postmate({
+      container: document.getElementById('frame'),
+      url: 'http://localhost:9000/child.html',
+      name: 'postmate',
+    }).then(function (child) {
+      expect(document.querySelector('iframe').name).to.equal('postmate')
+      child.destroy()
+      done()
+    })
+  })
+
   it('should have classes', function (done) {
     new Postmate({
       container: document.getElementById('frame'),
@@ -50,6 +62,21 @@ describe('postmate', function () {
       child.call('setRandomId', uid)
       child.get('getRandomId').then(function (randomId) {
         expect(randomId).to.equal(uid)
+        child.destroy()
+        done()
+      })
+        .catch(function (err) { done(err) })
+    })
+  })
+
+  it('should call a function in the child model with the child model context', function (done) {
+    new Postmate({
+      container: document.getElementById('frame'),
+      url: 'http://localhost:9000/child.html',
+    }).then(function (child) {
+      child.call('setFoo', 'bar')
+      child.get('foo').then(function (foo) {
+        expect(foo).to.equal('bar')
         child.destroy()
         done()
       })
