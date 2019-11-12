@@ -69,7 +69,7 @@ $ npm i postmate --save # Install via NPM
 // Kick off the handshake with the iFrame
 const handshake = new Postmate({
   container: document.getElementById('some-div'), // Element to inject frame into
-  url: 'http://child.com/page.html' // Page to load, must have postmate.js. This will also be the origin used for communication.
+  url: 'http://child.com/page.html', // Page to load, must have postmate.js. This will also be the origin used for communication.
   name: 'my-iframe-name', // Set Iframe name attribute. Useful to get `window.name` in the child.
   classListArray: ["myClass"] //Classes to add to the iframe via classList, useful for styling.
 });
