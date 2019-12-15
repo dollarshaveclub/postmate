@@ -18,7 +18,7 @@
     "chai": "^4.1.2",
     "codecov": "^3.0.2",
     "connect": "^3.4.1",
-    "conventional-changelog-cli": "^2.0.5",
+    "conventional-changelog-cli": "^2.0.31",
     "es-check": "^5.0.0",
     "eslint": "^6.0.0",
     "eslint-config-dollarshaveclub": "^3.0.4",
