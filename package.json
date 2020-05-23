@@ -29,7 +29,7 @@
     "gulp-mocha-phantomjs": "0.12.2",
     "gzip-size": "^5.0.0",
     "jest": "^22.0.0",
-    "mocha": "^7.0.1",
+    "mocha": "^7.2.0",
     "mocha-phantomjs": "^4.1.0",
     "nyc": "^15.0.0",
     "regenerator-runtime": "^0.13.0",
