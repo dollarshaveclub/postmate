@@ -1,4 +1,3 @@
-
 /**
  * The type of messages our frames our sending
  * @type {String}
@@ -99,10 +98,8 @@ export class ParentAPI {
 
     this.events = {}
 
-    if (process.env.NODE_ENV !== 'production') {
-      log('Parent: Registering API')
-      log('Parent: Awaiting messages...')
-    }
+    log('Parent: Registering API')
+    log('Parent: Awaiting messages...')
 
     this.listener = (e) => {
       if (!sanitize(e, this.childOrigin)) return false
@@ -113,9 +110,8 @@ export class ParentAPI {
       const { data, name } = (((e || {}).data || {}).value || {})
 
       if (e.data.postmate === 'emit') {
-        if (process.env.NODE_ENV !== 'production') {
-          log(`Parent: Received event emission: ${name}`)
-        }
+        log(`Parent: Received event emission: ${name}`)
+
         if (name in this.events) {
           this.events[name].forEach(callback => {
             callback.call(this, data)
@@ -125,9 +121,7 @@ export class ParentAPI {
     }
 
     this.parent.addEventListener('message', this.listener, false)
-    if (process.env.NODE_ENV !== 'production') {
-      log('Parent: Awaiting event emissions from Child')
-    }
+    log('Parent: Awaiting event emissions from Child')
   }
 
   get (property) {
@@ -172,9 +166,7 @@ export class ParentAPI {
   }
 
   destroy () {
-    if (process.env.NODE_ENV !== 'production') {
-      log('Parent: Destroying Postmate instance')
-    }
+    log('Parent: Destroying Postmate instance')
     window.removeEventListener('message', this.listener, false)
     this.frame.parentNode.removeChild(this.frame)
   }
@@ -191,17 +183,13 @@ export class ChildAPI {
     this.parentOrigin = info.parentOrigin
     this.child = info.child
 
-    if (process.env.NODE_ENV !== 'production') {
-      log('Child: Registering API')
-      log('Child: Awaiting messages...')
-    }
+    log('Child: Registering API')
+    log('Child: Awaiting messages...')
 
     this.child.addEventListener('message', (e) => {
       if (!sanitize(e, this.parentOrigin)) return
 
-      if (process.env.NODE_ENV !== 'production') {
-        log('Child: Received request', e.data)
-      }
+      log('Child: Received request', e.data)
 
       const { property, uid, data } = e.data
 
@@ -225,9 +213,9 @@ export class ChildAPI {
   }
 
   emit (name, data) {
-    if (process.env.NODE_ENV !== 'production') {
-      log(`Child: Emitting Event "${name}"`, data)
-    }
+
+    log(`Child: Emitting Event "${name}"`, data)
+
     this.parent.postMessage({
       postmate: 'emit',
       type: messageType,
@@ -240,7 +228,7 @@ export class ChildAPI {
 }
 
 /**
-  * The entry point of the Parent.
+ * The entry point of the Parent.
  * @type {Class}
  */
 class Postmate {
@@ -292,22 +280,19 @@ class Postmate {
         if (!sanitize(e, childOrigin)) return false
         if (e.data.postmate === 'handshake-reply') {
           clearInterval(responseInterval)
-          if (process.env.NODE_ENV !== 'production') {
-            log('Parent: Received handshake reply from Child')
-          }
+
+          log('Parent: Received handshake reply from Child')
           this.parent.removeEventListener('message', reply, false)
           this.childOrigin = e.origin
-          if (process.env.NODE_ENV !== 'production') {
-            log('Parent: Saving Child origin', this.childOrigin)
-          }
+          log('Parent: Saving Child origin', this.childOrigin)
+
           return resolve(new ParentAPI(this))
         }
 
         // Might need to remove since parent might be receiving different messages
         // from different hosts
-        if (process.env.NODE_ENV !== 'production') {
-          log('Parent: Invalid handshake reply')
-        }
+        log('Parent: Invalid handshake reply')
+
         return reject('Failed handshake')
       }
 
@@ -315,9 +300,8 @@ class Postmate {
 
       const doSend = () => {
         attempt++
-        if (process.env.NODE_ENV !== 'production') {
-          log(`Parent: Sending handshake attempt ${attempt}`, { childOrigin })
-        }
+        log(`Parent: Sending handshake attempt ${attempt}`, { childOrigin })
+
         this.child.postMessage({
           postmate: 'handshake',
           type: messageType,
@@ -340,9 +324,8 @@ class Postmate {
         this.frame.addEventListener('load', loaded)
       }
 
-      if (process.env.NODE_ENV !== 'production') {
-        log('Parent: Loading frame', { url })
-      }
+      log('Parent: Loading frame', { url })
+
       this.frame.src = url
     })
   }
@@ -376,13 +359,12 @@ Postmate.Model = class Model {
           return
         }
         if (e.data.postmate === 'handshake') {
-          if (process.env.NODE_ENV !== 'production') {
-            log('Child: Received handshake from Parent')
-          }
+          log('Child: Received handshake from Parent')
+
           this.child.removeEventListener('message', shake, false)
-          if (process.env.NODE_ENV !== 'production') {
-            log('Child: Sending handshake reply to Parent')
-          }
+
+          log('Child: Sending handshake reply to Parent')
+
           e.source.postMessage({
             postmate: 'handshake-reply',
             type: messageType,
@@ -395,14 +377,12 @@ Postmate.Model = class Model {
             Object.keys(defaults).forEach(key => {
               this.model[key] = defaults[key]
             })
-            if (process.env.NODE_ENV !== 'production') {
-              log('Child: Inherited and extended model from Parent')
-            }
+
+            log('Child: Inherited and extended model from Parent')
           }
 
-          if (process.env.NODE_ENV !== 'production') {
-            log('Child: Saving Parent origin', this.parentOrigin)
-          }
+          log('Child: Saving Parent origin', this.parentOrigin)
+
           return resolve(new ChildAPI(this))
         }
         return reject('Handshake Reply Failed')
