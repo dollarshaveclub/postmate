@@ -63,14 +63,14 @@ var messageTypes = {
   emit: 1,
   reply: 1,
   request: 1
-  /**
-   * Ensures that a message is safe to interpret
-   * @param  {Object} message The postmate message being sent
-   * @param  {String|Boolean} allowedOrigin The whitelisted origin or false to skip origin check
-   * @return {Boolean}
-   */
-
 };
+/**
+ * Ensures that a message is safe to interpret
+ * @param  {Object} message The postmate message being sent
+ * @param  {String|Boolean} allowedOrigin The whitelisted origin or false to skip origin check
+ * @return {Boolean}
+ */
+
 var sanitize = function sanitize(message, allowedOrigin) {
   if (typeof allowedOrigin === 'string' && message.origin !== allowedOrigin) return false;
   if (!message.data) return false;
@@ -97,9 +97,7 @@ var resolveValue = function resolveValue(model, property) {
  * @param {Object} info Information on the consumer
  */
 
-var ParentAPI =
-/*#__PURE__*/
-function () {
+var ParentAPI = /*#__PURE__*/function () {
   function ParentAPI(info) {
     var _this = this;
 
@@ -108,11 +106,8 @@ function () {
     this.child = info.child;
     this.childOrigin = info.childOrigin;
     this.events = {};
-
-    if (process.env.NODE_ENV !== 'production') {
-      log('Parent: Registering API');
-      log('Parent: Awaiting messages...');
-    }
+    log('Parent: Registering API');
+    log('Parent: Awaiting messages...');
 
     this.listener = function (e) {
       if (!sanitize(e, _this.childOrigin)) return false;
@@ -125,9 +120,7 @@ function () {
           name = _ref.name;
 
       if (e.data.postmate === 'emit') {
-        if (process.env.NODE_ENV !== 'production') {
-          log("Parent: Received event emission: " + name);
-        }
+        log("Parent: Received event emission: " + name);
 
         if (name in _this.events) {
           _this.events[name].forEach(function (callback) {
@@ -138,10 +131,7 @@ function () {
     };
 
     this.parent.addEventListener('message', this.listener, false);
-
-    if (process.env.NODE_ENV !== 'production') {
-      log('Parent: Awaiting event emissions from Child');
-    }
+    log('Parent: Awaiting event emissions from Child');
   }
 
   var _proto = ParentAPI.prototype;
@@ -193,10 +183,7 @@ function () {
   };
 
   _proto.destroy = function destroy() {
-    if (process.env.NODE_ENV !== 'production') {
-      log('Parent: Destroying Postmate instance');
-    }
-
+    log('Parent: Destroying Postmate instance');
     window.removeEventListener('message', this.listener, false);
     this.frame.parentNode.removeChild(this.frame);
   };
@@ -208,9 +195,7 @@ function () {
  * @param {Object} info Information on the consumer
  */
 
-var ChildAPI =
-/*#__PURE__*/
-function () {
+var ChildAPI = /*#__PURE__*/function () {
   function ChildAPI(info) {
     var _this3 = this;
 
@@ -218,19 +203,11 @@ function () {
     this.parent = info.parent;
     this.parentOrigin = info.parentOrigin;
     this.child = info.child;
-
-    if (process.env.NODE_ENV !== 'production') {
-      log('Child: Registering API');
-      log('Child: Awaiting messages...');
-    }
-
+    log('Child: Registering API');
+    log('Child: Awaiting messages...');
     this.child.addEventListener('message', function (e) {
       if (!sanitize(e, _this3.parentOrigin)) return;
-
-      if (process.env.NODE_ENV !== 'production') {
-        log('Child: Received request', e.data);
-      }
-
+      log('Child: Received request', e.data);
       var _e$data = e.data,
           property = _e$data.property,
           uid = _e$data.uid,
@@ -260,10 +237,7 @@ function () {
   var _proto2 = ChildAPI.prototype;
 
   _proto2.emit = function emit(name, data) {
-    if (process.env.NODE_ENV !== 'production') {
-      log("Child: Emitting Event \"" + name + "\"", data);
-    }
-
+    log("Child: Emitting Event \"" + name + "\"", data);
     this.parent.postMessage({
       postmate: 'emit',
       type: messageType,
@@ -277,13 +251,11 @@ function () {
   return ChildAPI;
 }();
 /**
-  * The entry point of the Parent.
+ * The entry point of the Parent.
  * @type {Class}
  */
 
-var Postmate =
-/*#__PURE__*/
-function () {
+var Postmate = /*#__PURE__*/function () {
   // eslint-disable-line no-undef
   // Internet Explorer craps itself
 
@@ -331,28 +303,18 @@ function () {
 
         if (e.data.postmate === 'handshake-reply') {
           clearInterval(responseInterval);
-
-          if (process.env.NODE_ENV !== 'production') {
-            log('Parent: Received handshake reply from Child');
-          }
+          log('Parent: Received handshake reply from Child');
 
           _this4.parent.removeEventListener('message', reply, false);
 
           _this4.childOrigin = e.origin;
-
-          if (process.env.NODE_ENV !== 'production') {
-            log('Parent: Saving Child origin', _this4.childOrigin);
-          }
-
+          log('Parent: Saving Child origin', _this4.childOrigin);
           return resolve(new ParentAPI(_this4));
         } // Might need to remove since parent might be receiving different messages
         // from different hosts
 
 
-        if (process.env.NODE_ENV !== 'production') {
-          log('Parent: Invalid handshake reply');
-        }
-
+        log('Parent: Invalid handshake reply');
         return reject('Failed handshake');
       };
 
@@ -360,12 +322,9 @@ function () {
 
       var doSend = function doSend() {
         attempt++;
-
-        if (process.env.NODE_ENV !== 'production') {
-          log("Parent: Sending handshake attempt " + attempt, {
-            childOrigin: childOrigin
-          });
-        }
+        log("Parent: Sending handshake attempt " + attempt, {
+          childOrigin: childOrigin
+        });
 
         _this4.child.postMessage({
           postmate: 'handshake',
@@ -389,12 +348,9 @@ function () {
         _this4.frame.addEventListener('load', loaded);
       }
 
-      if (process.env.NODE_ENV !== 'production') {
-        log('Parent: Loading frame', {
-          url: url
-        });
-      }
-
+      log('Parent: Loading frame', {
+        url: url
+      });
       _this4.frame.src = url;
     });
   };
@@ -417,9 +373,7 @@ Postmate.Promise = function () {
   }
 }();
 
-Postmate.Model =
-/*#__PURE__*/
-function () {
+Postmate.Model = /*#__PURE__*/function () {
   /**
    * Initializes the child, model, parent, and responds to the Parents handshake
    * @param {Object} model Hash of values, functions, or promises
@@ -449,16 +403,11 @@ function () {
         }
 
         if (e.data.postmate === 'handshake') {
-          if (process.env.NODE_ENV !== 'production') {
-            log('Child: Received handshake from Parent');
-          }
+          log('Child: Received handshake from Parent');
 
           _this5.child.removeEventListener('message', shake, false);
 
-          if (process.env.NODE_ENV !== 'production') {
-            log('Child: Sending handshake reply to Parent');
-          }
-
+          log('Child: Sending handshake reply to Parent');
           e.source.postMessage({
             postmate: 'handshake-reply',
             type: messageType
@@ -471,16 +420,10 @@ function () {
             Object.keys(defaults).forEach(function (key) {
               _this5.model[key] = defaults[key];
             });
-
-            if (process.env.NODE_ENV !== 'production') {
-              log('Child: Inherited and extended model from Parent');
-            }
+            log('Child: Inherited and extended model from Parent');
           }
 
-          if (process.env.NODE_ENV !== 'production') {
-            log('Child: Saving Parent origin', _this5.parentOrigin);
-          }
-
+          log('Child: Saving Parent origin', _this5.parentOrigin);
           return resolve(new ChildAPI(_this5));
         }
 
