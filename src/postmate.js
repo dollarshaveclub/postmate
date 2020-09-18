@@ -270,7 +270,9 @@ class Postmate {
     this.parent = window
     this.frame = document.createElement('iframe')
     this.frame.name = name || ''
-    this.frame.classList.add.apply(this.frame.classList, classListArray)
+    if (classListArray.length > 0) { // check for IE 11. See issue#207
+      this.frame.classList.add.apply(this.frame.classList, classListArray)
+    }
     container.appendChild(this.frame)
     this.child = this.frame.contentWindow || this.frame.contentDocument.parentWindow
     this.model = model || {}
