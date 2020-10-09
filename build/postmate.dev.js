@@ -297,11 +297,15 @@
      * @return {Promise}
      */
     function Postmate(_ref2) {
+      var _this4 = this;
+
       var _ref2$container = _ref2.container,
           container = _ref2$container === void 0 ? typeof container !== 'undefined' ? container : document.body : _ref2$container,
           model = _ref2.model,
           url = _ref2.url,
           name = _ref2.name,
+          _ref2$additionalAttri = _ref2.additionalAttributes,
+          additionalAttributes = _ref2$additionalAttri === void 0 ? {} : _ref2$additionalAttri,
           _ref2$classListArray = _ref2.classListArray,
           classListArray = _ref2$classListArray === void 0 ? [] : _ref2$classListArray;
       // eslint-disable-line no-undef
@@ -309,6 +313,9 @@
       this.frame = document.createElement('iframe');
       this.frame.name = name || '';
       this.frame.classList.add.apply(this.frame.classList, classListArray);
+      Object.keys(additionalAttributes).forEach(function (attribute) {
+        _this4.frame[attribute] = additionalAttributes[attribute];
+      });
       container.appendChild(this.frame);
       this.child = this.frame.contentWindow || this.frame.contentDocument.parentWindow;
       this.model = model || {};
@@ -324,7 +331,7 @@
     var _proto3 = Postmate.prototype;
 
     _proto3.sendHandshake = function sendHandshake(url) {
-      var _this4 = this;
+      var _this5 = this;
 
       var childOrigin = resolveOrigin(url);
       var attempt = 0;
@@ -340,15 +347,15 @@
               log('Parent: Received handshake reply from Child');
             }
 
-            _this4.parent.removeEventListener('message', reply, false);
+            _this5.parent.removeEventListener('message', reply, false);
 
-            _this4.childOrigin = e.origin;
+            _this5.childOrigin = e.origin;
 
             {
-              log('Parent: Saving Child origin', _this4.childOrigin);
+              log('Parent: Saving Child origin', _this5.childOrigin);
             }
 
-            return resolve(new ParentAPI(_this4));
+            return resolve(new ParentAPI(_this5));
           } // Might need to remove since parent might be receiving different messages
           // from different hosts
 
@@ -360,7 +367,7 @@
           return reject('Failed handshake');
         };
 
-        _this4.parent.addEventListener('message', reply, false);
+        _this5.parent.addEventListener('message', reply, false);
 
         var doSend = function doSend() {
           attempt++;
@@ -371,10 +378,10 @@
             });
           }
 
-          _this4.child.postMessage({
+          _this5.child.postMessage({
             postmate: 'handshake',
             type: messageType,
-            model: _this4.model
+            model: _this5.model
           }, childOrigin);
 
           if (attempt === maxHandshakeRequests) {
@@ -387,10 +394,10 @@
           responseInterval = setInterval(doSend, 500);
         };
 
-        if (_this4.frame.attachEvent) {
-          _this4.frame.attachEvent('onload', loaded);
+        if (_this5.frame.attachEvent) {
+          _this5.frame.attachEvent('onload', loaded);
         } else {
-          _this4.frame.addEventListener('load', loaded);
+          _this5.frame.addEventListener('load', loaded);
         }
 
         {
@@ -399,7 +406,7 @@
           });
         }
 
-        _this4.frame.src = url;
+        _this5.frame.src = url;
       });
     };
 
@@ -444,7 +451,7 @@
     var _proto4 = Model.prototype;
 
     _proto4.sendHandshakeReply = function sendHandshakeReply() {
-      var _this5 = this;
+      var _this6 = this;
 
       return new Postmate.Promise(function (resolve, reject) {
         var shake = function shake(e) {
@@ -457,7 +464,7 @@
               log('Child: Received handshake from Parent');
             }
 
-            _this5.child.removeEventListener('message', shake, false);
+            _this6.child.removeEventListener('message', shake, false);
 
             {
               log('Child: Sending handshake reply to Parent');
@@ -467,13 +474,13 @@
               postmate: 'handshake-reply',
               type: messageType
             }, e.origin);
-            _this5.parentOrigin = e.origin; // Extend model with the one provided by the parent
+            _this6.parentOrigin = e.origin; // Extend model with the one provided by the parent
 
             var defaults = e.data.model;
 
             if (defaults) {
               Object.keys(defaults).forEach(function (key) {
-                _this5.model[key] = defaults[key];
+                _this6.model[key] = defaults[key];
               });
 
               {
@@ -482,16 +489,16 @@
             }
 
             {
-              log('Child: Saving Parent origin', _this5.parentOrigin);
+              log('Child: Saving Parent origin', _this6.parentOrigin);
             }
 
-            return resolve(new ChildAPI(_this5));
+            return resolve(new ChildAPI(_this6));
           }
 
           return reject('Handshake Reply Failed');
         };
 
-        _this5.child.addEventListener('message', shake, false);
+        _this6.child.addEventListener('message', shake, false);
       });
     };
 

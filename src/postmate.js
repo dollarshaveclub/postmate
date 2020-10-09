@@ -265,12 +265,18 @@ class Postmate {
     model,
     url,
     name,
+    additionalAttributes = {},
     classListArray = [],
   }) { // eslint-disable-line no-undef
     this.parent = window
     this.frame = document.createElement('iframe')
     this.frame.name = name || ''
     this.frame.classList.add.apply(this.frame.classList, classListArray)
+
+    Object.keys(additionalAttributes).forEach(attribute => {
+      this.frame[attribute] = additionalAttributes[attribute]
+    })
+
     container.appendChild(this.frame)
     this.child = this.frame.contentWindow || this.frame.contentDocument.parentWindow
     this.model = model || {}

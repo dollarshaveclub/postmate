@@ -72,6 +72,9 @@ const handshake = new Postmate({
   url: 'http://child.com/page.html', // Page to load, must have postmate.js. This will also be the origin used for communication.
   name: 'my-iframe-name', // Set Iframe name attribute. Useful to get `window.name` in the child.
   classListArray: ["myClass"] //Classes to add to the iframe via classList, useful for styling.
+  additionalAttributes: { // additional html attributes to apply to the iframe element.
+    title: 'Example iframe title'
+  }
 });
 
 // When parent <-> child handshake is complete, data may be requested from the child
@@ -155,7 +158,9 @@ new Postmate({
 **`url`** | `String` | _A URL to load in the iFrame. The origin of this URL will also be used for securing message transport_ | none |
 **`classListArray`** | `Array` | _An Array to add classes to the iFrame. Useful for styling_ | none |
 **`model`** | `Object` | _An object literal to represent the default values of the Childs model_ | none |
+**`additionalProperties`** | `Object` | _Optional additional properties to apply to the iframe element_* | none |
 
+> **\*Note**: IF using the [sandbox](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/iframe#attr-sandbox) attribute, you must have the `allow-scripts` option enabled.
 ---
 
 > ## `Postmate.Model(model)`

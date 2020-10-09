@@ -39,6 +39,22 @@ describe('postmate', function () {
     })
   })
 
+  it('Applies additional attributes if provided', function (done) {
+    new Postmate({
+      container: document.getElementById('frame'),
+      url: 'http://localhost:9000/child.html',
+      additionalAttributes: {
+        sandbox: 'allow-scripts allow-same-origin',
+        title: 'Example Iframe',
+      },
+    }).then(function (child) {
+      expect(document.querySelector('iframe').sandbox).to.equal('allow-scripts allow-same-origin')
+      expect(document.querySelector('iframe').title).to.equal('Example Iframe')
+      child.destroy()
+      done()
+    })
+  })
+
   it('should fetch values from the child model', function (done) {
     new Postmate({
       container: document.getElementById('frame'),
