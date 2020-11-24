@@ -1,10 +1,10 @@
 {
-  "name": "postmate",
+  "name": "popostmate",
   "version": "1.6.0",
   "description": "A powerful, simple, promise-based postMessage library",
-  "main": "build/postmate.js",
-  "module": "build/postmate.es.js",
-  "unpkg": "build/postmate.min.js",
+  "main": "build/popostmate.js",
+  "module": "build/popostmate.es.js",
+  "unpkg": "build/popostmate.min.js",
   "files": [
     "build",
     "src"
@@ -60,7 +60,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/dollarshaveclub/postmate.git"
+    "url": "git+https://github.com/vpopolin/postmate.git"
   },
   "keywords": [
     "postMessage",
@@ -74,9 +74,9 @@
   "author": "Jacob Kelley <jakie8@gmail.com>",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/dollarshaveclub/postmate/issues"
+    "url": "https://github.com/vpopolin/postmate/issues"
   },
-  "homepage": "https://github.com/dollarshaveclub/postmate",
+  "homepage": "https://github.com/vpopolin/postmate",
   "browserslist": [
     "defaults",
     "ie >= 11"
