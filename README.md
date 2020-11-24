@@ -2,14 +2,15 @@
   <img src="https://dollarshaveclub.github.io/postmate/assets/postmate-v3.svg">
 </a>
 
+## This is a fork
+- The original package: https://www.npmjs.com/package/postmate
+- The original package has not seen any movement regarding new issues and merge requests in around 9 months
+- This version supports multiple frames on the same page
+
+## Introduction
 > A powerful, simple, promise-based `postMessage` iFrame communication library.
 
-[![npm][npm-image]][npm-url]
-[![CircleCI](https://circleci.com/gh/dollarshaveclub/postmate.svg?style=svg)](https://circleci.com/gh/dollarshaveclub/postmate)
-[![Share](https://img.shields.io/twitter/url/http/shields.io.svg?style=social)](https://twitter.com/home?status=Postmate%3A%20A%20powerful,%20simple,%20promise-based%20postMessage%20library%20https%3A//github.com/dollarshaveclub/postmate%20via%20%40DSCEngineering%20%40javascript)
-
-[npm-image]: https://badge.fury.io/js/postmate.svg
-[npm-url]: https://www.npmjs.com/package/postmate
+![Publish on NPM](https://github.com/vpopolin/postmate/workflows/Publish%20on%20NPM/badge.svg)
 
 _Postmate_ is a promise-based API built on `postMessage`. It allows a parent page to speak with a child `iFrame` across origins with minimal effort.
 
@@ -27,7 +28,6 @@ You can download the compiled javascript directly [here](/build/postmate.min.js)
 
 ## Features
 
-[![Greenkeeper badge](https://badges.greenkeeper.io/dollarshaveclub/postmate.svg)](https://greenkeeper.io/)
 * Promise-based API for elegant and simple communication.
 * Secure two-way parent <-> child handshake, with message validation.
 * Child exposes a retrievable `model` object that the parent can access.
