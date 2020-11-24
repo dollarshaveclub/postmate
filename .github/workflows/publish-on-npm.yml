@@ -7,5 +7,8 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v1
-      - run: npm install
+      - run: yarn 
+      - run: yarn eslint:ci
       - run: yarn build
+      - run: yarn test
+      - run: npx codecov
