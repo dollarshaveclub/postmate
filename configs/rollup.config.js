@@ -47,8 +47,8 @@ const createConfig = ({ output, env } = {}) => {
         {
           banner,
           name: 'Postmate',
-        }
-      )
+        },
+      ),
     ),
   }
 }

@@ -124,6 +124,48 @@ describe('postmate', function () {
     })
   })
 
+  it('should listen and receive events from the child, but only from the set child', function (done) {
+    var uid1 = new Date().getTime() - 47
+    var uid2 = new Date().getTime() + 21961
+
+    var build = function (uid) {
+      return new Postmate({
+        container: document.getElementById('frame'),
+        url: 'http://localhost:9000/child.html',
+        model: {
+          uid: uid,
+        },
+      })
+    }
+    RSVP.hash({
+      c1: build(uid1),
+      c2: build(uid2),
+    }).then(function (data) {
+      var callCount = 0
+      data.c1.on('validated', function (response) {
+        expect(response).to.equal(uid1)
+        callCount++
+        if (callCount >= 2) {
+          data.c1.destroy()
+          done()
+        }
+      })
+
+      data.c2.on('validated', function (response) {
+        expect(response).to.equal(uid2)
+        callCount++
+        if (callCount >= 2) {
+          data.c2.destroy()
+          done()
+        }
+      })
+
+      // This is abnormal, but we are going to trigger the event 1 second after this function is called
+      data.c1.get('doValidate').catch(function (err) { done(err) })
+      data.c2.get('doValidate').catch(function (err) { done(err) })
+    }).catch(function (err) { done(err) })
+  })
+
   it('should resolve multiple promises', function (done) {
     new Postmate({
       container: document.getElementById('frame'),

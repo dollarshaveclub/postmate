@@ -9,3 +9,4 @@ coverage/
 coverage.lcov
 coverage_*/
 .idea/
+build/

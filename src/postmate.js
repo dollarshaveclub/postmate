@@ -24,6 +24,20 @@ let _messageId = 0
 export const generateNewMessageId = () => ++_messageId
 
 /**
+ * A unique child ID that is used to ensure responses are received from the correct child iframes
+ * @type {Number}
+ */
+let _childId = 0
+
+/**
+ * Increments and returns a message ID
+ * @return {Number} A unique ID for a message
+ */
+function childId () {
+  return ++_childId
+}
+
+/**
  * Postmate logging function that enables/disables via config
  * @param  {Object} ...args Rest Arguments
  */
@@ -96,6 +110,7 @@ export class ParentAPI {
     this.frame = info.frame
     this.child = info.child
     this.childOrigin = info.childOrigin
+    this.childId = info.childId
 
     this.events = {}
 
@@ -112,7 +127,7 @@ export class ParentAPI {
        */
       const { data, name } = (((e || {}).data || {}).value || {})
 
-      if (e.data.postmate === 'emit') {
+      if (e.data.postmate === 'emit' && e.data.childId === this.childId) {
         if (process.env.NODE_ENV !== 'production') {
           log(`Parent: Received event emission: ${name}`)
         }
@@ -135,7 +150,7 @@ export class ParentAPI {
       // Extract data from response and kill listeners
       const uid = generateNewMessageId()
       const transact = (e) => {
-        if (e.data.uid === uid && e.data.postmate === 'reply') {
+        if (e.data.uid === uid && e.data.postmate === 'reply' && e.data.childId === this.childId) {
           this.parent.removeEventListener('message', transact, false)
           resolve(e.data.value)
         }
@@ -190,6 +205,7 @@ export class ChildAPI {
     this.parent = info.parent
     this.parentOrigin = info.parentOrigin
     this.child = info.child
+    this.childId = info.childId
 
     if (process.env.NODE_ENV !== 'production') {
       log('Child: Registering API')
@@ -218,6 +234,7 @@ export class ChildAPI {
           property,
           postmate: 'reply',
           type: messageType,
+          childId: this.childId,
           uid,
           value,
         }, e.origin))
@@ -231,6 +248,7 @@ export class ChildAPI {
     this.parent.postMessage({
       postmate: 'emit',
       type: messageType,
+      childId: this.childId,
       value: {
         name,
         data,
@@ -274,6 +292,7 @@ class Postmate {
     container.appendChild(this.frame)
     this.child = this.frame.contentWindow || this.frame.contentDocument.parentWindow
     this.model = model || {}
+    this.childId = childId()
 
     return this.sendHandshake(url)
   }
@@ -290,6 +309,7 @@ class Postmate {
     return new Postmate.Promise((resolve, reject) => {
       const reply = (e) => {
         if (!sanitize(e, childOrigin)) return false
+        if (e.data.childId !== this.childId) return false
         if (e.data.postmate === 'handshake-reply') {
           clearInterval(responseInterval)
           if (process.env.NODE_ENV !== 'production') {
@@ -322,6 +342,7 @@ class Postmate {
           postmate: 'handshake',
           type: messageType,
           model: this.model,
+          childId: this.childId,
         }, childOrigin)
 
         if (attempt === maxHandshakeRequests) {
@@ -386,9 +407,10 @@ Postmate.Model = class Model {
           e.source.postMessage({
             postmate: 'handshake-reply',
             type: messageType,
+            childId: e.data.childId,
           }, e.origin)
+          this.childId = e.data.childId
           this.parentOrigin = e.origin
-
           // Extend model with the one provided by the parent
           const defaults = e.data.model
           if (defaults) {
